@@ -39,8 +39,7 @@ public class Guardian extends XRPGClass {
     @Override
     public void onHit(EntityDamageByEntityEvent e) {
         Player player = (Player) e.getDamager();
-        if (player.isSneaking())
-        {
+        if (player.isSneaking()) {
             doShieldBash(e, player);
         }
 
@@ -62,10 +61,10 @@ public class Guardian extends XRPGClass {
         TextComponent text = new TextComponent("Damage taken reduced by " + String.format(
                 Locale.GERMAN, "%,.2f", dmg));
         text.setColor(ChatColor.GREEN.asBungee());
-        player.spigot().sendMessage(ChatMessageType.ACTION_BAR ,text);
+        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, text);
 
-        if (player.isBlocking() && e.getDamager() instanceof LivingEntity){
-            Utils.decreaseHealth((LivingEntity)e.getDamager(), 1);
+        if (player.isBlocking() && e.getDamager() instanceof LivingEntity) {
+            Utils.decreaseHealth((LivingEntity) e.getDamager(), 1);
         }
     }
 
@@ -105,8 +104,7 @@ public class Guardian extends XRPGClass {
 
     }
 
-    public void applyEffects(Player player)
-    {
+    public void applyEffects(Player player) {
         double currentHealth = player.getHealth();
         super.applyEffects(player);
         Utils.addUniqueModifier(player, Attribute.GENERIC_MAX_HEALTH, guardianConfig.healthModifier);
@@ -115,7 +113,7 @@ public class Guardian extends XRPGClass {
     }
 
     @SuppressWarnings("all")
-    private void doAegis(Player player){
+    private void doAegis(Player player) {
         if (player.isSneaking()) {
             if (player.getInventory().getItemInOffHand().getType() == Material.SHIELD) {
                 if (Utils.isSkillReady(aegisCooldown)) {
@@ -123,9 +121,11 @@ public class Guardian extends XRPGClass {
                     return;
                 }
                 List<Player> nearbyPlayers = new ArrayList(player.getWorld().getNearbyEntities(player.getLocation(), guardianConfig.aegisRangeHorizontal, guardianConfig.aegisRangeVertical, guardianConfig.aegisRangeHorizontal, p -> p instanceof Player));
-                for (Player p : nearbyPlayers) {
-                    p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, guardianConfig.aegisDuration * 20, guardianConfig.aegisAmplifier, true, true, true));
-                    p.sendMessage(player.getDisplayName() + " Granted you Aegis' Protection!");
+                for (Player target : nearbyPlayers) {
+                    if (partyManager.isPlayerAllied(player, target)) {
+                        target.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, guardianConfig.aegisDuration * 20, guardianConfig.aegisAmplifier, true, true, true));
+                        target.sendMessage(player.getDisplayName() + " Granted you Aegis' Protection!");
+                    }
                 }
                 if (nearbyPlayers.size() > 0) {
                     player.sendMessage(ChatColor.GREEN + "Applied Aegis' Protection to " + nearbyPlayers.size() + " player(s)!");
@@ -135,16 +135,14 @@ public class Guardian extends XRPGClass {
         }
     }
 
-    private void doShieldBash(EntityDamageByEntityEvent e, Player player){
-        if (e.getEntity() instanceof Player)
-        {
-            if (!Utils.isSkillReady(shieldBashCooldown))
-            {
+    private void doShieldBash(EntityDamageByEntityEvent e, Player player) {
+        if (e.getEntity() instanceof Player) {
+            if (!Utils.isSkillReady(shieldBashCooldown)) {
                 player.sendMessage(Utils.getCooldownMessage("Shield Bash", shieldBashCooldown));
                 return;
             }
 
-            XRPGPlayer xrpgPlayer = Utils.GetRPG((Player)e.getEntity());
+            XRPGPlayer xrpgPlayer = Utils.GetRPG((Player) e.getEntity());
             if (xrpgPlayer.canBeStunned())
                 new ApplyStunTask(xrpgPlayer, guardianConfig.stunEffectModifier, 40, plugin).runTaskLater(plugin, 5);
 

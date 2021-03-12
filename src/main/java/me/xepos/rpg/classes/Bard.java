@@ -22,6 +22,7 @@ import org.bukkit.util.RayTraceResult;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 @SuppressWarnings("unchecked")
 public class Bard extends XRPGClass {
@@ -41,8 +42,7 @@ public class Bard extends XRPGClass {
 
     @Override
     public void onHit(EntityDamageByEntityEvent e) {
-        if (isSoundBarrierActive)
-        {
+        if (isSoundBarrierActive) {
             e.setCancelled(true);
             return;
         }
@@ -53,8 +53,7 @@ public class Bard extends XRPGClass {
     @Override
     public void onHurt(EntityDamageByEntityEvent e) {
         Player player = (Player) e.getEntity();
-        if (e.getFinalDamage() >= player.getHealth())
-        {
+        if (e.getFinalDamage() >= player.getHealth()) {
             if (!Utils.isSkillReady(soundBarrierCooldown))
                 return;
             isSoundBarrierActive = true;
@@ -91,7 +90,7 @@ public class Bard extends XRPGClass {
 
         switch (item) {
             case ENCHANTED_GOLDEN_APPLE:
-                if (!Utils.isSkillReady(eGoldenAppleCooldown)){
+                if (!Utils.isSkillReady(eGoldenAppleCooldown)) {
                     e.getPlayer().sendMessage(Utils.getCooldownMessage("Enchanted Golden Apple AoE", eGoldenAppleCooldown));
                     e.setCancelled(true);
                     return;
@@ -105,7 +104,7 @@ public class Bard extends XRPGClass {
                 eGoldenAppleCooldown = Utils.setSkillCooldown(bardConfig.eGoldenAppleCooldown);
                 break;
             case GOLDEN_APPLE:
-                if (!Utils.isSkillReady(goldenAppleCooldown) || !Utils.isSkillReady(eGoldenAppleCooldown)){
+                if (!Utils.isSkillReady(goldenAppleCooldown) || !Utils.isSkillReady(eGoldenAppleCooldown)) {
                     e.getPlayer().sendMessage(Utils.getCooldownMessage("Golden Apple AoE", Math.max(eGoldenAppleCooldown, goldenAppleCooldown)));
                     e.setCancelled(true);
                     return;
@@ -117,7 +116,7 @@ public class Bard extends XRPGClass {
                 goldenAppleCooldown = Utils.setSkillCooldown(bardConfig.goldenAppleCooldown);
                 break;
             case POTION:
-                if (!Utils.isSkillReady(potionCooldown)){
+                if (!Utils.isSkillReady(potionCooldown)) {
                     e.getPlayer().sendMessage(Utils.getCooldownMessage("Potion AoE Heal", potionCooldown));
                     return;
                 }
@@ -130,7 +129,7 @@ public class Bard extends XRPGClass {
                 return;
 
         }
-        players = new ArrayList(location.getWorld().getNearbyEntities(location, 10, 5, 10, p -> p instanceof Player && p != e.getPlayer()));
+        players = new ArrayList(location.getWorld().getNearbyEntities(location, 10, 5, 10, p -> p instanceof Player && p != e.getPlayer() && partyManager.isPlayerAllied(e.getPlayer(), (Player) p)));
         if (potionEffects.size() > 0) {
             for (Player player : players) {
                 for (PotionEffect potionEffect : potionEffects) {
@@ -146,44 +145,11 @@ public class Bard extends XRPGClass {
         if (heldItemName.contains("axe") || heldItemName.contains("_sword") || heldItemName.contains("_shovel")) {
             if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
                 Player player = e.getPlayer();
-                if (e.getPlayer().isSneaking())
-                {
-                    if (!Utils.isSkillReady(phoenixsBlessingCooldown))
-                    {
-                        player.sendMessage(Utils.getCooldownMessage("Phoenix's Blessing", phoenixsBlessingCooldown));
-                        return;
-                    }
-
-
-                    RayTraceResult result = player.getLocation().getWorld().rayTrace(player.getEyeLocation(), player.getEyeLocation().getDirection(), bardConfig.maxCastRange, FluidCollisionMode.NEVER, true, 0.3, p -> p instanceof LivingEntity && p != player);
-                    if (result != null && result.getHitEntity() != null) {
-                        LivingEntity entity = (LivingEntity) result.getHitEntity();
-
-                        player.sendMessage(ChatColor.DARK_GREEN + "You applied Phoenix's blessing to " + entity.getName() + "!");
-                        entity.setNoDamageTicks(100);
-                        List<Player> nearbyPlayers = new ArrayList(entity.getLocation().getWorld().getNearbyEntities(entity.getLocation(), 16, 16, 16, p -> p instanceof Player && p != player));
-                        for (Player nearbyPlayer : nearbyPlayers) {
-                            nearbyPlayer.sendMessage(ChatColor.RED + player.getName() + " applied Phoenix's Blessing to " + entity.getName() + " for 5 seconds!");
-                        }
-                        phoenixsBlessingCooldown = Utils.setSkillCooldown(bardConfig.phoenixsBlessingCooldown);
-                    }
+                if (e.getPlayer().isSneaking()) {
+                    doPhoenixBlessing(player);
+                } else {
+                    doBallad(player);
                 }
-                else
-                    {
-                        if (!Utils.isSkillReady(balladCooldown))
-                        {
-                            player.sendMessage(Utils.getCooldownMessage("Ballad", balladCooldown));
-                            return;
-                        }
-
-                        List<Player> nearbyPlayers = new ArrayList(player.getLocation().getWorld().getNearbyEntities(player.getLocation(), 10, 5, 10, p -> p instanceof Player));
-                        for (Player nearbyPlayer:nearbyPlayers)
-                        {
-                            new HealOverTimeTask(nearbyPlayer, bardConfig.balledHealPerProc, bardConfig.balledMaxProcs).runTaskTimer(plugin, 1L, bardConfig.balledProcDelay * 20L);
-                        }
-                        balladCooldown = Utils.setSkillCooldown(bardConfig.balladCooldown);
-                    }
-
             }
         }
     }
@@ -201,6 +167,43 @@ public class Bard extends XRPGClass {
     @Override
     public void onShootBow(EntityShootBowEvent e) {
 
+    }
+
+    @SuppressWarnings("all")
+    private void doPhoenixBlessing(Player player) {
+        if (!Utils.isSkillReady(phoenixsBlessingCooldown)) {
+            player.sendMessage(Utils.getCooldownMessage("Phoenix's Blessing", phoenixsBlessingCooldown));
+            return;
+        }
+
+
+        RayTraceResult result = player.getLocation().getWorld().rayTrace(player.getEyeLocation(), player.getEyeLocation().getDirection(), bardConfig.maxCastRange, FluidCollisionMode.NEVER, true, 0.3, p -> p instanceof LivingEntity && p != player);
+        if (result != null && result.getHitEntity() != null) {
+            LivingEntity entity = (LivingEntity) result.getHitEntity();
+
+            player.sendMessage(ChatColor.DARK_GREEN + "You applied Phoenix's blessing to " + entity.getName() + "!");
+            entity.setNoDamageTicks(100);
+            List<Player> nearbyPlayers = new ArrayList(entity.getLocation().getWorld().getNearbyEntities(entity.getLocation(), 16, 16, 16, p -> p instanceof Player && p != player));
+            for (Player nearbyPlayer : nearbyPlayers) {
+                nearbyPlayer.sendMessage(ChatColor.RED + player.getName() + " applied Phoenix's Blessing to " + entity.getName() + " for 5 seconds!");
+            }
+            phoenixsBlessingCooldown = Utils.setSkillCooldown(bardConfig.phoenixsBlessingCooldown);
+        }
+    }
+
+    @SuppressWarnings("all")
+    private void doBallad(Player caster) {
+        if (!Utils.isSkillReady(balladCooldown)) {
+            caster.sendMessage(Utils.getCooldownMessage("Ballad", balladCooldown));
+            return;
+        }
+
+        List<Player> nearbyPlayers = new ArrayList(caster.getLocation().getWorld().getNearbyEntities(caster.getLocation(), 10, 5, 10, p -> p instanceof Player));
+        for (Player nearbyPlayer : nearbyPlayers) {
+            if (partyManager.isPlayerAllied(caster, nearbyPlayer))
+                new HealOverTimeTask(nearbyPlayer, bardConfig.balledHealPerProc, bardConfig.balledMaxProcs).runTaskTimer(plugin, 1L, bardConfig.balledProcDelay * 20L);
+        }
+        balladCooldown = Utils.setSkillCooldown(bardConfig.balladCooldown);
     }
 
 }

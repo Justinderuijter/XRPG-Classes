@@ -3,6 +3,7 @@ package me.xepos.rpg.listeners;
 import me.xepos.rpg.*;
 import me.xepos.rpg.database.IDatabaseManager;
 import me.xepos.rpg.database.tasks.savePlayerDataTask;
+import me.xepos.rpg.dependencies.IPartyManager;
 import me.xepos.rpg.enums.DamageTakenSource;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;

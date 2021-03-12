@@ -2,6 +2,8 @@ name: RPG
 version: ${project.version}
 main: me.xepos.rpg.XRPG
 api-version: 1.16
+softdepend:
+  - Factions
 commands:
   smoke:
     description: give a smoke bomb
