@@ -85,8 +85,7 @@ public class Guardian extends XRPGClass {
 
     @Override
     public void onUseItem(PlayerInteractEvent e) {
-        Player player = e.getPlayer();
-        doAegis(player);
+        doAegis(e);
     }
 
     @Override
@@ -113,22 +112,25 @@ public class Guardian extends XRPGClass {
     }
 
     @SuppressWarnings("all")
-    private void doAegis(Player player) {
+    private void doAegis(PlayerInteractEvent e) {
+        Player player = e.getPlayer();
         if (player.isSneaking()) {
             if (player.getInventory().getItemInOffHand().getType() == Material.SHIELD) {
-                if (Utils.isSkillReady(aegisCooldown)) {
+                if (!Utils.isSkillReady(aegisCooldown)) {
                     player.sendMessage(Utils.getCooldownMessage("Aegis", aegisCooldown));
                     return;
                 }
-                List<Player> nearbyPlayers = new ArrayList(player.getWorld().getNearbyEntities(player.getLocation(), guardianConfig.aegisRangeHorizontal, guardianConfig.aegisRangeVertical, guardianConfig.aegisRangeHorizontal, p -> p instanceof Player));
+                int targetCount = 0;
+                List<Player> nearbyPlayers = new ArrayList(player.getWorld().getNearbyEntities(player.getLocation(), guardianConfig.aegisRangeHorizontal, guardianConfig.aegisRangeVertical, guardianConfig.aegisRangeHorizontal, p -> p instanceof Player && partyManager.isPlayerAllied(player, (Player) p)));
                 for (Player target : nearbyPlayers) {
                     if (partyManager.isPlayerAllied(player, target)) {
+                        targetCount++;
                         target.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, guardianConfig.aegisDuration * 20, guardianConfig.aegisAmplifier, true, true, true));
                         target.sendMessage(player.getDisplayName() + " Granted you Aegis' Protection!");
                     }
                 }
-                if (nearbyPlayers.size() > 0) {
-                    player.sendMessage(ChatColor.GREEN + "Applied Aegis' Protection to " + nearbyPlayers.size() + " player(s)!");
+                if (targetCount > 0) {
+                    player.sendMessage(ChatColor.GREEN + "Applied Aegis' Protection to " + targetCount + " player(s)!");
                     aegisCooldown = Utils.setSkillCooldown(guardianConfig.aegisCooldown);
                 }
             }
