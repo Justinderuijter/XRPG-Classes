@@ -69,6 +69,14 @@
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+        <repository>
+            <id>alessiodp-repo</id>
+            <url>https://repo.alessiodp.com/releases/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -83,6 +91,30 @@
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
             <version>20.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.github.drtshock</groupId>
+            <artifactId>FactionsUUID</artifactId>
+            <version>0.5.21</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.magnusulf</groupId>
+            <artifactId>Factions3</artifactId>
+            <version>3.3.2</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.magnusulf</groupId>
+            <artifactId>MassiveCore</artifactId>
+            <version>3.3.2</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.alessiodp.parties</groupId>
+            <artifactId>parties-api</artifactId>
+            <version>3.0.2</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

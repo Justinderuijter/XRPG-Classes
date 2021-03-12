@@ -6,3 +6,5 @@ MySQL:
   username: "root"
   password: ""
   SSL: false
+
+Party Manager Type: "Factions"

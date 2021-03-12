@@ -192,7 +192,6 @@ public class Wizard extends XRPGClass {
         Location loc = Utils.getTargetBlock(e.getPlayer(), wizardConfig.maxCastRange).getLocation();
         List<LivingEntity> livingEntities = new ArrayList(loc.getWorld().getNearbyEntities(loc, 3, 3 , 3, p -> p instanceof LivingEntity && p != e.getPlayer()));
 
-
         e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_GLASS_BREAK, 1F, 1F);
         for (LivingEntity livingEntity: livingEntities) {
             livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, wizardConfig.shatterDuration * 20, 1, false, false, false));

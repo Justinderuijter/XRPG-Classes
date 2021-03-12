@@ -8,6 +8,8 @@ import me.xepos.rpg.commands.XRPGReload;
 import me.xepos.rpg.configuration.*;
 import me.xepos.rpg.database.DatabaseManagerFactory;
 import me.xepos.rpg.database.IDatabaseManager;
+import me.xepos.rpg.dependencies.IPartyManager;
+import me.xepos.rpg.dependencies.PartyManagerFactory;
 import me.xepos.rpg.listeners.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -27,8 +29,11 @@ import java.util.UUID;
 public final class XRPG extends JavaPlugin {
 
     private Inventory inventoryGUI;
-    public static HashMap<UUID, XRPGPlayer> RPGPlayers = new HashMap<>();
+
+    private static IPartyManager partyManager;
     private static IDatabaseManager databaseManager;
+
+    public static HashMap<UUID, XRPGPlayer> RPGPlayers = new HashMap<>();
     public HashMap<Integer, Double> fireBalls = new HashMap<>();
     //TODO: Fix fireballs that don't hit anything not getting removed from hashmap.
 
@@ -36,6 +41,7 @@ public final class XRPG extends JavaPlugin {
     @SuppressWarnings("")
     public void onEnable() {
         this.databaseManager = DatabaseManagerFactory.getDatabaseManager();
+        this.partyManager = PartyManagerFactory.getPartyManager();
 
         //Prevents throwing error if databaseManager shuts down this plugin.
         if(!this.isEnabled())
@@ -176,5 +182,9 @@ public final class XRPG extends JavaPlugin {
         RangerConfig.getInstance();
         RavagerConfig.getInstance();
         WizardConfig.getInstance();
+    }
+
+    public IPartyManager getPartyManager() {
+        return partyManager;
     }
 }
