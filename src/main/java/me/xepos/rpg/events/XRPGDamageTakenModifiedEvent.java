@@ -1,6 +1,6 @@
 package me.xepos.rpg.events;
 
-import me.xepos.rpg.Utils;
+import me.xepos.rpg.utils.Utils;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.enums.DamageTakenSource;
 import me.xepos.rpg.enums.MultiplierOperation;

@@ -1,6 +1,5 @@
-package me.xepos.rpg.dependencies;
+package me.xepos.rpg.dependencies.parties;
 
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 public class DefaultManager implements IPartyManager {

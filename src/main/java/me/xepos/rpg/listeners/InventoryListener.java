@@ -1,6 +1,6 @@
 package me.xepos.rpg.listeners;
 
-import me.xepos.rpg.Utils;
+import me.xepos.rpg.utils.Utils;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.classes.XRPGClass;

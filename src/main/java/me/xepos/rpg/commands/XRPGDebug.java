@@ -1,7 +1,7 @@
 package me.xepos.rpg.commands;
 
 import me.xepos.rpg.AttributeModifierManager;
-import me.xepos.rpg.Utils;
+import me.xepos.rpg.utils.Utils;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.classes.Necromancer;

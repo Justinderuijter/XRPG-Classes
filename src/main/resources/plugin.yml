@@ -4,6 +4,7 @@ main: me.xepos.rpg.XRPG
 api-version: 1.16
 softdepend:
   - Factions
+  - Parties
 commands:
   smoke:
     description: give a smoke bomb

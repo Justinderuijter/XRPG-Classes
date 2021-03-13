@@ -1,5 +1,8 @@
-package me.xepos.rpg;
+package me.xepos.rpg.utils;
 
+import me.xepos.rpg.AttributeModifierManager;
+import me.xepos.rpg.XRPG;
+import me.xepos.rpg.XRPGPlayer;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.FluidCollisionMode;
@@ -270,7 +273,7 @@ public final class Utils {
 
     public static void onJoinEffect(Player player)
     {
-        for (AttributeModifier mod:AttributeModifierManager.getModifiers().keySet()) {
+        for (AttributeModifier mod: AttributeModifierManager.getModifiers().keySet()) {
             removeUniqueModifier(player, AttributeModifierManager.getModifiers().get(mod), mod);
         }
     }

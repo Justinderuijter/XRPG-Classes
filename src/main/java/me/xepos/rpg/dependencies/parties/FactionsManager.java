@@ -1,10 +1,8 @@
-package me.xepos.rpg.dependencies;
+package me.xepos.rpg.dependencies.parties;
 
 import com.massivecraft.factions.Rel;
 import com.massivecraft.factions.entity.*;
 
-import com.massivecraft.massivecore.ps.PS; //Yes, this is the right one, I double checked
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 public class FactionsManager implements IPartyManager {

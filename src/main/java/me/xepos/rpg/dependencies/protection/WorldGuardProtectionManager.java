@@ -1,0 +1,44 @@
+package me.xepos.rpg.dependencies.protection;
+
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.protection.ApplicableRegionSet;
+import com.sk89q.worldguard.protection.flags.Flag;
+import com.sk89q.worldguard.protection.flags.Flags;
+import com.sk89q.worldguard.protection.flags.StateFlag;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import com.sk89q.worldguard.protection.regions.RegionContainer;
+import com.sk89q.worldguard.protection.regions.RegionQuery;
+import org.bukkit.Location;
+
+public class WorldGuardProtectionManager implements IProtectionManager{
+    protected WorldGuardProtectionManager(){ }
+
+    @Override
+    public boolean isLocationValid(Location sourceLocation, Location targetLocation) {
+        RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+        RegionQuery query = container.createQuery();
+        
+        com.sk89q.worldedit.util.Location sourceLoc = BukkitAdapter.adapt(sourceLocation);
+        
+        ApplicableRegionSet sourceSet = query.getApplicableRegions(sourceLoc);
+        for (ProtectedRegion region:sourceSet) {
+            if (region.getFlag(Flags.PVP) == StateFlag.State.DENY)
+            {
+                return false;
+            }
+        }
+
+        com.sk89q.worldedit.util.Location targetLoc = BukkitAdapter.adapt(targetLocation);
+
+        ApplicableRegionSet targetSet = query.getApplicableRegions(targetLoc);
+        for (ProtectedRegion region:targetSet) {
+            if (region.getFlag(Flags.PVP) == StateFlag.State.DENY)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}

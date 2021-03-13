@@ -1,6 +1,7 @@
-package me.xepos.rpg.dependencies;
+package me.xepos.rpg.dependencies.parties;
 
 
+import me.xepos.rpg.utils.DependencyUtils;
 import me.xepos.rpg.XRPG;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -32,16 +33,13 @@ public class PartyManagerFactory {
         boolean isFactions3 = true;
         IPartyManager manager = new DefaultManager();
         try {
-            Class<?> checkForPlayer = Class.forName("com.massivecraft.factions.FPlayer");
-            Class<?> checkForPlayers = Class.forName("com.massivecraft.factions.FPlayers");
+            DependencyUtils.checkFactionsUUIDFiles();
         } catch (ClassNotFoundException | NoClassDefFoundError e) {
             isFactionsUUID = false;
         }
 
         try {
-            Class<?> checkForMPlayer = Class.forName("com.massivecraft.factions.entity.MPlayer");
-            Class<?> checkForFaction = Class.forName("com.massivecraft.factions.entity.Faction");
-            Class<?> checkForRel = Class.forName("com.massivecraft.factions.Rel");
+            DependencyUtils.checkFactions3Files();
         } catch (ClassNotFoundException | NoClassDefFoundError ex) {
             isFactions3 = false;
         }

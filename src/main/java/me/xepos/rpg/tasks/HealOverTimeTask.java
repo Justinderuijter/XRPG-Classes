@@ -1,6 +1,6 @@
 package me.xepos.rpg.tasks;
 
-import me.xepos.rpg.Utils;
+import me.xepos.rpg.utils.Utils;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
