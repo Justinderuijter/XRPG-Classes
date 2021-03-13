@@ -1,9 +1,10 @@
 package me.xepos.rpg.listeners;
 
-import me.xepos.rpg.Utils;
+import me.xepos.rpg.utils.Utils;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.configuration.RavagerConfig;
 import me.xepos.rpg.configuration.WizardConfig;
+import me.xepos.rpg.dependencies.protection.ProtectionSet;
 import org.bukkit.Location;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -18,10 +19,12 @@ import org.bukkit.util.Vector;
 public class ProjectileListener implements Listener
 {
     private final XRPG plugin;
+    private final ProtectionSet ps;
 
     public ProjectileListener(XRPG plugin)
     {
         this.plugin = plugin;
+        this.ps = plugin.getProtectionSet();
     }
 
     @EventHandler
@@ -50,7 +53,8 @@ public class ProjectileListener implements Listener
 
             if (location != null && location.getWorld() != null)
             {
-                if (arrow.getCustomName() != null)
+
+                if (arrow.getCustomName() != null && ps.isLocationValid(((Player)arrow.getShooter()).getLocation(), arrow.getLocation()))
                 {
                     switch (arrow.getCustomName()) {
                         case "Lightning":

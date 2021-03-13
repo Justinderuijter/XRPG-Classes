@@ -1,7 +1,6 @@
 package me.xepos.rpg.tasks;
 
-import me.xepos.rpg.Utils;
-import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.utils.Utils;
 import me.xepos.rpg.classes.Ravager;
 import me.xepos.rpg.classes.XRPGClass;
 import net.md_5.bungee.api.ChatColor;

@@ -1,6 +1,6 @@
 package me.xepos.rpg.classes;
 
-import me.xepos.rpg.Utils;
+import me.xepos.rpg.utils.Utils;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.configuration.RavagerConfig;
 import me.xepos.rpg.tasks.RavagerLandTask;

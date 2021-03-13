@@ -1,6 +1,6 @@
 package me.xepos.rpg.commands;
 
-import me.xepos.rpg.Utils;
+import me.xepos.rpg.utils.Utils;
 import me.xepos.rpg.XRPG;
 import org.bukkit.Material;
 import org.bukkit.command.Command;

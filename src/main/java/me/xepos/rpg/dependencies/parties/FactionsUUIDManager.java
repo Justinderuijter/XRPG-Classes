@@ -1,11 +1,9 @@
 
-package me.xepos.rpg.dependencies;
+package me.xepos.rpg.dependencies.parties;
 
 import com.massivecraft.factions.FPlayers;
 import com.massivecraft.factions.Faction;
 import com.massivecraft.factions.perms.Relation;
-import org.bukkit.Location;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 public class FactionsUUIDManager implements IPartyManager {

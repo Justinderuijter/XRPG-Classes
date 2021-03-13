@@ -1,4 +1,4 @@
-package me.xepos.rpg.dependencies;
+package me.xepos.rpg.dependencies.parties;
 
 import com.alessiodp.parties.api.Parties;
 import org.bukkit.entity.Player;

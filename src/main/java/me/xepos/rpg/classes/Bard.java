@@ -1,6 +1,6 @@
 package me.xepos.rpg.classes;
 
-import me.xepos.rpg.Utils;
+import me.xepos.rpg.utils.Utils;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.configuration.BardConfig;
 import me.xepos.rpg.tasks.HealOverTimeTask;
@@ -22,7 +22,6 @@ import org.bukkit.util.RayTraceResult;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
 
 @SuppressWarnings("unchecked")
 public class Bard extends XRPGClass {

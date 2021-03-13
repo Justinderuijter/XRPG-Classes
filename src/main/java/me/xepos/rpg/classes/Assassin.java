@@ -2,9 +2,8 @@ package me.xepos.rpg.classes;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.configuration.AssassinConfig;
-import me.xepos.rpg.dependencies.IPartyManager;
 import me.xepos.rpg.tasks.EndInvisibilityTask;
-import me.xepos.rpg.Utils;
+import me.xepos.rpg.utils.Utils;
 import net.minecraft.server.v1_16_R3.EnumItemSlot;
 import net.minecraft.server.v1_16_R3.ItemStack;
 import net.minecraft.server.v1_16_R3.PacketPlayOutEntityEquipment;

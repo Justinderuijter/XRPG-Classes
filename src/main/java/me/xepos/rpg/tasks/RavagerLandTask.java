@@ -1,10 +1,6 @@
 package me.xepos.rpg.tasks;
 
-import me.xepos.rpg.Utils;
-import me.xepos.rpg.XRPG;
 import me.xepos.rpg.configuration.RavagerConfig;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;

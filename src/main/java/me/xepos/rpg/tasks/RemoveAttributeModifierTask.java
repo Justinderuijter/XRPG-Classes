@@ -1,6 +1,6 @@
 package me.xepos.rpg.tasks;
 
-import me.xepos.rpg.Utils;
+import me.xepos.rpg.utils.Utils;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.LivingEntity;

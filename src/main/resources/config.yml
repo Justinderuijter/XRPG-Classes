@@ -8,3 +8,5 @@ MySQL:
   SSL: false
 
 Party Manager Type: "Factions"
+Protection Managers:
+  - "Factions"
