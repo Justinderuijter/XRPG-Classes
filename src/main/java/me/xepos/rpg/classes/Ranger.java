@@ -3,6 +3,7 @@ package me.xepos.rpg.classes;
 import me.xepos.rpg.utils.Utils;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.configuration.RangerConfig;
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Material;
@@ -68,10 +69,11 @@ public class Ranger extends XRPGClass{
     public void onUseItem(PlayerInteractEvent e) {
         PlayerInventory inventory = e.getPlayer().getInventory();
         if(e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK) {
-            if (inventory.getItemInMainHand().getType() == Material.BOW)
-            {
+            if (inventory.getItemInMainHand().getType() == Material.BOW) {
                 currentShotType = currentShotType.next();
-                e.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("Current shot type: " + Utils.enumTypeFormatter(currentShotType.toString().toLowerCase())));
+                TextComponent text = new TextComponent("Current shot type: " + Utils.enumTypeFormatter(currentShotType.toString().toLowerCase()));
+                text.setColor(ChatColor.DARK_GREEN);
+                e.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, text);
             }
         }
     }
