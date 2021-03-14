@@ -144,7 +144,7 @@ public class Bard extends XRPGClass {
         if (heldItemName.contains("axe") || heldItemName.contains("_sword") || heldItemName.contains("_shovel")) {
             if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
                 Player player = e.getPlayer();
-                if (e.getPlayer().isSneaking()) {
+                if (player.isSneaking()) {
                     doPhoenixBlessing(player);
                 } else {
                     doBallad(player);
