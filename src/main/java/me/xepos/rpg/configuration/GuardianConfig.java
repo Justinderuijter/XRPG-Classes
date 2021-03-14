@@ -1,14 +1,9 @@
 package me.xepos.rpg.configuration;
 
 import me.xepos.rpg.AttributeModifierManager;
-import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.UUID;
 
 public final class GuardianConfig extends XRPGConfigFile {
@@ -20,7 +15,7 @@ public final class GuardianConfig extends XRPGConfigFile {
     public double dmgTakenMultiplier;
     public int aegisCooldown;
     public int aegisDuration;
-    public int aegisAmplifier;
+    public double aegisDmgReduction;
     public double mobAggroRangeOnHit;
     public double aegisRangeHorizontal;
     public double aegisRangeVertical;
@@ -45,7 +40,7 @@ public final class GuardianConfig extends XRPGConfigFile {
         aegisCooldown = get().getInt("aegisCooldown", 20);
         aegisDuration = get().getInt("aegisDuration", 4);
         mobAggroRangeOnHit = get().getDouble("mobAggroRangeOnHit");
-        aegisAmplifier = get().getInt("aegisAmplifier", 3);
+        aegisDmgReduction = get().getDouble("aegisDmgReductionMultiplier", 0.3);
         aegisRangeHorizontal = get().getDouble("aegisRangeHorizontal", 6);
         aegisRangeVertical = get().getDouble("aegisRangeVertical", 10);
         shieldBashCooldown = get().getInt("shieldBashCooldown", 10);
@@ -61,7 +56,7 @@ public final class GuardianConfig extends XRPGConfigFile {
         get().addDefault("mobAggroRangeOnHit", 5.0);
         get().addDefault("aegisCooldown", 20);
         get().addDefault("aegisDuration", 4);
-        get().addDefault("aegisAmplifier", 3);
+        get().addDefault("aegisDmgReductionMultiplier", 0.3);
         get().addDefault("aegisRangeHorizontal", 6);
         get().addDefault("aegisRangeVertical", 10);
         get().addDefault("shieldBashCooldown", 10);

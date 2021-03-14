@@ -1,6 +1,8 @@
 package me.xepos.rpg.classes;
 
 import me.xepos.rpg.XRPG;
+import me.xepos.rpg.enums.DamageTakenSource;
+import me.xepos.rpg.tasks.RemoveDTModifierTask;
 import me.xepos.rpg.utils.Utils;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.configuration.GuardianConfig;
@@ -18,8 +20,6 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.*;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -120,17 +120,18 @@ public class Guardian extends XRPGClass {
                     player.sendMessage(Utils.getCooldownMessage("Aegis", aegisCooldown));
                     return;
                 }
-                int targetCount = 0;
                 List<Player> nearbyPlayers = new ArrayList(player.getWorld().getNearbyEntities(player.getLocation(), guardianConfig.aegisRangeHorizontal, guardianConfig.aegisRangeVertical, guardianConfig.aegisRangeHorizontal, p -> p instanceof Player && partyManager.isPlayerAllied(player, (Player) p)));
                 for (Player target : nearbyPlayers) {
-                    if (partyManager.isPlayerAllied(player, target)) {
-                        targetCount++;
-                        target.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, guardianConfig.aegisDuration * 20, guardianConfig.aegisAmplifier, true, true, true));
-                        target.sendMessage(player.getDisplayName() + " Granted you Aegis' Protection!");
-                    }
+                    XRPGPlayer xrpgTarget = Utils.GetRPG(target);
+                    //Can these be ran async?
+                    xrpgTarget.dmgTakenMultipliers.put(DamageTakenSource.AEGIS, guardianConfig.aegisDmgReduction);
+                    target.sendMessage(player.getDisplayName() + " Granted you Aegis' Protection!");
+
+                    new RemoveDTModifierTask(target, DamageTakenSource.AEGIS).runTaskLater(plugin, guardianConfig.aegisDuration * 20);
+
                 }
-                if (targetCount > 0) {
-                    player.sendMessage(ChatColor.GREEN + "Applied Aegis' Protection to " + targetCount + " player(s)!");
+                if (nearbyPlayers.size() > 0) {
+                    player.sendMessage(ChatColor.GREEN + "Applied Aegis' Protection to " + nearbyPlayers.size() + " player(s)!");
                     aegisCooldown = Utils.setSkillCooldown(guardianConfig.aegisCooldown);
                 }
             }
