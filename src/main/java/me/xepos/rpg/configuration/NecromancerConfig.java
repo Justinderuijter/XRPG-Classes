@@ -1,12 +1,5 @@
 package me.xepos.rpg.configuration;
 
-import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-
-import java.io.File;
-import java.io.IOException;
-
 public final class NecromancerConfig extends XRPGConfigFile {
     private static NecromancerConfig instance;
 
@@ -48,8 +41,8 @@ public final class NecromancerConfig extends XRPGConfigFile {
         boneShieldCooldown = get().getInt("boneShieldCooldown", 20);
         shieldPerFollower = (byte) get().getInt("shieldPerFollower", 2);
         purgatoryBatCooldown = get().getInt("purgatoryBatCooldown", 7);
-        purgatoryBatDuration = (byte)get().getInt("purgatoryBatDuration", 5);
-        purgatoryBatDps = get().getDouble("purgatoryBatDps", 6.0);
+        purgatoryBatDuration = (byte) get().getInt("purgatoryBatDuration", 5);
+        purgatoryBatDps = get().getDouble("purgatoryBatDps", 4.0);
         isBatDmgSource = get().getBoolean("isBatDmgSource", false);
     }
 
@@ -67,7 +60,7 @@ public final class NecromancerConfig extends XRPGConfigFile {
         get().addDefault("batDespawnDelay", 3);
         get().addDefault("purgatoryBatCooldown", 7);
         get().addDefault("purgatoryBatDuration", 5);
-        get().addDefault("purgatoryBatDps", 6.0);
+        get().addDefault("purgatoryBatDps", 4.0);
         get().addDefault("isBatDmgSource", false);
     }
 

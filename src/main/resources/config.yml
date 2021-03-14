@@ -7,6 +7,18 @@ MySQL:
   password: ""
   SSL: false
 
+# You can currently only have one party manager.
+# A party manager decided viable targets for skills with AoE effects
+# Or more advanced projectile based skills.
+# Currently supported: Factions3, FactionsUUID, Parties
+
 Party Manager Type: "Factions"
+
+# You can have as many protection managers as you like
+# As long as they are supported by the plugin.
+# It is however recommended to not go above 2-3.
+# If you wish to not use any, simple remove all from the list below.
+# Currently supported: Factions3, FactionsUUID and WorldGuard 7.0+
 Protection Managers:
   - "Factions"
+# - "WorldGuard"
