@@ -4,6 +4,7 @@ import com.massivecraft.factions.Board;
 import com.massivecraft.factions.FLocation;
 import com.massivecraft.factions.Faction;
 import org.bukkit.Location;
+import org.bukkit.craftbukkit.libs.jline.internal.Nullable;
 
 public class FactionsUUIDProtectionManager implements IProtectionManager{
 
@@ -11,18 +12,20 @@ public class FactionsUUIDProtectionManager implements IProtectionManager{
 
     @SuppressWarnings("all")
     @Override
-    public boolean isLocationValid(Location sourceLocation, Location targetLocation) {
+    public boolean isLocationValid(Location sourceLocation, @Nullable Location targetLocation) {
         FLocation fSourceLocation = new FLocation(sourceLocation);
         Faction sourceFaction = Board.getInstance().getFactionAt(fSourceLocation);
         if (sourceFaction.isSafeZone() || sourceFaction.isPeaceful())
             return false;
 
-        FLocation fTargetLocation = new FLocation(targetLocation);
-        Faction targetFaction = Board.getInstance().getFactionAt(fTargetLocation);
-        if (targetFaction.isSafeZone() || targetFaction.isPeaceful()) {
-            return false;
+        if (targetLocation != null) {
+            FLocation fTargetLocation = new FLocation(targetLocation);
+            Faction targetFaction = Board.getInstance().getFactionAt(fTargetLocation);
+            if (targetFaction.isSafeZone() || targetFaction.isPeaceful())
+                return false;
+
         }
 
-        return false;
+        return true;
     }
 }
