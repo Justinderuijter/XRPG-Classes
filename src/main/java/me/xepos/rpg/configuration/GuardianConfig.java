@@ -20,6 +20,7 @@ public final class GuardianConfig extends XRPGConfigFile {
     public double aegisRangeHorizontal;
     public double aegisRangeVertical;
     public int shieldBashCooldown;
+    public byte shieldBashDuration;
 
     public static GuardianConfig getInstance()
     {
@@ -44,6 +45,7 @@ public final class GuardianConfig extends XRPGConfigFile {
         aegisRangeHorizontal = get().getDouble("aegisRangeHorizontal", 6);
         aegisRangeVertical = get().getDouble("aegisRangeVertical", 10);
         shieldBashCooldown = get().getInt("shieldBashCooldown", 10);
+        shieldBashDuration = (byte) get().getInt("shieldBashDuration", 2);
 
         AttributeModifierManager.put(healthModifier, Attribute.GENERIC_MAX_HEALTH);
         AttributeModifierManager.put(stunEffectModifier, Attribute.GENERIC_MOVEMENT_SPEED);
@@ -60,6 +62,7 @@ public final class GuardianConfig extends XRPGConfigFile {
         get().addDefault("aegisRangeHorizontal", 6);
         get().addDefault("aegisRangeVertical", 10);
         get().addDefault("shieldBashCooldown", 10);
+        get().addDefault("shieldBashDuration", 2);
 
     }
 

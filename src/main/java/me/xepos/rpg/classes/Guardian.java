@@ -147,7 +147,7 @@ public class Guardian extends XRPGClass {
 
             XRPGPlayer xrpgPlayer = Utils.GetRPG((Player) e.getEntity());
             if (xrpgPlayer.canBeStunned())
-                new ApplyStunTask(xrpgPlayer, guardianConfig.stunEffectModifier, 40, plugin).runTaskLater(plugin, 5);
+                new ApplyStunTask(xrpgPlayer, guardianConfig.stunEffectModifier, guardianConfig.shieldBashDuration * 20, plugin).runTaskLater(plugin, 5);
 
             shieldBashCooldown = Utils.setSkillCooldown(guardianConfig.shieldBashCooldown);
         }
