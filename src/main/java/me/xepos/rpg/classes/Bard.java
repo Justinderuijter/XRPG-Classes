@@ -178,10 +178,19 @@ public class Bard extends XRPGClass {
 
         RayTraceResult result = player.getLocation().getWorld().rayTrace(player.getEyeLocation(), player.getEyeLocation().getDirection(), bardConfig.maxCastRange, FluidCollisionMode.NEVER, true, 0.3, p -> p instanceof LivingEntity && p != player);
         if (result != null && result.getHitEntity() != null) {
+            final int noDamageTickAmount = 100;
             LivingEntity entity = (LivingEntity) result.getHitEntity();
 
+            if (entity instanceof Player) {
+                if (ps.isLocationValid(player.getLocation(), null)) {
+                    entity.setNoDamageTicks(noDamageTickAmount);
+                }
+            } else {
+                entity.setNoDamageTicks(noDamageTickAmount);
+            }
+
             player.sendMessage(ChatColor.DARK_GREEN + "You applied Phoenix's blessing to " + entity.getName() + "!");
-            entity.setNoDamageTicks(100);
+
             List<Player> nearbyPlayers = new ArrayList(entity.getLocation().getWorld().getNearbyEntities(entity.getLocation(), 16, 16, 16, p -> p instanceof Player && p != player));
             for (Player nearbyPlayer : nearbyPlayers) {
                 nearbyPlayer.sendMessage(ChatColor.RED + player.getName() + " applied Phoenix's Blessing to " + entity.getName() + " for 5 seconds!");

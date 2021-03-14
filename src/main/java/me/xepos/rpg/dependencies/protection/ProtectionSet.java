@@ -1,6 +1,7 @@
 package me.xepos.rpg.dependencies.protection;
 
 import org.bukkit.Location;
+import org.bukkit.craftbukkit.libs.jline.internal.Nullable;
 
 import java.util.List;
 
@@ -14,14 +15,14 @@ public class ProtectionSet {
 
     /**
      * Validates if an action can pass while keeping in mind world protection
+     *
      * @param sourceLocation The location from which an ability is cast.
-     * @param targetLocation The location where the ability is cast to.
+     * @param targetLocation The location where the ability is cast to. Can be null if target location is irrelevant.
      * @return True if it passes all rules, will return false as soon as it fails one.
      */
-    public boolean isLocationValid(Location sourceLocation, Location targetLocation)
-    {
-        for (IProtectionManager manager:set) {
-            if (!manager.isLocationValid(sourceLocation, targetLocation)){
+    public boolean isLocationValid(Location sourceLocation, @Nullable Location targetLocation) {
+        for (IProtectionManager manager : set) {
+            if (!manager.isLocationValid(sourceLocation, targetLocation)) {
                 return false;
             }
         }
