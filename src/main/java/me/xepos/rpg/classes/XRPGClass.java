@@ -1,5 +1,6 @@
 package me.xepos.rpg.classes;
 
+import me.xepos.rpg.dependencies.protection.ProtectionSet;
 import me.xepos.rpg.utils.Utils;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.dependencies.parties.IPartyManager;
@@ -12,6 +13,7 @@ import org.bukkit.event.player.*;
 public abstract class XRPGClass {
 
     public transient IPartyManager partyManager;
+    public transient ProtectionSet ps;
     public transient XRPG plugin;
 
     public XRPGClass(XRPG plugin) {

@@ -110,32 +110,9 @@ public class Ravager extends XRPGClass {
 
         if (e.getPlayer().getInventory().getItemInMainHand().getType().toString().toLowerCase().contains("_axe")) {
             if (!e.getPlayer().isSneaking()) {
-                if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                    if (!Utils.isSkillReady(flameSlashCooldown)) {
-                        e.getPlayer().sendMessage(Utils.getCooldownMessage("Flame Slash", flameSlashCooldown));
-                        return;
-                    }
-
-                    Fireball fireball = e.getPlayer().launchProjectile(SmallFireball.class);
-                    fireball.setCustomName("Flame Slash");
-                    fireball.setCustomNameVisible(false);
-                    if (!plugin.fireBalls.containsKey(fireball.getEntityId()))
-                        plugin.fireBalls.put(fireball.getEntityId(), 6.0);
-
-                    flameSlashCooldown = Utils.setSkillCooldown(ravagerConfig.flameSlashCooldown);
-                }
+                doFlameSlash(e);
             } else {
-                if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                    if (!Utils.isSkillReady(soaringSlashCooldown)) {
-                        e.getPlayer().sendMessage(Utils.getCooldownMessage("Soaring Slash", soaringSlashCooldown));
-                        return;
-                    }
-
-                    e.getPlayer().setVelocity(e.getPlayer().getEyeLocation().getDirection().multiply(new Vector(2, 0, 2)).add(new Vector(0, 1, 0)));
-                    soaringSlashCooldown = Utils.setSkillCooldown(ravagerConfig.SoaringSlashCooldown);
-                    if (landTask == null || landTask.isCancelled())
-                        landTask = new RavagerLandTask(e.getPlayer()).runTaskTimer(plugin, 5L, 3L);
-                }
+                doSoaringSlash(e);
             }
         }
     }
@@ -233,6 +210,37 @@ public class Ravager extends XRPGClass {
         else
             return 0;
 
+    }
+
+    private void doFlameSlash(PlayerInteractEvent e) {
+        if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            if (!Utils.isSkillReady(flameSlashCooldown)) {
+                e.getPlayer().sendMessage(Utils.getCooldownMessage("Flame Slash", flameSlashCooldown));
+                return;
+            }
+
+            Fireball fireball = e.getPlayer().launchProjectile(SmallFireball.class);
+            fireball.setCustomName("Flame Slash");
+            fireball.setCustomNameVisible(false);
+            if (!plugin.fireBalls.containsKey(fireball.getEntityId()))
+                plugin.fireBalls.put(fireball.getEntityId(), 6.0);
+
+            flameSlashCooldown = Utils.setSkillCooldown(ravagerConfig.flameSlashCooldown);
+        }
+    }
+
+    private void doSoaringSlash(PlayerInteractEvent e) {
+        if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            if (!Utils.isSkillReady(soaringSlashCooldown)) {
+                e.getPlayer().sendMessage(Utils.getCooldownMessage("Soaring Slash", soaringSlashCooldown));
+                return;
+            }
+
+            e.getPlayer().setVelocity(e.getPlayer().getEyeLocation().getDirection().multiply(new Vector(2, 0, 2)).add(new Vector(0, 1, 0)));
+            soaringSlashCooldown = Utils.setSkillCooldown(ravagerConfig.SoaringSlashCooldown);
+            if (landTask == null || landTask.isCancelled())
+                landTask = new RavagerLandTask(e.getPlayer(), ps, partyManager).runTaskTimer(plugin, 5L, 3L);
+        }
     }
 
 }

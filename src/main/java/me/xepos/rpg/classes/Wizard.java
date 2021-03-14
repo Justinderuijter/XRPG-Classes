@@ -194,13 +194,17 @@ public class Wizard extends XRPGClass {
 
         e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_GLASS_BREAK, 1F, 1F);
         for (LivingEntity livingEntity: livingEntities) {
-            livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, wizardConfig.shatterDuration * 20, 1, false, false, false));
-            if (livingEntity instanceof Player)
-            {
-                XRPGDamageTakenModifiedEvent event = new XRPGDamageTakenModifiedEvent((Player)livingEntity, MultiplierOperation.ADDED, DamageTakenSource.SHATTER, 1.2);
-                Bukkit.getServer().getPluginManager().callEvent(event);
 
-                new RemoveDTModifierTask((Player) livingEntity, DamageTakenSource.SHATTER).runTaskLater(plugin, wizardConfig.shatterDuration * 20L);
+            if (livingEntity instanceof Player) {
+                if (ps.isLocationValid(e.getPlayer().getLocation(), livingEntity.getLocation())) {
+                    livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, wizardConfig.shatterDuration * 20, 1, false, false, false));
+                    XRPGDamageTakenModifiedEvent event = new XRPGDamageTakenModifiedEvent((Player) livingEntity, MultiplierOperation.ADDED, DamageTakenSource.SHATTER, 1.2);
+                    Bukkit.getServer().getPluginManager().callEvent(event);
+
+                    new RemoveDTModifierTask((Player) livingEntity, DamageTakenSource.SHATTER).runTaskLater(plugin, wizardConfig.shatterDuration * 20L);
+                }
+            } else {
+                livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, wizardConfig.shatterDuration * 20, 1, false, false, false));
             }
         }
         this.shatterCooldown = Utils.setSkillCooldown(wizardConfig.shatterCooldown - fireBallStacks);
@@ -219,13 +223,14 @@ public class Wizard extends XRPGClass {
         {
             if (entity != e.getPlayer()) {
                 //Subtract 1 from the count to account for user
-                if (entity instanceof Player)
-                {
+                if (entity instanceof Player) {
                     Player target = (Player) entity;
                     target.playSound(target.getLocation(), Sound.ENTITY_PUFFER_FISH_BLOW_UP, 0.5F, 1F);
-                }
+                    if (ps.isLocationValid(e.getPlayer().getLocation(), target.getLocation()))
+                        entity.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, wizardConfig.zephyrBaseDuration + (entities.size() - 1) * 10, fireBallStacks, false, false, false));
+                } else
+                    entity.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, wizardConfig.zephyrBaseDuration + (entities.size() - 1) * 10, fireBallStacks, false, false, false));
 
-                entity.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, wizardConfig.zephyrBaseDuration + (entities.size() - 1) * 10, fireBallStacks, false, false, false));
             }
         }
         this.zephyrCooldown = Utils.setSkillCooldown(wizardConfig.zephyrCooldown - fireBallStacks);

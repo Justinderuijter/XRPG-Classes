@@ -181,9 +181,11 @@ public class Necromancer extends XRPGClass {
 
             Vector direction = livingEntity.getLocation().getDirection().setY(0.).normalize().multiply(-2.);
             player.teleport(livingEntity.getLocation().add(direction), PlayerTeleportEvent.TeleportCause.PLUGIN);
-            livingEntity.damage(necromancerConfig.shadowSneakDamage, player);
+            if (livingEntity instanceof Player && ps.isLocationValid(player.getLocation(), livingEntity.getLocation()) && !partyManager.isPlayerAllied(player, (Player) livingEntity)) {
+                livingEntity.damage(necromancerConfig.shadowSneakDamage, player);
 
-            new BleedTask(livingEntity, player, necromancerConfig.shadowSneakTicks, necromancerConfig.shadowSneakDamagePerTick).runTaskTimer(plugin, 11, 20);
+                new BleedTask(livingEntity, player, necromancerConfig.shadowSneakTicks, necromancerConfig.shadowSneakDamagePerTick).runTaskTimer(plugin, 11, 20);
+            }
         }
         shadowSneakCooldown = Utils.setSkillCooldown(necromancerConfig.shadowSneakCooldown);
     }

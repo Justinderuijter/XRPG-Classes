@@ -1,6 +1,8 @@
 package me.xepos.rpg.tasks;
 
 import me.xepos.rpg.configuration.RavagerConfig;
+import me.xepos.rpg.dependencies.parties.IPartyManager;
+import me.xepos.rpg.dependencies.protection.ProtectionSet;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -9,19 +11,21 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RavagerLandTask extends BukkitRunnable
-{
+public class RavagerLandTask extends BukkitRunnable {
 
     private final Player player;
-    public RavagerLandTask(Player player)
-    {
+    private final ProtectionSet protectionSet;
+    private final IPartyManager partyManager;
+
+    public RavagerLandTask(Player player, ProtectionSet protectionSet, IPartyManager partyManager) {
         this.player = player;
+        this.protectionSet = protectionSet;
+        this.partyManager = partyManager;
     }
 
     @Override
     public void run() {
-        if (!player.isOnline())
-        {
+        if (!player.isOnline()) {
             this.cancel();
             return;
         }
@@ -31,11 +35,20 @@ public class RavagerLandTask extends BukkitRunnable
             List<Entity> entities =  new ArrayList<>(player.getLocation().getWorld().getNearbyEntities(player.getLocation(), 4, 2, 4, p -> p instanceof LivingEntity && p != player));
             for (Entity entity:entities) {
                 LivingEntity livingEntity = (LivingEntity) entity;
-                livingEntity.damage(10, player);
-                livingEntity.addPotionEffect(RavagerConfig.getInstance().slowEffect);
+                if (livingEntity instanceof Player) {
+                    if (protectionSet.isLocationValid(player.getLocation(), livingEntity.getLocation()) && !partyManager.isPlayerAllied(player, (Player) livingEntity)) {
+                        damageAndSlowTarget(livingEntity);
+                    }
+                } else {
+                    damageAndSlowTarget(livingEntity);
+                }
             }
-
             this.cancel();
         }
+    }
+
+    private void damageAndSlowTarget(LivingEntity livingEntity) {
+        livingEntity.damage(10, player);
+        livingEntity.addPotionEffect(RavagerConfig.getInstance().slowEffect);
     }
 }
