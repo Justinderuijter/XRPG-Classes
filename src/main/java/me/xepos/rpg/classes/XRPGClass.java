@@ -18,6 +18,7 @@ public abstract class XRPGClass {
 
     public XRPGClass(XRPG plugin) {
         this.plugin = plugin;
+        this.ps = plugin.getProtectionSet();
         this.partyManager = plugin.getPartyManager();
     }
 
