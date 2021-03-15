@@ -1,6 +1,7 @@
 package me.xepos.rpg.classes;
 
 import me.xepos.rpg.XRPG;
+import me.xepos.rpg.datatypes.fireballData;
 import me.xepos.rpg.utils.Utils;
 import me.xepos.rpg.configuration.WizardConfig;
 import me.xepos.rpg.enums.DamageTakenSource;
@@ -152,7 +153,7 @@ public class Wizard extends XRPGClass {
         fireball.setDirection(new Vector(0, -1, 0));
 
         if (!plugin.fireBalls.containsKey(fireball.getEntityId()))
-            plugin.fireBalls.put(fireball.getEntityId(), wizardConfig.meteorExplosionStrength * (fireBallStacks + 1));
+            plugin.fireBalls.put(fireball.getEntityId(), new fireballData(wizardConfig.meteorExplosionStrength * (fireBallStacks + 1), 10));
 
         meteorCooldown = Utils.setSkillCooldown(wizardConfig.meteorCooldown);
     }
@@ -160,8 +161,7 @@ public class Wizard extends XRPGClass {
     private void doFireball(PlayerInteractEvent e)
     {
         //Cancel if skill is still on cooldown and send a message.
-        if (!Utils.isSkillReady(smallFireballCooldown))
-        {
+        if (!Utils.isSkillReady(smallFireballCooldown)) {
             e.getPlayer().sendMessage(Utils.getCooldownMessage("Fireball", smallFireballCooldown));
             return;
         }
@@ -170,8 +170,10 @@ public class Wizard extends XRPGClass {
         Fireball fireball = e.getPlayer().launchProjectile(SmallFireball.class);
         fireball.setShooter(e.getPlayer());
 
-        if (!plugin.fireBalls.containsKey(fireball.getEntityId()))
-            plugin.fireBalls.put(fireball.getEntityId(), wizardConfig.smallFireballDamage * 2); //For some reason damage is halved so doubling it to get proper value
+        if (!plugin.fireBalls.containsKey(fireball.getEntityId())) {
+            //For some reason damage is halved so doubling it to get proper value
+            plugin.fireBalls.put(fireball.getEntityId(), new fireballData(wizardConfig.smallFireballDamage * 2, 10));
+        }
 
         this.incrementFireBallStacks(this.maxFireballStacks);
         this.lastStackGained = System.currentTimeMillis();
@@ -179,7 +181,7 @@ public class Wizard extends XRPGClass {
 
         TextComponent text = new TextComponent("You now have " + fireBallStacks + " fireball stacks");
         text.setColor(ChatColor.DARK_GREEN.asBungee());
-        e.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR ,text);
+        e.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, text);
     }
 
     @SuppressWarnings("all")

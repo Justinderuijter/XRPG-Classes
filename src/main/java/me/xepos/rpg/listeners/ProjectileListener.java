@@ -1,5 +1,6 @@
 package me.xepos.rpg.listeners;
 
+import me.xepos.rpg.datatypes.fireballData;
 import me.xepos.rpg.utils.Utils;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.configuration.RavagerConfig;
@@ -104,8 +105,8 @@ public class ProjectileListener implements Listener
         Fireball fireball = (Fireball)e.getEntity();
         if (fireball.getShooter() instanceof Player)
         {
-            double explosionStrength = plugin.fireBalls.get(fireball.getEntityId());
-            Player shooter = (Player)fireball.getShooter();
+            double explosionStrength = plugin.fireBalls.get(fireball.getEntityId()).getDamage();
+            Player shooter = (Player) fireball.getShooter();
             Location loc = fireball.getLocation();
             e.setCancelled(true);
             loc.getWorld().createExplosion(loc, (float)explosionStrength, WizardConfig.getInstance().meteorSetFire, WizardConfig.getInstance().meteorDamageBlocks, shooter);
@@ -123,7 +124,7 @@ public class ProjectileListener implements Listener
             if (e.getEntity().getShooter() instanceof Player)
             {
                 Player shooter = (Player)e.getEntity().getShooter();
-                livingEntity.damage(plugin.fireBalls.get(entityId), shooter);
+                livingEntity.damage(plugin.fireBalls.get(entityId).getDamage(), shooter);
                 if (livingEntity.getFireTicks() == -1)
                 {
                     shooter.sendMessage("Max Fire Ticks: " + livingEntity.getMaxFireTicks() + ", Fire Ticks: " + WizardConfig.getInstance().smallFireballFireTicks);
@@ -148,7 +149,7 @@ public class ProjectileListener implements Listener
             if (e.getHitEntity() instanceof LivingEntity && e.getHitEntity() != null) {
                 LivingEntity livingEntity = (LivingEntity) e.getHitEntity();
 
-                livingEntity.damage(plugin.fireBalls.get(entityId), shooter);
+                livingEntity.damage(plugin.fireBalls.get(entityId).getDamage(), shooter);
                 Fireball fireball = livingEntity.launchProjectile(SmallFireball.class);
                 fireball.setShooter(shooter);
                 fireball.setCustomName("Flame Slash");
@@ -161,7 +162,7 @@ public class ProjectileListener implements Listener
                     Vector vector = newTarget.getLocation().toVector().subtract(livingEntity.getLocation().toVector());
                     fireball.setDirection(vector);
                     if (!plugin.fireBalls.containsKey(fireball.getEntityId()))
-                        plugin.fireBalls.put(fireball.getEntityId(), 6.0);
+                        plugin.fireBalls.put(fireball.getEntityId(), new fireballData(6.0, 10));
                 }
                 else
                 {

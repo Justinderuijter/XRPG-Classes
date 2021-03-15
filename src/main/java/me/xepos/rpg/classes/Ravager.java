@@ -1,5 +1,6 @@
 package me.xepos.rpg.classes;
 
+import me.xepos.rpg.datatypes.fireballData;
 import me.xepos.rpg.utils.Utils;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.configuration.RavagerConfig;
@@ -223,7 +224,7 @@ public class Ravager extends XRPGClass {
             fireball.setCustomName("Flame Slash");
             fireball.setCustomNameVisible(false);
             if (!plugin.fireBalls.containsKey(fireball.getEntityId()))
-                plugin.fireBalls.put(fireball.getEntityId(), 6.0);
+                plugin.fireBalls.put(fireball.getEntityId(), new fireballData(6.0, 10));
 
             flameSlashCooldown = Utils.setSkillCooldown(ravagerConfig.flameSlashCooldown);
         }

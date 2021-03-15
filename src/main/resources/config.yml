@@ -22,3 +22,10 @@ Party Manager Type: "Factions"
 Protection Managers:
   - "Factions"
 # - "WorldGuard"
+
+Garbage Collection:
+  # Time that should pass between garbage collection.
+  # Set to 0 to disable garbage collection.
+  Timer: 120
+  # Well send message in console if true.
+  Verbose: false

@@ -8,12 +8,14 @@ import me.xepos.rpg.commands.XRPGReload;
 import me.xepos.rpg.configuration.*;
 import me.xepos.rpg.database.DatabaseManagerFactory;
 import me.xepos.rpg.database.IDatabaseManager;
+import me.xepos.rpg.datatypes.IClearable;
+import me.xepos.rpg.datatypes.fireballData;
 import me.xepos.rpg.dependencies.parties.IPartyManager;
 import me.xepos.rpg.dependencies.parties.PartyManagerFactory;
-import me.xepos.rpg.dependencies.protection.IProtectionManager;
 import me.xepos.rpg.dependencies.protection.ProtectionSet;
 import me.xepos.rpg.dependencies.protection.ProtectionSetFactory;
 import me.xepos.rpg.listeners.*;
+import me.xepos.rpg.tasks.ClearHashMapTask;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
@@ -39,8 +41,7 @@ public final class XRPG extends JavaPlugin {
     private ProtectionSet protectionSet;
 
     public static HashMap<UUID, XRPGPlayer> RPGPlayers = new HashMap<>();
-    public HashMap<Integer, Double> fireBalls = new HashMap<>();
-    //TODO: Fix fireballs that don't hit anything not getting removed from hashmap.
+    public HashMap<Integer, fireballData> fireBalls = new HashMap<>();
 
     @Override // Plugin startup logic
     @SuppressWarnings("")
@@ -64,6 +65,10 @@ public final class XRPG extends JavaPlugin {
         this.getCommand("xrpgreload").setExecutor(new XRPGReload());
         this.getCommand("changeclass").setExecutor(new ChangeClassCommand(this, inventoryGUI));
         System.out.println("RPG classes loaded!");
+
+        int timer = this.getConfig().getInt("Garbage Collection.Timer", 120);
+        if (timer > 0)
+            new ClearHashMapTask(this, fireBalls).runTaskTimerAsynchronously(this, timer * 1000L, timer * 1000L);
     }
 
 
