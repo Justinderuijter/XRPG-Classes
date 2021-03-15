@@ -1,9 +1,9 @@
 package me.xepos.rpg.classes;
 
-import me.xepos.rpg.utils.Utils;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.configuration.BardConfig;
 import me.xepos.rpg.tasks.HealOverTimeTask;
+import me.xepos.rpg.utils.Utils;
 import org.bukkit.ChatColor;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;

@@ -8,7 +8,6 @@ import me.xepos.rpg.commands.XRPGReload;
 import me.xepos.rpg.configuration.*;
 import me.xepos.rpg.database.DatabaseManagerFactory;
 import me.xepos.rpg.database.IDatabaseManager;
-import me.xepos.rpg.datatypes.IClearable;
 import me.xepos.rpg.datatypes.fireballData;
 import me.xepos.rpg.dependencies.parties.IPartyManager;
 import me.xepos.rpg.dependencies.parties.PartyManagerFactory;
