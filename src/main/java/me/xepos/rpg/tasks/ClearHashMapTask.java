@@ -2,11 +2,9 @@ package me.xepos.rpg.tasks;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.datatypes.IClearable;
-import me.xepos.rpg.datatypes.fireballData;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ClearHashMapTask extends BukkitRunnable {

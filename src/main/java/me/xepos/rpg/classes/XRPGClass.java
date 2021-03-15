@@ -1,9 +1,9 @@
 package me.xepos.rpg.classes;
 
-import me.xepos.rpg.dependencies.protection.ProtectionSet;
-import me.xepos.rpg.utils.Utils;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.dependencies.parties.IPartyManager;
+import me.xepos.rpg.dependencies.protection.ProtectionSet;
+import me.xepos.rpg.utils.Utils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
