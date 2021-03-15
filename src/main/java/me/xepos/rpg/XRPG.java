@@ -42,6 +42,7 @@ public final class XRPG extends JavaPlugin {
 
     public static HashMap<UUID, XRPGPlayer> RPGPlayers = new HashMap<>();
     public HashMap<Integer, fireballData> fireBalls = new HashMap<>();
+    //Should this be concurrent?
 
     @Override // Plugin startup logic
     @SuppressWarnings("")
