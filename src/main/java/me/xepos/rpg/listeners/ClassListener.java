@@ -23,19 +23,17 @@ public class ClassListener implements Listener
     private final XRPG plugin;
     private final IDatabaseManager databaseManager;
 
-    public ClassListener(XRPG plugin, IDatabaseManager databaseManager)
-    {
+    public ClassListener(XRPG plugin, IDatabaseManager databaseManager) {
         this.plugin = plugin;
         this.databaseManager = databaseManager;
     }
 
-    @EventHandler
-    public void onHit(EntityDamageByEntityEvent e)
-    {
+    //Giving other plugins more opportunity to cancel this event
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onHit(EntityDamageByEntityEvent e) {
 
-        if(e.getDamager() instanceof Player && e.getEntity() instanceof LivingEntity)
-        {
-            XRPGPlayer xrpgPlayer = Utils.GetRPG((Player)e.getDamager());
+        if (e.getDamager() instanceof Player && e.getEntity() instanceof LivingEntity) {
+            XRPGPlayer xrpgPlayer = Utils.GetRPG((Player) e.getDamager());
             if (xrpgPlayer.isStunned())
                 e.setCancelled(true);
             else
@@ -102,7 +100,7 @@ public class ClassListener implements Listener
         Utils.GetRPG(player).onPlayerConsumeItem(e);
     }
 
-    @EventHandler(priority = EventPriority.LOW)
+    @EventHandler
     public void onPlayerInteract(PlayerInteractEvent e)
     {
         Player player = e.getPlayer();

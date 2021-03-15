@@ -43,6 +43,7 @@ public final class RangerConfig extends XRPGConfigFile {
         double moveSpeedMultiplier = get().getDouble("moveSpeedMultiplier", 1.25) - 1.0;
         moveSpeedModifier = new AttributeModifier(UUID.fromString("bd7bc1cf-b6e2-490d-b8ad-09cc8a328a91"), "moveSpeed", moveSpeedMultiplier, AttributeModifier.Operation.MULTIPLY_SCALAR_1);
 
+
         hungerEffect = new PotionEffect(PotionEffectType.HUNGER, duration, amplifier, false, false, true);
         snipeShotCooldown = get().getInt("snipeShotCooldown", 6);
         snipeShotDamageMultiplier = get().getDouble("snipeShotDamageMultiplier", 1.5);

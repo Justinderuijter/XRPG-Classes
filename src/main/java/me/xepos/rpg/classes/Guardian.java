@@ -140,16 +140,20 @@ public class Guardian extends XRPGClass {
 
     private void doShieldBash(EntityDamageByEntityEvent e, Player player) {
         if (e.getEntity() instanceof Player) {
-            if (!Utils.isSkillReady(shieldBashCooldown)) {
-                player.sendMessage(Utils.getCooldownMessage("Shield Bash", shieldBashCooldown));
-                return;
+            Player target = (Player) e.getEntity();
+            //Check if the location is valid and player isn't allied before casting shield Bash
+            if (ps.isLocationValid(player.getLocation(), target.getLocation()) && !partyManager.isPlayerAllied(player, target)) {
+                if (!Utils.isSkillReady(shieldBashCooldown)) {
+                    player.sendMessage(Utils.getCooldownMessage("Shield Bash", shieldBashCooldown));
+                    return;
+                }
+
+                XRPGPlayer xrpgPlayer = Utils.GetRPG(target);
+                if (xrpgPlayer.canBeStunned())
+                    new ApplyStunTask(xrpgPlayer, guardianConfig.stunEffectModifier, guardianConfig.shieldBashDuration * 20, plugin).runTaskLater(plugin, 5);
+
+                shieldBashCooldown = Utils.setSkillCooldown(guardianConfig.shieldBashCooldown);
             }
-
-            XRPGPlayer xrpgPlayer = Utils.GetRPG((Player) e.getEntity());
-            if (xrpgPlayer.canBeStunned())
-                new ApplyStunTask(xrpgPlayer, guardianConfig.stunEffectModifier, guardianConfig.shieldBashDuration * 20, plugin).runTaskLater(plugin, 5);
-
-            shieldBashCooldown = Utils.setSkillCooldown(guardianConfig.shieldBashCooldown);
         }
     }
 }

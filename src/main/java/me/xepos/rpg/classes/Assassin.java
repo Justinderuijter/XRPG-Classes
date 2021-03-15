@@ -12,7 +12,6 @@ import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
@@ -51,16 +50,14 @@ public class Assassin extends XRPGClass {
             Vector victimDirection = e.getEntity().getLocation().getDirection();
             //determine if the dot product between the vectors is greater than 0
             if (attackerDirection.dot(victimDirection) > 0) {
-                if (entity.getHealth() <= entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() / (100 / assassinConfig.executeThreshold) && Utils.isSkillReady(cutThroatCooldown))
-                {
+                if (entity.getHealth() <= entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() / (100 / assassinConfig.executeThreshold) && Utils.isSkillReady(cutThroatCooldown)) {
                     entity.setHealth(0.0);
-                    if(entity instanceof Player) {
+                    if (entity instanceof Player) {
                         e.getDamager().getWorld().getNearbyEntities(e.getDamager().getLocation(), 10, 5, 10, p -> p instanceof Player).forEach(p -> p.sendMessage(entity.getName() + " was executed by " + e.getDamager().getName() + "!"));
                     }
                     cutThroatCooldown = Utils.setSkillCooldown(assassinConfig.cutThroatCooldown);
 
-                }
-                else {
+                } else {
                     double finalDmg = e.getDamage() * assassinConfig.backStrikeMultiplier;
                     e.setDamage(finalDmg);
                     e.getDamager().sendMessage("Backstrike dealt " + finalDmg + " damage!");
@@ -118,13 +115,11 @@ public class Assassin extends XRPGClass {
             final PacketPlayOutEntityEquipment entityEquipmentPacket = new PacketPlayOutEntityEquipment(player.getEntityId(), equipmentList);
 
             //List all affected players so we can undo the packet later
-            List<Player> affectedPlayers = new ArrayList<>();
-            for (Entity ent : player.getNearbyEntities(10, 10, 10)) {
-                if (ent instanceof Player && ent != player) {
-                    affectedPlayers.add((Player) ent); //Add to list for later reference
-                    ((CraftPlayer) ent).getHandle().playerConnection.sendPacket(entityEquipmentPacket);//send affected players the packet
-                }
+            List<Player> affectedPlayers = new ArrayList(player.getWorld().getNearbyEntities(player.getLocation(), 20, 10, 20, p -> p instanceof Player && p != player));
+            for (Player ent : affectedPlayers) {
+                ((CraftPlayer) ent).getHandle().playerConnection.sendPacket(entityEquipmentPacket);//send affected players the packet
             }
+
             smokeCooldown = Utils.setSkillCooldown(assassinConfig.smokeBombCooldown);
             new EndInvisibilityTask(player, affectedPlayers, this).runTaskLater(plugin, assassinConfig.smokeBombDuration * 20L);
         }

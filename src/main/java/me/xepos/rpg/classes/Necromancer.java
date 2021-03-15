@@ -186,8 +186,8 @@ public class Necromancer extends XRPGClass {
 
                 new BleedTask(livingEntity, player, necromancerConfig.shadowSneakTicks, necromancerConfig.shadowSneakDamagePerTick).runTaskTimer(plugin, 11, 20);
             }
+            shadowSneakCooldown = Utils.setSkillCooldown(necromancerConfig.shadowSneakCooldown);
         }
-        shadowSneakCooldown = Utils.setSkillCooldown(necromancerConfig.shadowSneakCooldown);
     }
 
     @SuppressWarnings("all")
