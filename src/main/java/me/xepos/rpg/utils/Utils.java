@@ -184,7 +184,11 @@ public final class Utils {
         return lastUsage <= System.currentTimeMillis();
     }
 
-    public static String getCooldownMessage(String skillName, Long lastUsage) {
+    public static String getPassiveCooldownMessage(String skillName, int cooldown) {
+        return ChatColor.RED + skillName + " is now on cooldown for " + cooldown + " seconds";
+    }
+
+    public static String getCooldownMessage(String skillName, long lastUsage) {
         return ChatColor.RED + skillName + " is still on cooldown for " + (lastUsage - System.currentTimeMillis()) / 1000 + " seconds";
     }
 

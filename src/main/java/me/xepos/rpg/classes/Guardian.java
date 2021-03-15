@@ -139,7 +139,7 @@ public class Guardian extends XRPGClass {
     }
 
     private void doShieldBash(EntityDamageByEntityEvent e, Player player) {
-        if (e.getEntity() instanceof Player) {
+        if (e.getEntity() instanceof Player && player.getInventory().getItemInOffHand().getType() == Material.SHIELD) {
             Player target = (Player) e.getEntity();
             //Check if the location is valid and player isn't allied before casting shield Bash
             if (ps.isLocationValid(player.getLocation(), target.getLocation()) && !partyManager.isPlayerAllied(player, target)) {
@@ -151,6 +151,8 @@ public class Guardian extends XRPGClass {
                 XRPGPlayer xrpgPlayer = Utils.GetRPG(target);
                 if (xrpgPlayer.canBeStunned())
                     new ApplyStunTask(xrpgPlayer, guardianConfig.stunEffectModifier, guardianConfig.shieldBashDuration * 20, plugin).runTaskLater(plugin, 5);
+                else
+                    player.sendMessage(ChatColor.RED + target.getName() + " cannot be stunned for " + xrpgPlayer.getStunblockDuration() + " seconds!");
 
                 shieldBashCooldown = Utils.setSkillCooldown(guardianConfig.shieldBashCooldown);
             }

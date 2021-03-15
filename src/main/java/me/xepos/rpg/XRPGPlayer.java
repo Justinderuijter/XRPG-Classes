@@ -123,8 +123,12 @@ public class XRPGPlayer {
             lastStunTime = System.currentTimeMillis();
     }
 
+    public int getStunblockDuration() {
+        return (int) ((lastStunTime - System.currentTimeMillis()) / 1000);
+    }
+
     public boolean canBeStunned() {
-        return System.currentTimeMillis() > lastStunTime + 10 * 1000L;
+        return System.currentTimeMillis() > lastStunTime + 20 * 1000L;
     }
 
     public String getClassId() {

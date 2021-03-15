@@ -71,7 +71,7 @@ public class Necromancer extends XRPGClass {
                 double absorptionHearts = this.followers.size() * necromancerConfig.shieldPerFollower;
                 player.setAbsorptionAmount(player.getAbsorptionAmount() + absorptionHearts);
                 player.sendMessage(ChatColor.DARK_GREEN + "Bone shield will absorb " + absorptionHearts + " damage!");
-                player.sendMessage(ChatColor.RED + "Bone shield is now on cooldown for " + boneShieldCooldown + " seconds.");
+                player.sendMessage(Utils.getPassiveCooldownMessage("Bone shield", necromancerConfig.boneShieldCooldown));
                 boneShieldCooldown = Utils.setSkillCooldown(necromancerConfig.boneShieldCooldown);
             }
         }
