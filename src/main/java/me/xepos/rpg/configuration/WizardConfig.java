@@ -51,7 +51,7 @@ public final class WizardConfig extends XRPGConfigFile {
         get().addDefault("maxCastRange", 32);
         get().addDefault("maxFireballStacks", 2);
         get().addDefault("smallFireballCooldown", 3);
-        get().addDefault("smallFireballDamage", 1.0);
+        get().addDefault("smallFireballDamage", 10.0);
         get().addDefault("smallFireballFireTicks", 60);
         get().addDefault("meteorCooldown", 15);
         get().addDefault("meteorExplosionStrength", 2.0);

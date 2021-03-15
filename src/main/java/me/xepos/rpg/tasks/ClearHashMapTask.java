@@ -7,12 +7,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ClearHashMapTask extends BukkitRunnable {
     private final XRPG plugin;
-    private final HashMap<Integer, ? extends IClearable> clearableHashMap;
+    private final ConcurrentHashMap<Integer, ? extends IClearable> clearableHashMap;
 
-    public ClearHashMapTask(XRPG plugin, HashMap<Integer, ? extends IClearable> clearableHashMap) {
+    public ClearHashMapTask(XRPG plugin, ConcurrentHashMap<Integer, ? extends IClearable> clearableHashMap) {
         this.plugin = plugin;
         this.clearableHashMap = clearableHashMap;
     }
@@ -27,7 +28,7 @@ public class ClearHashMapTask extends BukkitRunnable {
             }
         }
         if (plugin.getConfig().getBoolean("Garbage Collection.Verbose", false)) {
-            Bukkit.getLogger().info("[RPG] Removed " + count + "entries from memory");
+            Bukkit.getLogger().info("[RPG] Removed " + count + " entries from memory");
         }
     }
 }

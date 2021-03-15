@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 @SuppressWarnings("all")
 public final class XRPG extends JavaPlugin {
@@ -41,7 +42,7 @@ public final class XRPG extends JavaPlugin {
     private ProtectionSet protectionSet;
 
     public static HashMap<UUID, XRPGPlayer> RPGPlayers = new HashMap<>();
-    public HashMap<Integer, fireballData> fireBalls = new HashMap<>();
+    public ConcurrentHashMap<Integer, fireballData> fireBalls = new ConcurrentHashMap<>();
     //Should this be concurrent
 
     @Override // Plugin startup logic
@@ -69,7 +70,7 @@ public final class XRPG extends JavaPlugin {
 
         int timer = this.getConfig().getInt("Garbage Collection.Timer", 120);
         if (timer > 0)
-            new ClearHashMapTask(this, fireBalls).runTaskTimerAsynchronously(this, timer * 1000L, timer * 1000L);
+            new ClearHashMapTask(this, fireBalls).runTaskTimerAsynchronously(this, timer * 20L, timer * 20L);
     }
 
 
