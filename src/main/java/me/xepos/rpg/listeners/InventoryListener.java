@@ -1,10 +1,10 @@
 package me.xepos.rpg.listeners;
 
-import me.xepos.rpg.utils.Utils;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.classes.XRPGClass;
 import me.xepos.rpg.events.XRPGClassChangedEvent;
+import me.xepos.rpg.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -50,12 +50,15 @@ public class InventoryListener implements Listener {
                 Constructor<?> constructor = clazz.getConstructor(XRPG.class);
                 Object instance = constructor.newInstance(plugin);
                 xrpgPlayer.setPlayerClass((XRPGClass) instance);
-                if (!oldClass.toString().equalsIgnoreCase(xrpgPlayer.getPlayerClass().toString()))
-                {
+
+                //Creating event
+                XRPGClassChangedEvent event = new XRPGClassChangedEvent(player, oldClass, xrpgPlayer.getPlayerClass());
+                Bukkit.getServer().getPluginManager().callEvent(event);
+                //Checking if change ticket needs to be reduced
+                if (!oldClass.toString().equalsIgnoreCase(xrpgPlayer.getPlayerClass().toString()) && !event.isCancelled()) {
+                    //TODO: Save XRPGPlayer after changing class, rather than just saving it on logout.
                     xrpgPlayer.setFreeChangeTickets(xrpgPlayer.getFreeChangeTickets() - 1);
-                    XRPGClassChangedEvent event = new XRPGClassChangedEvent(player, oldClass, xrpgPlayer.getPlayerClass());
-                    Bukkit.getServer().getPluginManager().callEvent(event);
-                    player.sendMessage("You are now "+ xrpgPlayer.getPlayerClass().toString() + "!");
+                    player.sendMessage("You are now " + xrpgPlayer.getPlayerClass().toString() + "!");
                 }
             }catch (ClassNotFoundException cnfException)
             {
