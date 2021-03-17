@@ -76,6 +76,7 @@ public final class XRPG extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+        //TODO: Save all online players on shutdown
         this.databaseManager.disconnect();
     }
 

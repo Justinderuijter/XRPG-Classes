@@ -7,7 +7,11 @@ import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 
 public class FollowerBlaze extends NecromancerFollower {
-    private static DataWatcherObject<Byte> d;
+    private static final DataWatcherObject<Byte> d;
+
+    static {
+        d = DataWatcher.a(EntityBlaze.class, DataWatcherRegistry.a);
+    }
 
     public FollowerBlaze(EntityTypes<EntityBlaze> type, Location loc, LivingEntity owner) {
         super(type, loc, owner);
@@ -32,12 +36,8 @@ public class FollowerBlaze extends NecromancerFollower {
     }
 
     protected void initDatawatcher() {
-
-        d = DataWatcher.a(EntityBlaze.class, DataWatcherRegistry.a);
         super.initDatawatcher();
         this.datawatcher.register(d, (byte) 0);
-
-
     }
 
     public boolean isBurning() {

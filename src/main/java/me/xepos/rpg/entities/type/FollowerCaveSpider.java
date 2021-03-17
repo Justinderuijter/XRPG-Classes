@@ -11,15 +11,18 @@ import org.bukkit.event.entity.EntityPotionEffectEvent;
 
 @SuppressWarnings("unused")
 public class FollowerCaveSpider extends NecromancerFollower implements IFollowerSpider {
-    private static DataWatcherObject<Byte> b;
+    private static final DataWatcherObject<Byte> b;
+
+    static {
+        b = DataWatcher.a(EntitySpider.class, DataWatcherRegistry.a);
+    }
 
     public FollowerCaveSpider(EntityTypes<EntityCaveSpider> type, Location loc, LivingEntity owner) {
         super(type, loc, owner);
     }
 
     @Override
-    protected void initPathfinder()
-    {
+    protected void initPathfinder() {
         super.initPathfinder();
 
         this.goalSelector.a(1, new PathfinderGoalLeapAtTarget(this, 0.4F));
@@ -39,7 +42,6 @@ public class FollowerCaveSpider extends NecromancerFollower implements IFollower
     }
 
     protected void initDatawatcher() {
-        b = DataWatcher.a(EntityCaveSpider.class, DataWatcherRegistry.a);
 
         super.initDatawatcher();
         this.datawatcher.register(b, (byte)0);
