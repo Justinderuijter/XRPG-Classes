@@ -1,14 +1,15 @@
 package me.xepos.rpg.tasks;
 
-import me.xepos.rpg.dependencies.parties.IPartyManager;
-import me.xepos.rpg.dependencies.protection.ProtectionSet;
-import me.xepos.rpg.utils.Utils;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.configuration.NecromancerConfig;
+import me.xepos.rpg.dependencies.parties.IPartyManager;
+import me.xepos.rpg.dependencies.protection.ProtectionSet;
 import me.xepos.rpg.entities.NecromancerFollower;
 import me.xepos.rpg.enums.DamageTakenSource;
-import me.xepos.rpg.enums.MultiplierOperation;
-import me.xepos.rpg.events.XRPGDamageTakenModifiedEvent;
+import me.xepos.rpg.events.XRPGDamageTakenAddedEvent;
+import me.xepos.rpg.events.XRPGDamageTakenRemovedEvent;
+import me.xepos.rpg.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftLivingEntity;
 import org.bukkit.entity.Bat;
@@ -32,6 +33,8 @@ public class PurgatoryBatTask extends BukkitRunnable {
     private final ProtectionSet protectionSet;
     private final XRPG plugin;
     private final long delay;
+
+    private final DamageTakenSource sourceAbility = DamageTakenSource.PURGATORY_BAT;
 
     public PurgatoryBatTask(Bat bat, Player player, double damage, byte maxCount, boolean isBatDmgSource, XRPG plugin, long debuffDuration) {
         this.bat = bat;
@@ -67,16 +70,20 @@ public class PurgatoryBatTask extends BukkitRunnable {
 
                     if (count == 0) {
                         XRPGPlayer xrgPlayer = Utils.GetRPG((Player) entity);
-                        XRPGDamageTakenModifiedEvent event = new XRPGDamageTakenModifiedEvent(target, MultiplierOperation.ADDED, DamageTakenSource.PURGATORY_BAT, 1.2);
+                        double DTAmount = NecromancerConfig.getInstance().purgatoryBatDTAmount;
+                        XRPGDamageTakenAddedEvent event = new XRPGDamageTakenAddedEvent(player, target, sourceAbility, DTAmount);
                         Bukkit.getServer().getPluginManager().callEvent(event);
+                        if (!event.isCancelled()) {
+                            Utils.addDTModifier(target, sourceAbility, DTAmount);
 
-                        new BukkitRunnable() {
-                            @Override
-                            public void run() {
-                                XRPGDamageTakenModifiedEvent eventRemove = new XRPGDamageTakenModifiedEvent(target, MultiplierOperation.REMOVED, DamageTakenSource.PURGATORY_BAT, 1.2);
-                                Bukkit.getServer().getPluginManager().callEvent(eventRemove);
-                            }
-                        }.runTaskLater(plugin, delay);
+                            new BukkitRunnable() {
+                                @Override
+                                public void run() {
+                                    XRPGDamageTakenRemovedEvent eventRemove = new XRPGDamageTakenRemovedEvent(player, target, sourceAbility);
+                                    Bukkit.getServer().getPluginManager().callEvent(eventRemove);
+                                }
+                            }.runTaskLater(plugin, delay);
+                        }
                     }
                 }
             } else {

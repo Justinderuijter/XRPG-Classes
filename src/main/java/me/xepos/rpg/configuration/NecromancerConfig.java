@@ -17,6 +17,7 @@ public final class NecromancerConfig extends XRPGConfigFile {
     public int purgatoryBatCooldown;
     public byte purgatoryBatDuration;
     public double purgatoryBatDps;
+    public double purgatoryBatDTAmount;
     public boolean isBatDmgSource;
 
     public static NecromancerConfig getInstance()
@@ -43,6 +44,7 @@ public final class NecromancerConfig extends XRPGConfigFile {
         purgatoryBatCooldown = get().getInt("purgatoryBatCooldown", 7);
         purgatoryBatDuration = (byte) get().getInt("purgatoryBatDuration", 5);
         purgatoryBatDps = get().getDouble("purgatoryBatDps", 4.0);
+        purgatoryBatDTAmount = get().getDouble("purgatoryBatDamageTakenModifier", 1.2);
         isBatDmgSource = get().getBoolean("isBatDmgSource", false);
     }
 
@@ -61,6 +63,7 @@ public final class NecromancerConfig extends XRPGConfigFile {
         get().addDefault("purgatoryBatCooldown", 7);
         get().addDefault("purgatoryBatDuration", 5);
         get().addDefault("purgatoryBatDps", 4.0);
+        get().addDefault("purgatoryBatDamageTakenModifier", 1.2);
         get().addDefault("isBatDmgSource", false);
     }
 

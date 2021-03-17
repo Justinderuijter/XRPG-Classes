@@ -15,6 +15,7 @@ public final class WizardConfig extends XRPGConfigFile {
     public boolean meteorDamageBlocks;
     public boolean meteorSetFire;
     public int shatterCooldown;
+    public double shatterDTAmount;
     public int shatterDuration;
     public int zephyrCooldown;
     public int zephyrBaseDuration;
@@ -40,6 +41,7 @@ public final class WizardConfig extends XRPGConfigFile {
         meteorDamageBlocks = get().getBoolean("meteorDamageBlocks", false);
         meteorSetFire = get().getBoolean("meteorSetFire", false);
         shatterCooldown = get().getInt("shatterCooldown");
+        shatterDTAmount = get().getDouble("shatterDamageTakenMultiplier", 1.2);
         shatterDuration = get().getInt("shatterDuration", 4);
         zephyrCooldown = get().getInt("zephyrCooldown");
         zephyrBaseDuration = get().getInt("zephyrBaseDuration", 60);
@@ -58,6 +60,7 @@ public final class WizardConfig extends XRPGConfigFile {
         get().addDefault("meteorDamageBlocks", false);
         get().addDefault("meteorSetFire", false);
         get().addDefault("shatterCooldown", 10);
+        get().addDefault("shatterDamageTakenMultiplier", 1.2);
         get().addDefault("shatterDuration", 4);
         get().addDefault("zephyrCooldown", 10);
         get().addDefault("zephyrBaseDuration", 60);

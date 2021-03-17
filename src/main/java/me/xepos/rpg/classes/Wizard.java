@@ -1,13 +1,12 @@
 package me.xepos.rpg.classes;
 
 import me.xepos.rpg.XRPG;
-import me.xepos.rpg.datatypes.fireballData;
-import me.xepos.rpg.utils.Utils;
 import me.xepos.rpg.configuration.WizardConfig;
+import me.xepos.rpg.datatypes.fireballData;
 import me.xepos.rpg.enums.DamageTakenSource;
-import me.xepos.rpg.enums.MultiplierOperation;
-import me.xepos.rpg.events.XRPGDamageTakenModifiedEvent;
+import me.xepos.rpg.events.XRPGDamageTakenAddedEvent;
 import me.xepos.rpg.tasks.RemoveDTModifierTask;
+import me.xepos.rpg.utils.Utils;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
@@ -192,30 +191,41 @@ public class Wizard extends XRPGClass {
             return;
         }
         Location loc = Utils.getTargetBlock(e.getPlayer(), wizardConfig.maxCastRange).getLocation();
-        List<LivingEntity> livingEntities = new ArrayList(loc.getWorld().getNearbyEntities(loc, 3, 3 , 3, p -> p instanceof LivingEntity && p != e.getPlayer()));
+        List<LivingEntity> livingEntities = new ArrayList(loc.getWorld().getNearbyEntities(loc, 3, 3, 3, p -> p instanceof LivingEntity && p != e.getPlayer()));
 
         e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_GLASS_BREAK, 1F, 1F);
-        for (LivingEntity livingEntity: livingEntities) {
-
-            if (livingEntity instanceof Player) {
-                if (ps.isLocationValid(e.getPlayer().getLocation(), livingEntity.getLocation())) {
-                    livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, wizardConfig.shatterDuration * 20, 1, false, false, false));
-                    XRPGDamageTakenModifiedEvent event = new XRPGDamageTakenModifiedEvent((Player) livingEntity, MultiplierOperation.ADDED, DamageTakenSource.SHATTER, 1.2);
-                    Bukkit.getServer().getPluginManager().callEvent(event);
-
-                    new RemoveDTModifierTask((Player) livingEntity, DamageTakenSource.SHATTER).runTaskLater(plugin, wizardConfig.shatterDuration * 20L);
-                }
-            } else {
-                livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, wizardConfig.shatterDuration * 20, 1, false, false, false));
-            }
+        for (LivingEntity livingEntity : livingEntities) {
+            shatterLogic(e, livingEntity);
         }
         this.shatterCooldown = Utils.setSkillCooldown(wizardConfig.shatterCooldown - fireBallStacks);
     }
 
-    private void doZephyr(PlayerInteractEvent e)
-    {
-        if (!Utils.isSkillReady(zephyrCooldown))
-        {
+    public void shatterLogic(PlayerInteractEvent e, LivingEntity livingEntity) {
+        DamageTakenSource damageTakenSource = DamageTakenSource.SHATTER;
+        PotionEffect potionEffect = new PotionEffect(PotionEffectType.SLOW, wizardConfig.shatterDuration * 20, 1, false, false, false);
+
+        if (livingEntity instanceof Player) {
+            Player targetPlayer = (Player) livingEntity;
+            //Check if the target is valid
+            if (ps.isLocationValid(e.getPlayer().getLocation(), targetPlayer.getLocation())) {
+                //Add potion effect and fire event
+                targetPlayer.addPotionEffect(potionEffect);
+                XRPGDamageTakenAddedEvent event = new XRPGDamageTakenAddedEvent(e.getPlayer(), targetPlayer, damageTakenSource, wizardConfig.shatterDTAmount);
+                Bukkit.getServer().getPluginManager().callEvent(event);
+
+                //Apply DTModifier if the event isn't cancelled
+                if (!event.isCancelled()) {
+                    Utils.addDTModifier(targetPlayer, damageTakenSource, wizardConfig.shatterDTAmount);
+                    new RemoveDTModifierTask(e.getPlayer(), (Player) livingEntity, damageTakenSource).runTaskLater(plugin, wizardConfig.shatterDuration * 20L);
+                }
+            }
+        } else {
+            livingEntity.addPotionEffect(potionEffect);
+        }
+    }
+
+    private void doZephyr(PlayerInteractEvent e) {
+        if (!Utils.isSkillReady(zephyrCooldown)) {
             e.getPlayer().sendMessage(Utils.getCooldownMessage("Zephyr", zephyrCooldown));
             return;
         }

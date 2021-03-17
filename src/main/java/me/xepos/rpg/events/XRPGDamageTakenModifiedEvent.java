@@ -1,9 +1,8 @@
 package me.xepos.rpg.events;
 
-import me.xepos.rpg.utils.Utils;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.enums.DamageTakenSource;
-import me.xepos.rpg.enums.MultiplierOperation;
+import me.xepos.rpg.utils.Utils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -13,35 +12,22 @@ public class XRPGDamageTakenModifiedEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
 
     private final XRPGPlayer xrpgPlayer;
+    private final XRPGPlayer targetPlayer;
     private final DamageTakenSource source;
-    private MultiplierOperation operation;
-    private double amount;
 
-    public XRPGDamageTakenModifiedEvent(Player player, MultiplierOperation operation, DamageTakenSource source, double amount){
-        this.xrpgPlayer = Utils.GetRPG(player);
+    public XRPGDamageTakenModifiedEvent(Player sourcePlayer, Player targetPlayer, DamageTakenSource source) {
+        this.xrpgPlayer = Utils.GetRPG(sourcePlayer);
+        this.targetPlayer = Utils.GetRPG(targetPlayer);
         this.source = source;
-        this.operation = operation;
-        this.amount = amount;
     }
 
-    public MultiplierOperation getOperation() {
-        return operation;
-    }
 
-    public void setOperation(MultiplierOperation operation) {
-        this.operation = operation;
-    }
-
-    public double getAmount() {
-        return amount;
-    }
-
-    public void setAmount(double amount) {
-        this.amount = amount;
-    }
-
-    public XRPGPlayer getXRPGPlayer() {
+    public XRPGPlayer getSourceXRPGPlayer() {
         return xrpgPlayer;
+    }
+
+    public XRPGPlayer getTargetXRPGPlayer() {
+        return targetPlayer;
     }
 
     public DamageTakenSource getSource() {

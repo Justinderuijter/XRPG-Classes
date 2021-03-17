@@ -1,14 +1,16 @@
 package me.xepos.rpg.classes;
 
 import me.xepos.rpg.XRPG;
-import me.xepos.rpg.enums.DamageTakenSource;
-import me.xepos.rpg.tasks.RemoveDTModifierTask;
-import me.xepos.rpg.utils.Utils;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.configuration.GuardianConfig;
+import me.xepos.rpg.enums.DamageTakenSource;
+import me.xepos.rpg.events.XRPGDamageTakenAddedEvent;
 import me.xepos.rpg.tasks.ApplyStunTask;
+import me.xepos.rpg.tasks.RemoveDTModifierTask;
+import me.xepos.rpg.utils.Utils;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -122,13 +124,15 @@ public class Guardian extends XRPGClass {
                 }
                 List<Player> nearbyPlayers = new ArrayList(player.getWorld().getNearbyEntities(player.getLocation(), guardianConfig.aegisRangeHorizontal, guardianConfig.aegisRangeVertical, guardianConfig.aegisRangeHorizontal, p -> p instanceof Player && partyManager.isPlayerAllied(player, (Player) p)));
                 for (Player target : nearbyPlayers) {
-                    XRPGPlayer xrpgTarget = Utils.GetRPG(target);
-                    //Can these be ran async?
-                    xrpgTarget.dmgTakenMultipliers.put(DamageTakenSource.AEGIS, guardianConfig.aegisDmgReduction);
-                    target.sendMessage(player.getDisplayName() + " Granted you Aegis' Protection!");
+                    //Applying the DTModifier if event is cancelled
+                    XRPGDamageTakenAddedEvent event = new XRPGDamageTakenAddedEvent(player, target, DamageTakenSource.AEGIS, guardianConfig.aegisDmgReduction);
+                    Bukkit.getServer().getPluginManager().callEvent(event);
+                    if (!event.isCancelled()) {
+                        Utils.addDTModifier(target, DamageTakenSource.AEGIS, guardianConfig.aegisDmgReduction);
+                        target.sendMessage(player.getDisplayName() + " Granted you Aegis' Protection!");
 
-                    new RemoveDTModifierTask(target, DamageTakenSource.AEGIS).runTaskLater(plugin, guardianConfig.aegisDuration * 20);
-
+                        new RemoveDTModifierTask(player, target, DamageTakenSource.AEGIS).runTaskLater(plugin, guardianConfig.aegisDuration * 20);
+                    }
                 }
                 if (nearbyPlayers.size() > 0) {
                     player.sendMessage(ChatColor.GREEN + "Applied Aegis' Protection to " + nearbyPlayers.size() + " player(s)!");

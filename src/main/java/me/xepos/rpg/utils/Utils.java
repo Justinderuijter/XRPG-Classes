@@ -3,6 +3,7 @@ package me.xepos.rpg.utils;
 import me.xepos.rpg.AttributeModifierManager;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.enums.DamageTakenSource;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.FluidCollisionMode;
@@ -23,7 +24,10 @@ import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
 
 public final class Utils {
 
@@ -275,11 +279,23 @@ public final class Utils {
         return StringUtils.capitalize(input.toLowerCase());
     }
 
-    public static void onJoinEffect(Player player)
-    {
-        for (AttributeModifier mod: AttributeModifierManager.getModifiers().keySet()) {
+    public static void onJoinEffect(Player player) {
+        for (AttributeModifier mod : AttributeModifierManager.getModifiers().keySet()) {
             removeUniqueModifier(player, AttributeModifierManager.getModifiers().get(mod), mod);
         }
+    }
+
+    public static void addDTModifier(Player player, DamageTakenSource source, double amount) {
+        XRPGPlayer xrpgPlayer = GetRPG(player);
+        if (xrpgPlayer.dmgTakenMultipliers.containsKey(source))
+            xrpgPlayer.dmgTakenMultipliers.put(source, amount);
+    }
+
+    @SuppressWarnings("all")
+    public static void removeDTModifier(Player player, DamageTakenSource source) {
+        XRPGPlayer xrpgPlayer = GetRPG(player);
+        if (xrpgPlayer.dmgTakenMultipliers.containsKey(source))
+            xrpgPlayer.dmgTakenMultipliers.remove(source);
     }
 
 }
