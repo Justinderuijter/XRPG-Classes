@@ -28,4 +28,12 @@ public class FactionsUUIDProtectionManager implements IProtectionManager{
 
         return true;
     }
+
+    @Override
+    public boolean isPvPTypeSame(Location sourceLocation, Location targetLocation) {
+        Faction sourceFaction = Board.getInstance().getFactionAt(new FLocation(sourceLocation));
+        Faction targetFaction = Board.getInstance().getFactionAt(new FLocation(targetLocation));
+
+        return sourceFaction.isSafeZone() || sourceFaction.isPeaceful() == targetFaction.isSafeZone() || targetFaction.isPeaceful();
+    }
 }

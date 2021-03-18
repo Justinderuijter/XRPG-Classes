@@ -28,4 +28,13 @@ public class ProtectionSet {
         }
         return true;
     }
+
+    public boolean isPvPTypeSame(Location sourceLocation, Location targetLocation) {
+        for (IProtectionManager manager : set) {
+            if (!manager.isPvPTypeSame(sourceLocation, targetLocation)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

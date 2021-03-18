@@ -3,7 +3,6 @@ package me.xepos.rpg.dependencies.protection;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
-import com.sk89q.worldguard.protection.flags.Flag;
 import com.sk89q.worldguard.protection.flags.Flags;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -41,5 +40,32 @@ public class WorldGuardProtectionManager implements IProtectionManager{
         }
 
         return true;
+    }
+
+    @Override
+    public boolean isPvPTypeSame(Location sourceLocation, Location targetLocation) {
+        boolean sourceHasPvP = true;
+        boolean targetHasPvP = true;
+        RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+        RegionQuery query = container.createQuery();
+
+        com.sk89q.worldedit.util.Location sourceLoc = BukkitAdapter.adapt(sourceLocation);
+        com.sk89q.worldedit.util.Location targetLoc = BukkitAdapter.adapt(targetLocation);
+
+        ApplicableRegionSet sourceSet = query.getApplicableRegions(sourceLoc);
+        for (ProtectedRegion region : sourceSet) {
+            if (region.getFlag(Flags.PVP) == StateFlag.State.DENY) {
+                sourceHasPvP = false;
+            }
+        }
+
+        ApplicableRegionSet targetSet = query.getApplicableRegions(targetLoc);
+        for (ProtectedRegion region : targetSet) {
+            if (region.getFlag(Flags.PVP) == StateFlag.State.DENY) {
+                targetHasPvP = false;
+            }
+        }
+
+        return sourceHasPvP == targetHasPvP;
     }
 }

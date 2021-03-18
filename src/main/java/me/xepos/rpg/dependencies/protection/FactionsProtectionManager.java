@@ -27,4 +27,16 @@ public class FactionsProtectionManager implements IProtectionManager {
 
         return true;
     }
+
+    @Override
+    public boolean isPvPTypeSame(Location sourceLocation, Location targetLocation) {
+        Faction sourceFaction = BoardColl.get().getFactionAt(PS.valueOf(sourceLocation));
+        Faction targetFaction = BoardColl.get().getFactionAt(PS.valueOf(targetLocation));
+
+        if (sourceFaction.getFlag(MFlag.getFlagPvp()) == targetFaction.getFlag(MFlag.getFlagPvp())) {
+            return true;
+        }
+
+        return false;
+    }
 }
