@@ -194,6 +194,7 @@ public final class XRPG extends JavaPlugin {
         NecromancerConfig.getInstance();
         RangerConfig.getInstance();
         RavagerConfig.getInstance();
+        SorcererConfig.getInstance();
         WizardConfig.getInstance();
     }
 
