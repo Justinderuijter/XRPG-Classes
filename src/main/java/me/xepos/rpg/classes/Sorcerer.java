@@ -3,6 +3,7 @@ package me.xepos.rpg.classes;
 import me.xepos.rpg.AttributeModifierManager;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.configuration.SorcererConfig;
+import me.xepos.rpg.enums.ModifierType;
 import me.xepos.rpg.tasks.BloodCorruptionTask;
 import me.xepos.rpg.tasks.OverheatTask;
 import me.xepos.rpg.utils.Utils;
@@ -117,7 +118,7 @@ public class Sorcerer extends XRPGClass {
             if (livingEntity instanceof Player) {
                 Player target = (Player) livingEntity;
                 if (ps.isPvPTypeSame(caster.getLocation(), target.getLocation()) && partyManager.isPlayerAllied(caster, target)) {
-                    for (AttributeModifier mod : AttributeModifierManager.getModifiers().keySet()) {
+                    for (AttributeModifier mod : AttributeModifierManager.getInstance().getModifiers(ModifierType.NEGATIVE).keySet()) {
                         mod.getUniqueId();
                     }
                     cleanseBadPotionEffects(livingEntity);

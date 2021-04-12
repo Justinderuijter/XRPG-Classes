@@ -1,12 +1,13 @@
 package me.xepos.rpg.commands;
 
 import me.xepos.rpg.AttributeModifierManager;
-import me.xepos.rpg.utils.Utils;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.classes.Necromancer;
 import me.xepos.rpg.classes.XRPGClass;
 import me.xepos.rpg.enums.DamageTakenSource;
+import me.xepos.rpg.enums.ModifierType;
+import me.xepos.rpg.utils.Utils;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -47,18 +48,22 @@ public class XRPGDebug implements CommandExecutor {
 
                             return true;
                         case "damagetaken":
-                            for (DamageTakenSource d:Utils.GetRPG(player).dmgTakenMultipliers.keySet()) {
+                            for (DamageTakenSource d : Utils.GetRPG(player).dmgTakenMultipliers.keySet()) {
                                 player.sendMessage(Utils.GetRPG(player).dmgTakenMultipliers.get(d).toString());
                             }
                             player.sendMessage("dmgTakenMP" + Utils.GetRPG(player).dmgTakenMultipliers.size());
                             return true;
                         case "modifiers":
-                            for (AttributeModifier modifier: AttributeModifierManager.getModifiers().keySet()) {
+                            for (AttributeModifier modifier : AttributeModifierManager.getInstance().getModifiers(ModifierType.POSITIVE).keySet()) {
+                                player.sendMessage(modifier.toString());
+                            }
+
+                            for (AttributeModifier modifier : AttributeModifierManager.getInstance().getModifiers(ModifierType.NEGATIVE).keySet()) {
                                 player.sendMessage(modifier.toString());
                             }
                             return true;
                         case "players":
-                            for (UUID id:XRPG.RPGPlayers.keySet()) {
+                            for (UUID id : XRPG.RPGPlayers.keySet()) {
                                 XRPGPlayer xrpgPlayer = XRPG.RPGPlayers.get(id);
                                 player.sendMessage(xrpgPlayer.getPlayer().getName() + ": " + xrpgPlayer.getClassId());
                             }

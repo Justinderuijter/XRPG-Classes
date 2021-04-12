@@ -4,6 +4,7 @@ import me.xepos.rpg.AttributeModifierManager;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.enums.DamageTakenSource;
+import me.xepos.rpg.enums.ModifierType;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.FluidCollisionMode;
@@ -280,8 +281,12 @@ public final class Utils {
     }
 
     public static void onJoinEffect(Player player) {
-        for (AttributeModifier mod : AttributeModifierManager.getModifiers().keySet()) {
-            removeUniqueModifier(player, AttributeModifierManager.getModifiers().get(mod), mod);
+        AttributeModifierManager manager = AttributeModifierManager.getInstance();
+        for (AttributeModifier mod : manager.getModifiers(ModifierType.POSITIVE).keySet()) {
+            removeUniqueModifier(player, manager.getModifiers(ModifierType.POSITIVE).get(mod), mod);
+        }
+        for (AttributeModifier mod : manager.getModifiers(ModifierType.NEGATIVE).keySet()) {
+            removeUniqueModifier(player, manager.getModifiers(ModifierType.NEGATIVE).get(mod), mod);
         }
     }
 

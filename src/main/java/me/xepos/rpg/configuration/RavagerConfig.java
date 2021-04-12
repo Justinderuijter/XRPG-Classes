@@ -1,6 +1,7 @@
 package me.xepos.rpg.configuration;
 
 import me.xepos.rpg.AttributeModifierManager;
+import me.xepos.rpg.enums.ModifierType;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.potion.PotionEffect;
@@ -59,7 +60,7 @@ public final class RavagerConfig extends XRPGConfigFile {
         flameSlashCooldown = get().getInt("flameSlashCooldown", 12);
         SoaringSlashCooldown = get().getInt("SoaringSlashCooldown", 15);
 
-        AttributeModifierManager.put(attackSpeedModifier, Attribute.GENERIC_ATTACK_SPEED);
+        AttributeModifierManager.getInstance().put(ModifierType.POSITIVE, attackSpeedModifier, Attribute.GENERIC_ATTACK_SPEED);
     }
 
     public void setDefaults()

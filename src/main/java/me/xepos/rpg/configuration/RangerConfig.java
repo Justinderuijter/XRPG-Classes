@@ -1,6 +1,7 @@
 package me.xepos.rpg.configuration;
 
 import me.xepos.rpg.AttributeModifierManager;
+import me.xepos.rpg.enums.ModifierType;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.potion.PotionEffect;
@@ -57,7 +58,7 @@ public final class RangerConfig extends XRPGConfigFile {
         soulShotCooldown = get().getInt("soulShotCooldown", 15);
         soulShotDamageMultiplier = 1 - get().getDouble("soulShotPercentHealthDamage") / 100;
 
-        AttributeModifierManager.put(moveSpeedModifier, Attribute.GENERIC_MOVEMENT_SPEED);
+        AttributeModifierManager.getInstance().put(ModifierType.POSITIVE, moveSpeedModifier, Attribute.GENERIC_MOVEMENT_SPEED);
     }
 
     public void setDefaults()

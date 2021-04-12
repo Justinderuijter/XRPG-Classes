@@ -1,6 +1,7 @@
 package me.xepos.rpg.configuration;
 
 import me.xepos.rpg.AttributeModifierManager;
+import me.xepos.rpg.enums.ModifierType;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 
@@ -38,7 +39,7 @@ public final class AssassinConfig extends XRPGConfigFile {
         executeThreshold = get().getDouble("executeThreshold%", 25);
         backStrikeMultiplier = get().getDouble("backStrikeMultiplier", 1.3);
 
-        AttributeModifierManager.put(moveSpeedModifier, Attribute.GENERIC_MOVEMENT_SPEED);
+        AttributeModifierManager.getInstance().put(ModifierType.POSITIVE, moveSpeedModifier, Attribute.GENERIC_MOVEMENT_SPEED);
 
     }
 

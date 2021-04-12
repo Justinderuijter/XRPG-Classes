@@ -1,21 +1,41 @@
 package me.xepos.rpg;
 
+import me.xepos.rpg.enums.ModifierType;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 
 import java.util.HashMap;
-import java.util.UUID;
 
 public class AttributeModifierManager {
-    private static final HashMap<AttributeModifier, Attribute> modifiers = new HashMap<>();
+    private static AttributeModifierManager instance;
 
-    public static HashMap<AttributeModifier, Attribute> getModifiers() {
-        return modifiers;
+    private final HashMap<AttributeModifier, Attribute> positiveModifiers = new HashMap<>();
+    private final HashMap<AttributeModifier, Attribute> negativeModifiers = new HashMap<>();
+
+    public HashMap<AttributeModifier, Attribute> getModifiers(ModifierType modifierType) {
+        if (modifierType == ModifierType.NEGATIVE) {
+            return negativeModifiers;
+        } else {
+            return positiveModifiers;
+        }
     }
 
-    public static void put(AttributeModifier modifier, Attribute attribute)
-    {
-        if(!modifiers.containsKey(modifier))
-            modifiers.put(modifier, attribute);
+    public void put(ModifierType modifierType, AttributeModifier modifier, Attribute attribute) {
+        if (modifierType == ModifierType.NEGATIVE) {
+            if (!positiveModifiers.containsKey(modifier))
+                positiveModifiers.put(modifier, attribute);
+        } else {
+            if (!negativeModifiers.containsKey(modifier))
+                negativeModifiers.put(modifier, attribute);
+        }
     }
+
+    public static AttributeModifierManager getInstance() {
+        if (instance == null)
+            instance = new AttributeModifierManager();
+
+        return instance;
+    }
+
+
 }

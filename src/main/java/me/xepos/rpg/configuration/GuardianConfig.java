@@ -1,6 +1,7 @@
 package me.xepos.rpg.configuration;
 
 import me.xepos.rpg.AttributeModifierManager;
+import me.xepos.rpg.enums.ModifierType;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 
@@ -47,8 +48,8 @@ public final class GuardianConfig extends XRPGConfigFile {
         shieldBashCooldown = get().getInt("shieldBashCooldown", 10);
         shieldBashDuration = (byte) get().getInt("shieldBashDuration", 2);
 
-        AttributeModifierManager.put(healthModifier, Attribute.GENERIC_MAX_HEALTH);
-        AttributeModifierManager.put(stunEffectModifier, Attribute.GENERIC_MOVEMENT_SPEED);
+        AttributeModifierManager.getInstance().put(ModifierType.POSITIVE, healthModifier, Attribute.GENERIC_MAX_HEALTH);
+        AttributeModifierManager.getInstance().put(ModifierType.POSITIVE, stunEffectModifier, Attribute.GENERIC_MOVEMENT_SPEED);
     }
 
     public void setDefaults()
