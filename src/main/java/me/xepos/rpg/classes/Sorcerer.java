@@ -163,10 +163,14 @@ public class Sorcerer extends XRPGClass {
             LivingEntity target = (LivingEntity) result.getHitEntity();
             if (target instanceof Player) {
                 Player targetPlayer = (Player) target;
-                for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-                    targetPlayer.hidePlayer(plugin, player);
+                if (!partyManager.isPlayerAllied(caster, targetPlayer) && ps.isLocationValid(caster.getLocation(), targetPlayer.getLocation())) {
+                    for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+                        targetPlayer.hidePlayer(plugin, player);
+                    }
+                    new ShowPlayerTask(plugin, targetPlayer).runTaskLater(plugin, (long) sorcererConfig.voidParadoxDuration * 20);
                 }
-                new ShowPlayerTask(plugin, targetPlayer).runTaskLater(plugin, (long) sorcererConfig.voidParadoxDuration * 20);
+            } else {
+                target.damage(15, caster);
             }
 
             VoidParadoxCooldown = Utils.setSkillCooldown(sorcererConfig.voidParadoxCooldown);
@@ -264,8 +268,10 @@ public class Sorcerer extends XRPGClass {
                     }
 
                     for (LivingEntity livingEntity : livingEntities) {
-                        if (livingEntity instanceof Villager && sorcererConfig.trailOfFlamesIgnoreVillagers) {
+                        if ((livingEntity instanceof Villager && sorcererConfig.trailOfFlamesIgnoreVillagers) ||
+                                (livingEntity instanceof Player && !ps.isLocationValid(caster.getLocation(), livingEntity.getLocation()))) {
                             //Skip over villagers if the config setting is true.
+                            //Skip over players if they are allied or are in safezone.
                             continue;
                         }
                         livingEntity.damage(sorcererConfig.trailOfFlamesDamage, caster);
