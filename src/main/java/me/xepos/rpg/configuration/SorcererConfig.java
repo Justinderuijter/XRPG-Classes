@@ -11,6 +11,17 @@ public class SorcererConfig extends XRPGConfigFile {
 
     public List<PotionEffectType> negativeEffects;
     public int overheatCooldown;
+    public int overheatDuration;
+    public int souldrawCooldown;
+    public int souldrawDamage;
+    public int voidParadoxCooldown;
+    public int voidParadoxDuration;
+    public int trailOfFlamesCooldown;
+    public int trailOfFlamesDamage;
+    public boolean trailOfFlamesIgnoreVillagers;
+    public int bloodCorruptionCooldown;
+    public int bloodCorruptionDuration;
+    public int bloodPurificationCooldown;
 
     public static SorcererConfig getInstance() {
         if (instance == null)
@@ -30,7 +41,18 @@ public class SorcererConfig extends XRPGConfigFile {
             }
         }
 
-        get().getInt("overheatCooldown", 20);
+        overheatCooldown = get().getInt("overheatCooldown", 20);
+        overheatDuration = get().getInt("overheatDuration", 5);
+        souldrawCooldown = get().getInt("souldrawCooldown", 1);
+        souldrawDamage = get().getInt("souldrawDamage", 4);
+        voidParadoxCooldown = get().getInt("voidParadoxCooldown", 30);
+        trailOfFlamesCooldown = get().getInt("trailOfFlamesCooldown", 12);
+        trailOfFlamesDamage = get().getInt("trailOfFlamesDamage", 4);
+        trailOfFlamesIgnoreVillagers = get().getBoolean("trailOfFlamesIgnoreVillagers", true);
+        bloodCorruptionCooldown = get().getInt("bloodCorruptionCooldown", 20);
+        bloodCorruptionDuration = get().getInt("bloodCorruptionDuration", 4);
+        bloodPurificationCooldown = get().getInt("bloodPurificationCooldown", 15);
+        voidParadoxDuration = get().getInt("voidParadoxDuration", 5);
     }
 
     @Override
@@ -51,7 +73,17 @@ public class SorcererConfig extends XRPGConfigFile {
             }
         };
 
-        get().addDefault("Cleansable Effects", effectTypes);
+        get().addDefault("cleansable Effects", effectTypes);
+        get().addDefault("souldrawCooldown", 1);
+        get().addDefault("souldrawDamage", 4);
+        get().addDefault("voidParadoxCooldown", 30);
+        get().addDefault("trailOfFlamesCooldown", 12);
+        get().addDefault("trailOfFlamesDamage", 4);
+        get().addDefault("trailOfFlamesIgnoreVillagers", true);
+        get().addDefault("bloodCorruptionCooldown", 20);
+        get().addDefault("bloodCorruptionDuration", 4);
+        get().addDefault("bloodPurificationCooldown", 15);
         get().addDefault("overheatCooldown", 20);
+        get().addDefault("overheatDuration", 5);
     }
 }

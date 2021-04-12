@@ -12,6 +12,7 @@ import org.bukkit.*;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Villager;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
@@ -37,11 +38,11 @@ public class Sorcerer extends XRPGClass {
     private final SorcererConfig sorcererConfig = SorcererConfig.getInstance();
 
     private long OverheatCooldown = Utils.setSkillCooldown(sorcererConfig.overheatCooldown);
-    private long SouldrawCooldown = Utils.setSkillCooldown(1);
-    private long VoidParadoxCooldown = Utils.setSkillCooldown(30);
-    private long TrailOfFlamesCooldown = Utils.setSkillCooldown(12);
-    private long BloodCorruptionCooldown = Utils.setSkillCooldown(20);
-    private long BloodPurificationCooldown = Utils.setSkillCooldown(15);
+    private long SouldrawCooldown = Utils.setSkillCooldown(sorcererConfig.souldrawCooldown);
+    private long VoidParadoxCooldown = Utils.setSkillCooldown(sorcererConfig.voidParadoxCooldown);
+    private long TrailOfFlamesCooldown = Utils.setSkillCooldown(sorcererConfig.trailOfFlamesCooldown);
+    private long BloodCorruptionCooldown = Utils.setSkillCooldown(sorcererConfig.bloodCorruptionCooldown);
+    private long BloodPurificationCooldown = Utils.setSkillCooldown(sorcererConfig.bloodPurificationCooldown);
 
     @Override
     public void onHit(EntityDamageByEntityEvent e) {
@@ -135,7 +136,7 @@ public class Sorcerer extends XRPGClass {
             }
         }
 
-        BloodPurificationCooldown = Utils.setSkillCooldown(15);
+        BloodPurificationCooldown = Utils.setSkillCooldown(sorcererConfig.bloodPurificationCooldown);
     }
 
     private void cleanseBadPotionEffects(LivingEntity livingTarget) {
@@ -165,10 +166,10 @@ public class Sorcerer extends XRPGClass {
                 for (Player player : Bukkit.getServer().getOnlinePlayers()) {
                     targetPlayer.hidePlayer(plugin, player);
                 }
-                new ShowPlayerTask(plugin, targetPlayer).runTaskLater(plugin, 100L);
+                new ShowPlayerTask(plugin, targetPlayer).runTaskLater(plugin, (long) sorcererConfig.voidParadoxDuration * 20);
             }
 
-            VoidParadoxCooldown = Utils.setSkillCooldown(30);
+            VoidParadoxCooldown = Utils.setSkillCooldown(sorcererConfig.voidParadoxCooldown);
         }
     }
 
@@ -177,10 +178,10 @@ public class Sorcerer extends XRPGClass {
             RayTraceResult result = doRayTrace(caster);
             if (result.getHitEntity() != null) {
                 LivingEntity target = (LivingEntity) result.getHitEntity();
-                target.damage(4, caster);
+                target.damage(sorcererConfig.souldrawDamage, caster);
                 //Heal the attacker for half of the damage dealt
                 Utils.healLivingEntity(caster, target.getLastDamage() / 2);
-                SouldrawCooldown = Utils.setSkillCooldown(1);
+                SouldrawCooldown = Utils.setSkillCooldown(sorcererConfig.souldrawCooldown);
             }
         }
     }
@@ -195,8 +196,8 @@ public class Sorcerer extends XRPGClass {
         if (result.getHitEntity() != null) {
             caster.sendMessage("Hit " + result.getHitEntity().getName());
             LivingEntity target = (LivingEntity) result.getHitEntity();
-            new BloodCorruptionTask(caster, target).runTaskLater(plugin, 4 * 20L);
-            BloodCorruptionCooldown = Utils.setSkillCooldown(20);
+            new BloodCorruptionTask(caster, target).runTaskLater(plugin, sorcererConfig.bloodCorruptionDuration * 20L);
+            BloodCorruptionCooldown = Utils.setSkillCooldown(sorcererConfig.bloodCorruptionCooldown);
         }
     }
 
@@ -209,7 +210,7 @@ public class Sorcerer extends XRPGClass {
         RayTraceResult result = doRayTrace(caster);
         if (result.getHitEntity() != null) {
             //doRayTrace only returns livingEntities so no need to check
-            new OverheatTask((LivingEntity) result.getHitEntity()).runTaskLater(plugin, 100L);
+            new OverheatTask((LivingEntity) result.getHitEntity()).runTaskLater(plugin, sorcererConfig.overheatDuration * 20L);
             OverheatCooldown = Utils.setSkillCooldown(sorcererConfig.overheatCooldown);
         }
     }
@@ -263,14 +264,18 @@ public class Sorcerer extends XRPGClass {
                     }
 
                     for (LivingEntity livingEntity : livingEntities) {
-                        livingEntity.damage(4, caster);
+                        if (livingEntity instanceof Villager && sorcererConfig.trailOfFlamesIgnoreVillagers) {
+                            //Skip over villagers if the config setting is true.
+                            continue;
+                        }
+                        livingEntity.damage(sorcererConfig.trailOfFlamesDamage, caster);
                     }
 
                     count++;
                 }
-            }.runTaskTimer(plugin, 10, 10);
+            }.runTaskTimer(plugin, 20, 10);
 
-            TrailOfFlamesCooldown = Utils.setSkillCooldown(12);
+            TrailOfFlamesCooldown = Utils.setSkillCooldown(sorcererConfig.trailOfFlamesCooldown);
         }
 
     }
