@@ -1,7 +1,7 @@
 package me.xepos.rpg.tasks;
 
 import net.minecraft.server.v1_16_R3.DamageSource;
-import org.bukkit.Material;
+import org.bukkit.ChatColor;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftLivingEntity;
 import org.bukkit.enchantments.Enchantment;
@@ -22,6 +22,8 @@ public class OverheatTask extends BukkitRunnable {
     @Override
     public void run() {
 
+        target.sendMessage(ChatColor.RED + "You've been hit by Overheat!");
+        target.sendMessage(ChatColor.RED + "Get in water to reduce the damage!");
         double armorValue = target.getAttribute(Attribute.GENERIC_ARMOR).getValue();
 
         ArrayList<ItemStack> armor = new ArrayList<ItemStack>() {{
@@ -45,7 +47,7 @@ public class OverheatTask extends BukkitRunnable {
 
         double dmg = 5;
 
-        if (target.getLocation().getBlock().getType() == Material.WATER) {
+        if (!target.isInWater()) {
             dmg = (5 + armorValue / 2) * 1 / (1 - enchantLevel * 0.04);
             target.sendMessage("Final damage: " + dmg);
             ((CraftLivingEntity) target).getHandle().damageEntity(DamageSource.FIRE, (float) dmg);
