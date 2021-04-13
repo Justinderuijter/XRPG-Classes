@@ -21,6 +21,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class ShadowStep extends XRPGSkill {
 
@@ -31,47 +32,14 @@ public class ShadowStep extends XRPGSkill {
         super(plugin, activationType, skillName);
     }
 
+    public ShadowStep(XRPG plugin, List<SkillActivationType> activationTypes, String skillName) {
+        super(plugin, activationTypes, skillName);
+    }
+
     @Override
     public void activate(Event event) {
         if (event instanceof PlayerInteractEvent) {
-            PlayerInteractEvent e = (PlayerInteractEvent) event;
-            Player player = e.getPlayer();
-            if (substitute == null) {
-                if (!isSkillReady()) {
-                    player.sendMessage(Utils.getCooldownMessage("Substitute", getCooldown()));
-                    return;
-                }
-                AssassinConfig assassinConfig = AssassinConfig.getInstance();
-
-                //Creating armorstand at player's location and setting the right properties
-                ArmorStand armorStand = player.getWorld().spawn(player.getLocation(), ArmorStand.class);
-                armorStand.setInvulnerable(true);
-                armorStand.setGravity(false);
-                armorStand.setCollidable(false);
-
-                armorStand.setCustomName(player.getName());
-                armorStand.setCustomNameVisible(true);
-
-
-                setArmorStandArmor(player, armorStand);
-
-                substitute = armorStand;
-                setCooldown(assassinConfig.shadowStepCooldown);
-
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        if (substitute != null) {
-                            substitute.remove();
-                            substitute = null;
-                        }
-                    }
-                }.runTaskLater(getPlugin(), assassinConfig.shadowStepDuration * 20L);
-            } else {
-                player.teleport(substitute.getLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
-                substitute.remove();
-                substitute = null;
-            }
+            doSub((PlayerInteractEvent) event);
         }
     }
 
@@ -103,6 +71,46 @@ public class ShadowStep extends XRPGSkill {
 
             armorStandEquipement.setItem(slot, armor.get(slot), true);
             armorStand.addEquipmentLock(slot, ArmorStand.LockType.REMOVING_OR_CHANGING);
+        }
+    }
+
+    private void doSub(PlayerInteractEvent e) {
+        Player player = e.getPlayer();
+        if (substitute == null) {
+            if (!isSkillReady()) {
+                player.sendMessage(Utils.getCooldownMessage("Substitute", getCooldown()));
+                return;
+            }
+            AssassinConfig assassinConfig = AssassinConfig.getInstance();
+
+            //Creating armorstand at player's location and setting the right properties
+            ArmorStand armorStand = player.getWorld().spawn(player.getLocation(), ArmorStand.class);
+            armorStand.setInvulnerable(true);
+            armorStand.setGravity(false);
+            armorStand.setCollidable(false);
+
+            armorStand.setCustomName(player.getName());
+            armorStand.setCustomNameVisible(true);
+
+
+            setArmorStandArmor(player, armorStand);
+
+            substitute = armorStand;
+            setCooldown(assassinConfig.shadowStepCooldown);
+
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    if (substitute != null) {
+                        substitute.remove();
+                        substitute = null;
+                    }
+                }
+            }.runTaskLater(getPlugin(), assassinConfig.shadowStepDuration * 20L);
+        } else {
+            player.teleport(substitute.getLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
+            substitute.remove();
+            substitute = null;
         }
     }
 

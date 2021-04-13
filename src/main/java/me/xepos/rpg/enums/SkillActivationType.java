@@ -5,5 +5,6 @@ public enum SkillActivationType {
     HIT_BY_ENTITY,
     USE_ITEM_RIGHT,
     USE_ITEM_LEFT,
-    SHOOT_BOW
+    SHOOT_BOW,
+    PROJECTILE_LAUNCH;
 }

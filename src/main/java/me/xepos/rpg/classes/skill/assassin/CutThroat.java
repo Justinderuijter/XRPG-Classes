@@ -12,9 +12,15 @@ import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.util.Vector;
 
+import java.util.List;
+
 public class CutThroat extends XRPGSkill {
     public CutThroat(XRPG plugin, SkillActivationType activationType, String skillName) {
         super(plugin, activationType, skillName);
+    }
+
+    public CutThroat(XRPG plugin, List<SkillActivationType> activationTypes, String skillName) {
+        super(plugin, activationTypes, skillName);
     }
 
     @Override

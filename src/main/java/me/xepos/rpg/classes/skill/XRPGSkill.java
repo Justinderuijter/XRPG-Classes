@@ -4,15 +4,25 @@ import me.xepos.rpg.XRPG;
 import me.xepos.rpg.enums.SkillActivationType;
 import org.bukkit.event.Event;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class XRPGSkill {
-    private SkillActivationType activationType;
+    private List<SkillActivationType> activationTypes = new ArrayList<>();
     private long cooldown;
     private String skillName;
     private final XRPG plugin;
 
     public XRPGSkill(XRPG plugin, SkillActivationType activationType, String skillName) {
         this.plugin = plugin;
-        this.activationType = activationType;
+        this.activationTypes.add(activationType);
+        this.skillName = skillName;
+        this.cooldown = System.currentTimeMillis();
+    }
+
+    public XRPGSkill(XRPG plugin, List<SkillActivationType> activationTypes, String skillName) {
+        this.plugin = plugin;
+        this.activationTypes.addAll(activationTypes);
         this.skillName = skillName;
         this.cooldown = System.currentTimeMillis();
     }
@@ -21,12 +31,16 @@ public abstract class XRPGSkill {
 
     public abstract void initialize();
 
-    public SkillActivationType getActivationType() {
-        return activationType;
+    public List<SkillActivationType> getActivationTypes() {
+        return activationTypes;
     }
 
-    public void setActivationType(SkillActivationType activationType) {
-        this.activationType = activationType;
+    public void setActivationTypes(List<SkillActivationType> activationTypes) {
+        this.activationTypes = activationTypes;
+    }
+
+    public void setCooldown(long cooldown) {
+        this.cooldown = cooldown;
     }
 
     public long getCooldown() {
