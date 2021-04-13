@@ -1,18 +1,14 @@
 package me.xepos.rpg.classes;
 
 import me.xepos.rpg.XRPG;
+import me.xepos.rpg.classes.skill.assassin.Smokebomb;
 import me.xepos.rpg.configuration.AssassinConfig;
-import me.xepos.rpg.tasks.EndInvisibilityTask;
+import me.xepos.rpg.enums.SkillActivationType;
 import me.xepos.rpg.utils.Utils;
-import net.minecraft.server.v1_16_R3.EnumItemSlot;
-import net.minecraft.server.v1_16_R3.ItemStack;
-import net.minecraft.server.v1_16_R3.PacketPlayOutEntityEquipment;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -29,9 +25,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 //This class should probably implement reflection to make it safe to use
 //across multiple version of spigot.
@@ -44,7 +38,7 @@ public class Assassin extends XRPGClass {
 
     private final AssassinConfig assassinConfig = AssassinConfig.getInstance();
 
-    private long smokeCooldown = Utils.setSkillCooldown(assassinConfig.smokeBombCooldown);
+    private Smokebomb smokebomb = new Smokebomb(plugin, SkillActivationType.USE_ITEM_RIGHT, "smokeBomb");
     private long cutThroatCooldown = Utils.setSkillCooldown(assassinConfig.cutThroatCooldown);
     private long shadowStepCooldown = Utils.setSkillCooldown(assassinConfig.shadowStepCooldown);
     private ArmorStand substitute = null;
@@ -104,7 +98,7 @@ public class Assassin extends XRPGClass {
         Player player = e.getPlayer();
         org.bukkit.inventory.ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
         if (itemInMainHand.getType() == Material.SNOWBALL && Utils.isItemNameMatching(itemInMainHand, "Smoke Bomb")) {
-            doSmokebomb(player);
+            smokebomb.activate(e);
         } else if (itemInMainHand.getType().toString().toLowerCase().contains("_axe") || itemInMainHand.getType().toString().toLowerCase().contains("_sword")) {
             if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK)
                 doSubstitute(player);
@@ -208,35 +202,6 @@ public class Assassin extends XRPGClass {
             armorStandEquipement.setItem(slot, armor.get(slot), true);
             armorStand.addEquipmentLock(slot, ArmorStand.LockType.REMOVING_OR_CHANGING);
         }
-    }
-
-    private void doSmokebomb(Player player) {
-        if (smokeCooldown > System.currentTimeMillis()) {
-            player.sendMessage(Color.RED + "Smokebomb is still on cooldown for " + (smokeCooldown - System.currentTimeMillis()) / 1000 + " seconds");
-            return;
-        }
-
-        player.setInvisible(true);
-        player.sendMessage("You're now invisible!");
-        //Custom packet sending starts here, if something breaks between versions it's probably this
-        final List<com.mojang.datafixers.util.Pair<EnumItemSlot, ItemStack>> equipmentList = new ArrayList<>();
-        equipmentList.add(new com.mojang.datafixers.util.Pair<>(EnumItemSlot.HEAD, CraftItemStack.asNMSCopy(new org.bukkit.inventory.ItemStack(Material.AIR))));
-        equipmentList.add(new com.mojang.datafixers.util.Pair<>(EnumItemSlot.CHEST, CraftItemStack.asNMSCopy(new org.bukkit.inventory.ItemStack(Material.AIR))));
-        equipmentList.add(new com.mojang.datafixers.util.Pair<>(EnumItemSlot.LEGS, CraftItemStack.asNMSCopy(new org.bukkit.inventory.ItemStack(Material.AIR))));
-        equipmentList.add(new com.mojang.datafixers.util.Pair<>(EnumItemSlot.FEET, CraftItemStack.asNMSCopy(new org.bukkit.inventory.ItemStack(Material.AIR))));
-        equipmentList.add(new com.mojang.datafixers.util.Pair<>(EnumItemSlot.MAINHAND, CraftItemStack.asNMSCopy(new org.bukkit.inventory.ItemStack(Material.AIR))));
-        equipmentList.add(new com.mojang.datafixers.util.Pair<>(EnumItemSlot.OFFHAND, CraftItemStack.asNMSCopy(new org.bukkit.inventory.ItemStack(Material.AIR))));
-        //Creating the packet we're going to send
-        final PacketPlayOutEntityEquipment entityEquipmentPacket = new PacketPlayOutEntityEquipment(player.getEntityId(), equipmentList);
-
-        //List all affected players so we can undo the packet later
-        List<Player> affectedPlayers = new ArrayList(player.getWorld().getNearbyEntities(player.getLocation(), 20, 10, 20, p -> p instanceof Player && p != player));
-        for (Player ent : affectedPlayers) {
-            ((CraftPlayer) ent).getHandle().playerConnection.sendPacket(entityEquipmentPacket);//send affected players the packet
-        }
-
-        smokeCooldown = Utils.setSkillCooldown(assassinConfig.smokeBombCooldown);
-        new EndInvisibilityTask(player, affectedPlayers, this).runTaskLater(plugin, assassinConfig.smokeBombDuration * 20L);
     }
 
 }
