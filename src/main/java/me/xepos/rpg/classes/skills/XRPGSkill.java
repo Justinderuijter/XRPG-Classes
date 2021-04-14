@@ -1,47 +1,33 @@
-package me.xepos.rpg.classes.skill;
+package me.xepos.rpg.classes.skills;
 
 import me.xepos.rpg.XRPG;
-import me.xepos.rpg.enums.SkillActivationType;
+import me.xepos.rpg.dependencies.parties.IPartyManager;
+import me.xepos.rpg.dependencies.protection.ProtectionSet;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class XRPGSkill {
-    private List<SkillActivationType> activationTypes = new ArrayList<>();
     private long cooldown;
     private String skillName;
     private final XRPG plugin;
+    private final ProtectionSet protectionSet;
+    private final IPartyManager partyManager;
 
-    public XRPGSkill(XRPG plugin, SkillActivationType activationType, String skillName) {
+    public XRPGSkill(XRPG plugin, String skillName) {
         this.plugin = plugin;
-        this.activationTypes.add(activationType);
         this.skillName = skillName;
+        this.protectionSet = plugin.getProtectionSet();
+        this.partyManager = plugin.getPartyManager();
         this.cooldown = System.currentTimeMillis();
     }
 
-    public XRPGSkill(XRPG plugin, List<SkillActivationType> activationTypes, String skillName) {
-        this.plugin = plugin;
-        this.activationTypes.addAll(activationTypes);
-        this.skillName = skillName;
-        this.cooldown = System.currentTimeMillis();
-    }
 
     public abstract void activate(Event event);
 
     public abstract void initialize();
-
-    public List<SkillActivationType> getActivationTypes() {
-        return activationTypes;
-    }
-
-    public void setActivationTypes(List<SkillActivationType> activationTypes) {
-        this.activationTypes = activationTypes;
-    }
-
-    public void setCooldown(long cooldown) {
-        this.cooldown = cooldown;
-    }
 
     public long getCooldown() {
         return cooldown;
@@ -65,5 +51,18 @@ public abstract class XRPGSkill {
 
     public XRPG getPlugin() {
         return this.plugin;
+    }
+
+    public ProtectionSet getProtectionSet() {
+        return protectionSet;
+    }
+
+    public IPartyManager getPartyManager() {
+        return partyManager;
+    }
+
+    @SuppressWarnings("all")
+    public List<Player> getNearbyAlliedPlayers(Player caster, int x, int y, int z) {
+        return (List<Player>) new ArrayList(caster.getWorld().getNearbyEntities(caster.getLocation(), x, y, z, p -> p instanceof Player && p != caster && partyManager.isPlayerAllied(caster, (Player) p)));
     }
 }

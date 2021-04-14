@@ -1,10 +1,9 @@
-package me.xepos.rpg.classes.skill.assassin;
+package me.xepos.rpg.classes.skills.assassin;
 
 import com.mojang.datafixers.util.Pair;
 import me.xepos.rpg.XRPG;
-import me.xepos.rpg.classes.skill.XRPGSkill;
+import me.xepos.rpg.classes.skills.XRPGSkill;
 import me.xepos.rpg.configuration.AssassinConfig;
-import me.xepos.rpg.enums.SkillActivationType;
 import me.xepos.rpg.tasks.EndInvisibilityTask;
 import me.xepos.rpg.utils.Utils;
 import net.minecraft.server.v1_16_R3.EnumItemSlot;
@@ -26,12 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Smokebomb extends XRPGSkill {
-    public Smokebomb(XRPG plugin, SkillActivationType activationType, String skillName) {
-        super(plugin, activationType, skillName);
-    }
-
-    public Smokebomb(XRPG plugin, List<SkillActivationType> activationTypes, String skillName) {
-        super(plugin, activationTypes, skillName);
+    public Smokebomb(XRPG plugin, String skillName) {
+        super(plugin, skillName);
     }
 
 

@@ -20,6 +20,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
@@ -301,6 +302,10 @@ public final class Utils {
         XRPGPlayer xrpgPlayer = GetRPG(player);
         if (xrpgPlayer.dmgTakenMultipliers.containsKey(source))
             xrpgPlayer.dmgTakenMultipliers.remove(source);
+    }
+
+    public static void addPotionEffects(List<Player> players, List<PotionEffect> effects) {
+
     }
 
 }

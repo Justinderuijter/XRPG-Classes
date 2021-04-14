@@ -1,9 +1,8 @@
-package me.xepos.rpg.classes.skill.assassin;
+package me.xepos.rpg.classes.skills.assassin;
 
 import me.xepos.rpg.XRPG;
-import me.xepos.rpg.classes.skill.XRPGSkill;
+import me.xepos.rpg.classes.skills.XRPGSkill;
 import me.xepos.rpg.configuration.AssassinConfig;
-import me.xepos.rpg.enums.SkillActivationType;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -21,20 +20,16 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
-import java.util.List;
 
 public class ShadowStep extends XRPGSkill {
 
     private ArmorStand substitute = null;
 
 
-    public ShadowStep(XRPG plugin, SkillActivationType activationType, String skillName) {
-        super(plugin, activationType, skillName);
+    public ShadowStep(XRPG plugin, String skillName) {
+        super(plugin, skillName);
     }
 
-    public ShadowStep(XRPG plugin, List<SkillActivationType> activationTypes, String skillName) {
-        super(plugin, activationTypes, skillName);
-    }
 
     @Override
     public void activate(Event event) {

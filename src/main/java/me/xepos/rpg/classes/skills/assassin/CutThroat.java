@@ -1,9 +1,8 @@
-package me.xepos.rpg.classes.skill.assassin;
+package me.xepos.rpg.classes.skills.assassin;
 
 import me.xepos.rpg.XRPG;
-import me.xepos.rpg.classes.skill.XRPGSkill;
+import me.xepos.rpg.classes.skills.XRPGSkill;
 import me.xepos.rpg.configuration.AssassinConfig;
-import me.xepos.rpg.enums.SkillActivationType;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
@@ -12,15 +11,9 @@ import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.util.Vector;
 
-import java.util.List;
-
 public class CutThroat extends XRPGSkill {
-    public CutThroat(XRPG plugin, SkillActivationType activationType, String skillName) {
-        super(plugin, activationType, skillName);
-    }
-
-    public CutThroat(XRPG plugin, List<SkillActivationType> activationTypes, String skillName) {
-        super(plugin, activationTypes, skillName);
+    public CutThroat(XRPG plugin, String skillName) {
+        super(plugin, skillName);
     }
 
     @Override
