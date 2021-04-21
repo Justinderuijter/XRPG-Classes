@@ -2,6 +2,7 @@ package me.xepos.rpg.classes.skills.assassin;
 
 import com.mojang.datafixers.util.Pair;
 import me.xepos.rpg.XRPG;
+import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.classes.skills.XRPGSkill;
 import me.xepos.rpg.configuration.AssassinConfig;
 import me.xepos.rpg.tasks.EndInvisibilityTask;
@@ -25,8 +26,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Smokebomb extends XRPGSkill {
-    public Smokebomb(XRPG plugin, String skillName) {
-        super(plugin, skillName);
+    public Smokebomb(XRPG plugin, String skillName, XRPGPlayer xrpgPlayer) {
+        super(xrpgPlayer, skillName, plugin);
+
+        xrpgPlayer.getRightClickEventHandler().addSkill(this);
     }
 
 

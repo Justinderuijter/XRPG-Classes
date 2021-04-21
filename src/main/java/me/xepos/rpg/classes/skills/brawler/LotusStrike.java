@@ -1,6 +1,7 @@
 package me.xepos.rpg.classes.skills.brawler;
 
 import me.xepos.rpg.XRPG;
+import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.classes.skills.XRPGSkill;
 import me.xepos.rpg.configuration.BrawlerConfig;
 import org.bukkit.ChatColor;
@@ -19,8 +20,8 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.*;
 
 public class LotusStrike extends XRPGSkill {
-    public LotusStrike(XRPG plugin, String skillName) {
-        super(plugin, skillName);
+    public LotusStrike(XRPG plugin, String skillName, XRPGPlayer xrpgPlayer) {
+        super(xrpgPlayer, skillName, plugin);
     }
 
     BrawlerConfig brawlerConfig = BrawlerConfig.getInstance();

@@ -1,6 +1,7 @@
 package me.xepos.rpg.classes.skills.assassin;
 
 import me.xepos.rpg.XRPG;
+import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.classes.skills.XRPGSkill;
 import me.xepos.rpg.configuration.AssassinConfig;
 import me.xepos.rpg.utils.Utils;
@@ -26,8 +27,10 @@ public class ShadowStep extends XRPGSkill {
     private ArmorStand substitute = null;
 
 
-    public ShadowStep(XRPG plugin, String skillName) {
-        super(plugin, skillName);
+    public ShadowStep(XRPG plugin, String skillName, XRPGPlayer xrpgPlayer) {
+        super(xrpgPlayer, skillName, plugin);
+
+        xrpgPlayer.getRightClickEventHandler().addSkill(this);
     }
 
 

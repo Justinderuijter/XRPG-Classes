@@ -1,6 +1,7 @@
 package me.xepos.rpg.classes.skills.brawler;
 
 import me.xepos.rpg.XRPG;
+import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.classes.skills.XRPGSkill;
 import me.xepos.rpg.configuration.BrawlerConfig;
 import me.xepos.rpg.utils.Utils;
@@ -30,8 +31,8 @@ public class InnerStrength extends XRPGSkill {
         add(new PotionEffect(PotionEffectType.ABSORPTION, brawlerConfig.effectDuration * 20, 0, false, false, true));
     }};
 
-    public InnerStrength(XRPG plugin, String skillName, LotusStrike lotusStrike) {
-        super(plugin, skillName);
+    public InnerStrength(XRPG plugin, String skillName, XRPGPlayer xrpgPlayer, LotusStrike lotusStrike) {
+        super(xrpgPlayer, skillName, plugin);
 
         this.lotusStrike = lotusStrike;
     }

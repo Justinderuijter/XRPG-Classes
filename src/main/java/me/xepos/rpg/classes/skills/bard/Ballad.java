@@ -1,6 +1,7 @@
 package me.xepos.rpg.classes.skills.bard;
 
 import me.xepos.rpg.XRPG;
+import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.classes.skills.XRPGSkill;
 import me.xepos.rpg.configuration.BardConfig;
 import me.xepos.rpg.tasks.HealOverTimeTask;
@@ -13,8 +14,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import java.util.List;
 
 public class Ballad extends XRPGSkill {
-    public Ballad(XRPG plugin, String skillName) {
-        super(plugin, skillName);
+    public Ballad(XRPG plugin, String skillName, XRPGPlayer xrpgPlayer) {
+        super(xrpgPlayer, skillName, plugin);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package me.xepos.rpg.classes.skills.bard;
 
 import me.xepos.rpg.XRPG;
+import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.classes.skills.XRPGSkill;
 import me.xepos.rpg.configuration.BardConfig;
 import me.xepos.rpg.utils.Utils;
@@ -15,8 +16,8 @@ import java.util.List;
 
 public class PotionAoE extends XRPGSkill {
 
-    public PotionAoE(XRPG plugin, String skillName) {
-        super(plugin, skillName);
+    public PotionAoE(XRPG plugin, String skillName, XRPGPlayer xrpgPlayer) {
+        super(xrpgPlayer, skillName, plugin);
 
     }
 

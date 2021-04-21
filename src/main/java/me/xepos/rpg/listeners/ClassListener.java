@@ -1,6 +1,7 @@
 package me.xepos.rpg.listeners;
 
-import me.xepos.rpg.*;
+import me.xepos.rpg.XRPG;
+import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.database.IDatabaseManager;
 import me.xepos.rpg.database.tasks.savePlayerDataTask;
 import me.xepos.rpg.enums.DamageTakenSource;
@@ -10,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
@@ -37,21 +39,20 @@ public class ClassListener implements Listener
             if (xrpgPlayer.isStunned())
                 e.setCancelled(true);
             else
-                xrpgPlayer.onHit(e);
+                xrpgPlayer.getDamageDealtEventHandler().invoke(e);
         }
 
-        if (e.getEntity() instanceof Player)
-        {
-            Player player = (Player)e.getEntity();
+        if (e.getEntity() instanceof Player) {
+            Player player = (Player) e.getEntity();
             player.sendMessage("You have been hurt!");
             XRPGPlayer xrpgPlayer = Utils.GetRPG(player);
-            if (xrpgPlayer.dmgTakenMultipliers.size() > 0)
-            {
-                for (DamageTakenSource dtSource:xrpgPlayer.dmgTakenMultipliers.keySet()) {
+            if (xrpgPlayer.dmgTakenMultipliers.size() > 0) {
+                for (DamageTakenSource dtSource : xrpgPlayer.dmgTakenMultipliers.keySet()) {
                     e.setDamage(e.getDamage() * xrpgPlayer.dmgTakenMultipliers.get(dtSource));
                 }
             }
-            xrpgPlayer.onHurt(e);
+            xrpgPlayer.getDamageTakenEventHandler().invoke(e);
+            //xrpgPlayer.onHurt(e);
         }
     }
 
@@ -101,10 +102,22 @@ public class ClassListener implements Listener
     }
 
     @EventHandler
-    public void onPlayerInteract(PlayerInteractEvent e)
-    {
+    public void onPlayerInteract(PlayerInteractEvent e) {
         Player player = e.getPlayer();
-        Utils.GetRPG(player).onUseItem(e);
+        //Utils.GetRPG(player).onUseItem(e);
+        if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            if (player.isSneaking())
+                Utils.GetRPG(player).getSneakRightClickEventHandler().invoke(e);
+            else
+                Utils.GetRPG(player).getRightClickEventHandler().invoke(e);
+
+        } else if (e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK) {
+            if (player.isSneaking())
+                Utils.GetRPG(player).getSneakLeftClickEventHandler().invoke(e);
+            else
+                Utils.GetRPG(player).getLeftClickEventHandler().invoke(e);
+
+        }
     }
 
     @EventHandler

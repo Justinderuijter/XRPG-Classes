@@ -1,6 +1,7 @@
 package me.xepos.rpg.classes.skills.bard;
 
 import me.xepos.rpg.XRPG;
+import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.classes.skills.XRPGSkill;
 import me.xepos.rpg.configuration.BardConfig;
 import me.xepos.rpg.utils.Utils;
@@ -16,8 +17,8 @@ import java.util.List;
 public class GoldenAppleAoE extends XRPGSkill {
     private final EnchantedGoldenAppleAoE GAppleAoE;
 
-    public GoldenAppleAoE(XRPG plugin, String skillName, @Nullable EnchantedGoldenAppleAoE GAppleAoE) {
-        super(plugin, skillName);
+    public GoldenAppleAoE(XRPG plugin, String skillName, XRPGPlayer xrpgPlayer, @Nullable EnchantedGoldenAppleAoE GAppleAoE) {
+        super(xrpgPlayer, skillName, plugin);
 
         this.GAppleAoE = GAppleAoE;
     }
