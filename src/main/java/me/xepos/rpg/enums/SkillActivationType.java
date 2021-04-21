@@ -3,8 +3,8 @@ package me.xepos.rpg.enums;
 public enum SkillActivationType {
     HIT_ENTITY,
     HIT_BY_ENTITY,
-    USE_ITEM_RIGHT,
-    USE_ITEM_LEFT,
+    USE_ITEM,
     SHOOT_BOW,
-    PROJECTILE_LAUNCH;
+    PROJECTILE_LAUNCH,
+    CONSUME_ITEM;
 }

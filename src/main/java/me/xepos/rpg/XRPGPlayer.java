@@ -1,7 +1,9 @@
 package me.xepos.rpg;
 
-import me.xepos.rpg.classes.*;
+import me.xepos.rpg.classes.Ranger;
+import me.xepos.rpg.classes.XRPGClass;
 import me.xepos.rpg.enums.DamageTakenSource;
+import me.xepos.rpg.handlers.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
@@ -18,13 +20,26 @@ public class XRPGPlayer {
     private String classId;
     private int freeChangeTickets = 2;
 
+    //Interact Handlers
+    private RightClickEventHandler rightClickEventHandler = new RightClickEventHandler();
+    private LeftClickEventHandler leftClickEventHandler = new LeftClickEventHandler();
+    private SneakRightClickEventHandler sneakRightClickEventHandler = new SneakRightClickEventHandler();
+    private SneakLeftClickEventHandler sneakLeftClickEventHandler = new SneakLeftClickEventHandler();
+
+    //Interact Handlers (Entity)
+    private RightClickEntityEventHandler rightClickEntityEventHandler = new RightClickEntityEventHandler();
+    private SneakRightClickEntityEventHandler sneakRightClickEntityEventHandler = new SneakRightClickEntityEventHandler();
+    //Damage Handlers
+    private DamageTakenEventHandler damageTakenEventHandler = new DamageTakenEventHandler();
+    private DamageDealtEventHandler damageDealtEventHandler = new DamageDealtEventHandler();
+
+    //Status Effects
     public transient ConcurrentHashMap<DamageTakenSource, Double> dmgTakenMultipliers = new ConcurrentHashMap<>();
     private transient boolean isStunned = false;
     private transient long lastStunTime = 0;
 
     //Constructor for loading profiles
-    public XRPGPlayer(UUID playerId, XRPGClass XRPGClass)
-    {
+    public XRPGPlayer(UUID playerId, XRPGClass XRPGClass) {
         this.player = null;
         this.playerId = playerId;
         this.playerClass = XRPGClass;
@@ -145,5 +160,75 @@ public class XRPGPlayer {
 
     public void setPlayerId(UUID playerId) {
         this.playerId = playerId;
+    }
+
+    //////////////////////////////////
+    //                              //
+    //  Handlers getters & setters  //
+    //                              //
+    //////////////////////////////////
+
+    public RightClickEventHandler getRightClickEventHandler() {
+        return rightClickEventHandler;
+    }
+
+    public void setRightClickEventHandler(RightClickEventHandler rightClickEventHandler) {
+        this.rightClickEventHandler = rightClickEventHandler;
+    }
+
+    public LeftClickEventHandler getLeftClickEventHandler() {
+        return leftClickEventHandler;
+    }
+
+    public void setLeftClickEventHandler(LeftClickEventHandler leftClickEventHandler) {
+        this.leftClickEventHandler = leftClickEventHandler;
+    }
+
+    public SneakRightClickEventHandler getSneakRightClickEventHandler() {
+        return sneakRightClickEventHandler;
+    }
+
+    public void setSneakRightClickEventHandler(SneakRightClickEventHandler sneakRightClickEventHandler) {
+        this.sneakRightClickEventHandler = sneakRightClickEventHandler;
+    }
+
+    public SneakLeftClickEventHandler getSneakLeftClickEventHandler() {
+        return sneakLeftClickEventHandler;
+    }
+
+    public void setSneakLeftClickEventHandler(SneakLeftClickEventHandler sneakLeftClickEventHandler) {
+        this.sneakLeftClickEventHandler = sneakLeftClickEventHandler;
+    }
+
+    public DamageTakenEventHandler getDamageTakenEventHandler() {
+        return damageTakenEventHandler;
+    }
+
+    public void setDamageTakenEventHandler(DamageTakenEventHandler damageTakenEventHandler) {
+        this.damageTakenEventHandler = damageTakenEventHandler;
+    }
+
+    public DamageDealtEventHandler getDamageDealtEventHandler() {
+        return damageDealtEventHandler;
+    }
+
+    public void setDamageDealtEventHandler(DamageDealtEventHandler damageDealtEventHandler) {
+        this.damageDealtEventHandler = damageDealtEventHandler;
+    }
+
+    public RightClickEntityEventHandler getRightClickEntityEventHandler() {
+        return rightClickEntityEventHandler;
+    }
+
+    public void setRightClickEntityEventHandler(RightClickEntityEventHandler rightClickEntityEventHandler) {
+        this.rightClickEntityEventHandler = rightClickEntityEventHandler;
+    }
+
+    public SneakRightClickEntityEventHandler getSneakRightClickEntityEventHandler() {
+        return sneakRightClickEntityEventHandler;
+    }
+
+    public void setSneakRightClickEntityEventHandler(SneakRightClickEntityEventHandler sneakRightClickEntityEventHandler) {
+        this.sneakRightClickEntityEventHandler = sneakRightClickEntityEventHandler;
     }
 }

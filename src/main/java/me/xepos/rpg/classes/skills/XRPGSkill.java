@@ -1,8 +1,10 @@
 package me.xepos.rpg.classes.skills;
 
 import me.xepos.rpg.XRPG;
+import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.dependencies.parties.IPartyManager;
 import me.xepos.rpg.dependencies.protection.ProtectionSet;
+import me.xepos.rpg.enums.SkillActivationType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 
@@ -10,13 +12,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class XRPGSkill {
+
+    private XRPGPlayer xrpgPlayer;
     private long cooldown;
     private String skillName;
+    private SkillActivationType activationType;
     private final XRPG plugin;
     private final ProtectionSet protectionSet;
     private final IPartyManager partyManager;
 
-    public XRPGSkill(XRPG plugin, String skillName) {
+    public XRPGSkill(XRPGPlayer xrpgPlayer, String skillName, XRPG plugin) {
+        this.xrpgPlayer = xrpgPlayer;
         this.plugin = plugin;
         this.skillName = skillName;
         this.protectionSet = plugin.getProtectionSet();
@@ -64,5 +70,21 @@ public abstract class XRPGSkill {
     @SuppressWarnings("all")
     public List<Player> getNearbyAlliedPlayers(Player caster, int x, int y, int z) {
         return (List<Player>) new ArrayList(caster.getWorld().getNearbyEntities(caster.getLocation(), x, y, z, p -> p instanceof Player && p != caster && partyManager.isPlayerAllied(caster, (Player) p)));
+    }
+
+    public XRPGPlayer getXRPGPlayer() {
+        return xrpgPlayer;
+    }
+
+    public void setXRPGPlayer(XRPGPlayer xrpgPlayer) {
+        this.xrpgPlayer = xrpgPlayer;
+    }
+
+    public SkillActivationType getActivationType() {
+        return activationType;
+    }
+
+    public void setActivationType(SkillActivationType activationType) {
+        this.activationType = activationType;
     }
 }
