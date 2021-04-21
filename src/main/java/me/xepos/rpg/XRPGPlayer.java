@@ -32,6 +32,8 @@ public class XRPGPlayer {
     //Damage Handlers
     private DamageTakenEventHandler damageTakenEventHandler = new DamageTakenEventHandler();
     private DamageDealtEventHandler damageDealtEventHandler = new DamageDealtEventHandler();
+    //Bow Handlers
+    private ShootBowEventHandler shootBowEventHandler = new ShootBowEventHandler();
 
     //Status Effects
     public transient ConcurrentHashMap<DamageTakenSource, Double> dmgTakenMultipliers = new ConcurrentHashMap<>();
@@ -230,5 +232,13 @@ public class XRPGPlayer {
 
     public void setSneakRightClickEntityEventHandler(SneakRightClickEntityEventHandler sneakRightClickEntityEventHandler) {
         this.sneakRightClickEntityEventHandler = sneakRightClickEntityEventHandler;
+    }
+
+    public ShootBowEventHandler getShootBowEventHandler() {
+        return shootBowEventHandler;
+    }
+
+    public void setShootBowEventHandler(ShootBowEventHandler shootBowEventHandler) {
+        this.shootBowEventHandler = shootBowEventHandler;
     }
 }
