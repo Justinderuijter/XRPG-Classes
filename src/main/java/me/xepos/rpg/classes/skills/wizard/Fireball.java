@@ -1,0 +1,78 @@
+package me.xepos.rpg.classes.skills.wizard;
+
+import me.xepos.rpg.XRPG;
+import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.classes.skills.XRPGSkill;
+import me.xepos.rpg.configuration.WizardConfig;
+import me.xepos.rpg.datatypes.fireballData;
+import me.xepos.rpg.utils.Utils;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.entity.SmallFireball;
+import org.bukkit.event.Event;
+import org.bukkit.event.player.PlayerInteractEvent;
+
+public class Fireball extends XRPGSkill {
+    private final FireballStackData fireballStackData;
+
+    public Fireball(XRPGPlayer xrpgPlayer, String skillName, XRPG plugin) {
+        super(xrpgPlayer, skillName, plugin);
+
+        fireballStackData = new FireballStackData(xrpgPlayer, skillName, plugin);
+        xrpgPlayer.getRightClickEventHandler().addSkill(this);
+    }
+
+    @Override
+    public void activate(Event event) {
+        if (!(event instanceof PlayerInteractEvent)) return;
+        PlayerInteractEvent e = (PlayerInteractEvent) event;
+        if (e.getItem() == null || e.getItem().getType() != Material.BLAZE_ROD) return;
+
+        doFireball(e);
+    }
+
+    @Override
+    public void initialize() {
+
+    }
+
+    private void doFireball(PlayerInteractEvent e) {
+        //Cancel if skill is still on cooldown and send a message.
+        if (!isSkillReady()) {
+            e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), getCooldown()));
+            return;
+        }
+        WizardConfig wizardConfig = WizardConfig.getInstance();
+
+        //Skill logic
+        e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.ENTITY_BLAZE_SHOOT, 1F, 1F);
+        org.bukkit.entity.Fireball fireball = e.getPlayer().launchProjectile(SmallFireball.class);
+        fireball.setShooter(e.getPlayer());
+
+        if (!getPlugin().fireBalls.containsKey(fireball.getEntityId())) {
+            //For some reason damage is halved so doubling it to get proper value
+            getPlugin().fireBalls.put(fireball.getEntityId(), new fireballData(wizardConfig.smallFireballDamage * 2, 10));
+        }
+
+        this.incrementFireBallStacks(this.fireballStackData.getMaxFireballStacks());
+        this.fireballStackData.setLastStackGained(System.currentTimeMillis());
+        setCooldown(wizardConfig.smallFireballCooldown);
+
+        TextComponent text = new TextComponent("You now have " + this.fireballStackData.getFireBallStacks() + " " + getSkillName() + " stacks");
+        text.setColor(ChatColor.DARK_GREEN.asBungee());
+        e.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, text);
+    }
+
+    private void incrementFireBallStacks(byte maxFireballStacks) {
+        if (this.fireballStackData.getFireBallStacks() < maxFireballStacks) {
+            this.fireballStackData.setFireBallStacks((byte) (this.fireballStackData.getFireBallStacks() + 1));
+        }
+    }
+
+    public FireballStackData getFireballStackData() {
+        return fireballStackData;
+    }
+}
