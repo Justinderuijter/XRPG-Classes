@@ -304,6 +304,11 @@ public final class Utils {
             xrpgPlayer.dmgTakenMultipliers.remove(source);
     }
 
+    public static RayTraceResult rayTrace(LivingEntity caster, int range, FluidCollisionMode collisionMode) {
+        return caster.getLocation().getWorld().rayTrace(caster.getEyeLocation(), caster.getEyeLocation().getDirection(), range, collisionMode, true, 0.3, p -> p instanceof LivingEntity && p != caster);
+
+    }
+
     public static void addPotionEffects(List<Player> players, List<PotionEffect> effects) {
 
     }
