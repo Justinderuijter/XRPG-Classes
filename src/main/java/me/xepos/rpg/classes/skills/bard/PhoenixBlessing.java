@@ -20,47 +20,48 @@ import java.util.List;
 public class PhoenixBlessing extends XRPGSkill {
     public PhoenixBlessing(XRPG plugin, String skillName, XRPGPlayer xrpgPlayer) {
         super(xrpgPlayer, skillName, plugin);
+
+        xrpgPlayer.getSneakRightClickEventHandler().addSkill(this);
     }
 
     @Override
     public void activate(Event event) {
-        if (event instanceof PlayerInteractEvent) {
-            PlayerInteractEvent e = (PlayerInteractEvent) event;
-            if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                Player player = e.getPlayer();
+        if (!(event instanceof PlayerInteractEvent)) return;
+        PlayerInteractEvent e = (PlayerInteractEvent) event;
+        if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            Player player = e.getPlayer();
 
-                if (e.getPlayer().isSneaking()) {
-                    if (!isSkillReady()) {
-                        player.sendMessage(Utils.getCooldownMessage(getSkillName(), getCooldown()));
-                        return;
-                    }
-                    BardConfig bardConfig = BardConfig.getInstance();
-
-                    RayTraceResult result = player.getLocation().getWorld().rayTrace(player.getEyeLocation(), player.getEyeLocation().getDirection(), bardConfig.maxCastRange, FluidCollisionMode.NEVER, true, 0.3, p -> p instanceof LivingEntity && p != player);
-                    if (result != null && result.getHitEntity() != null) {
-                        final int noDamageTickAmount = 100;
-                        LivingEntity entity = (LivingEntity) result.getHitEntity();
-
-                        if (entity instanceof Player) {
-                            if (getProtectionSet().isLocationValid(player.getLocation(), null)) {
-                                entity.setNoDamageTicks(noDamageTickAmount);
-                            }
-                        } else {
-                            entity.setNoDamageTicks(noDamageTickAmount);
-                        }
-
-                        player.sendMessage(ChatColor.DARK_GREEN + "You applied Phoenix's blessing to " + entity.getName() + "!");
-
-                        List<Player> nearbyPlayers = new ArrayList(entity.getLocation().getWorld().getNearbyEntities(entity.getLocation(), 16, 16, 16, p -> p instanceof Player && p != player));
-                        for (Player nearbyPlayer : nearbyPlayers) {
-                            nearbyPlayer.sendMessage(ChatColor.RED + player.getName() + " applied Phoenix's Blessing to " + entity.getName() + " for 5 seconds!");
-                        }
-
-                        setCooldown(bardConfig.phoenixsBlessingCooldown);
-                    }
-                }
+            if (!isSkillReady()) {
+                player.sendMessage(Utils.getCooldownMessage(getSkillName(), getCooldown()));
+                return;
             }
+            BardConfig bardConfig = BardConfig.getInstance();
+
+            RayTraceResult result = player.getLocation().getWorld().rayTrace(player.getEyeLocation(), player.getEyeLocation().getDirection(), bardConfig.maxCastRange, FluidCollisionMode.NEVER, true, 0.3, p -> p instanceof LivingEntity && p != player);
+            if (result != null && result.getHitEntity() != null) {
+                final int noDamageTickAmount = 100;
+                LivingEntity entity = (LivingEntity) result.getHitEntity();
+
+                if (entity instanceof Player) {
+                    if (getProtectionSet().isLocationValid(player.getLocation(), null)) {
+                        entity.setNoDamageTicks(noDamageTickAmount);
+                    }
+                } else {
+                    entity.setNoDamageTicks(noDamageTickAmount);
+                }
+
+                player.sendMessage(ChatColor.DARK_GREEN + "You applied " + getSkillName() + " to " + entity.getName() + "!");
+
+                List<Player> nearbyPlayers = new ArrayList(entity.getLocation().getWorld().getNearbyEntities(entity.getLocation(), 16, 16, 16, p -> p instanceof Player && p != player));
+                for (Player nearbyPlayer : nearbyPlayers) {
+                    nearbyPlayer.sendMessage(ChatColor.RED + player.getName() + " applied Phoenix's Blessing to " + entity.getName() + " for 5 seconds!");
+                }
+
+                setCooldown(bardConfig.phoenixsBlessingCooldown);
+            }
+
         }
+
     }
 
     @Override

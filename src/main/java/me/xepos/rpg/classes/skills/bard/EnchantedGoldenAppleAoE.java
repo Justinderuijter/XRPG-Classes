@@ -16,30 +16,32 @@ import java.util.List;
 public class EnchantedGoldenAppleAoE extends XRPGSkill {
     public EnchantedGoldenAppleAoE(XRPG plugin, String skillName, XRPGPlayer xrpgPlayer) {
         super(xrpgPlayer, skillName, plugin);
+
+        xrpgPlayer.getConsumeItemEventHandler().addSkill(this);
     }
 
     @Override
     public void activate(Event event) {
-        if (event instanceof PlayerItemConsumeEvent) {
-            PlayerItemConsumeEvent e = (PlayerItemConsumeEvent) event;
+        if (!(event instanceof PlayerItemConsumeEvent)) return;
+        PlayerItemConsumeEvent e = (PlayerItemConsumeEvent) event;
 
-            if (!Utils.isSkillReady(getCooldown())) {
-                e.getPlayer().sendMessage(Utils.getCooldownMessage("Enchanted Golden Apple AoE", getCooldown()));
-                e.setCancelled(true);
-                return;
-            }
-
-            List<PotionEffect> potionEffects = new ArrayList<>();
-
-            potionEffects.add(new PotionEffect(PotionEffectType.ABSORPTION, 2400, 3));
-            potionEffects.add(new PotionEffect(PotionEffectType.REGENERATION, 600, 1));
-            potionEffects.add(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 6000, 0));
-            potionEffects.add(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 6000, 0));
-
-            Utils.addPotionEffects(getNearbyAlliedPlayers(e.getPlayer(), 10, 5, 10), potionEffects);
-
-            setCooldown(BardConfig.getInstance().eGoldenAppleCooldown);
+        if (!Utils.isSkillReady(getCooldown())) {
+            e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), getCooldown()));
+            e.setCancelled(true);
+            return;
         }
+
+        List<PotionEffect> potionEffects = new ArrayList<>();
+
+        potionEffects.add(new PotionEffect(PotionEffectType.ABSORPTION, 2400, 3));
+        potionEffects.add(new PotionEffect(PotionEffectType.REGENERATION, 600, 1));
+        potionEffects.add(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 6000, 0));
+        potionEffects.add(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 6000, 0));
+
+        Utils.addPotionEffects(getNearbyAlliedPlayers(e.getPlayer(), 10, 5, 10), potionEffects);
+
+        setCooldown(BardConfig.getInstance().eGoldenAppleCooldown);
+
     }
 
     @Override

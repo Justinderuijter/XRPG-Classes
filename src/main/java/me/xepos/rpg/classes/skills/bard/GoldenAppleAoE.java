@@ -21,34 +21,35 @@ public class GoldenAppleAoE extends XRPGSkill {
         super(xrpgPlayer, skillName, plugin);
 
         this.GAppleAoE = GAppleAoE;
+        xrpgPlayer.getConsumeItemEventHandler().addSkill(this);
     }
 
     @Override
     public void activate(Event event) {
-        if (event instanceof PlayerItemConsumeEvent) {
-            PlayerItemConsumeEvent e = (PlayerItemConsumeEvent) event;
-            if (GAppleAoE != null) {
-                if (!isSkillReady() || !GAppleAoE.isSkillReady()) {
-                    e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), Math.max(GAppleAoE.getCooldown(), getCooldown())));
-                    e.setCancelled(true);
-                    return;
-                }
-            } else {
-                if (!isSkillReady()) {
-                    e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), getCooldown()));
-                    e.setCancelled(true);
-                    return;
-                }
+        if (!(event instanceof PlayerItemConsumeEvent)) return;
+        PlayerItemConsumeEvent e = (PlayerItemConsumeEvent) event;
+        if (GAppleAoE != null) {
+            if (!isSkillReady() || !GAppleAoE.isSkillReady()) {
+                e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), Math.max(GAppleAoE.getCooldown(), getCooldown())));
+                e.setCancelled(true);
+                return;
             }
-            List<PotionEffect> potionEffects = new ArrayList<>();
-
-            potionEffects.add(new PotionEffect(PotionEffectType.ABSORPTION, 2400, 0));
-            potionEffects.add(new PotionEffect(PotionEffectType.REGENERATION, 100, 1));
-
-            Utils.addPotionEffects(getNearbyAlliedPlayers(e.getPlayer(), 10, 5, 10), potionEffects);
-
-            setCooldown(BardConfig.getInstance().goldenAppleCooldown);
+        } else {
+            if (!isSkillReady()) {
+                e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), getCooldown()));
+                e.setCancelled(true);
+                return;
+            }
         }
+        List<PotionEffect> potionEffects = new ArrayList<>();
+
+        potionEffects.add(new PotionEffect(PotionEffectType.ABSORPTION, 2400, 0));
+        potionEffects.add(new PotionEffect(PotionEffectType.REGENERATION, 100, 1));
+
+        Utils.addPotionEffects(getNearbyAlliedPlayers(e.getPlayer(), 10, 5, 10), potionEffects);
+
+        setCooldown(BardConfig.getInstance().goldenAppleCooldown);
+
     }
 
     @Override

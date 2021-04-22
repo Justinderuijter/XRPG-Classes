@@ -19,26 +19,27 @@ public class PotionAoE extends XRPGSkill {
     public PotionAoE(XRPG plugin, String skillName, XRPGPlayer xrpgPlayer) {
         super(xrpgPlayer, skillName, plugin);
 
+        xrpgPlayer.getConsumeItemEventHandler().addSkill(this);
     }
 
     @Override
     public void activate(Event event) {
-        if (event instanceof PlayerItemConsumeEvent) {
-            PlayerItemConsumeEvent e = (PlayerItemConsumeEvent) event;
-            Player player = e.getPlayer();
-            if (!isSkillReady()) {
-                player.sendMessage(Utils.getCooldownMessage("Potion AoE Heal", getCooldown()));
-                return;
-            }
-
-            List<PotionEffect> potionEffects = new ArrayList<>();
-
-            potionEffects.add(new PotionEffect(PotionEffectType.HEAL, 1, 1));
-
-            Utils.addPotionEffects(getNearbyAlliedPlayers(player, 10, 5, 10), potionEffects);
-
-            setCooldown(BardConfig.getInstance().potionCooldown);
+        if (!(event instanceof PlayerItemConsumeEvent)) return;
+        PlayerItemConsumeEvent e = (PlayerItemConsumeEvent) event;
+        Player player = e.getPlayer();
+        if (!isSkillReady()) {
+            player.sendMessage(Utils.getCooldownMessage(getSkillName(), getCooldown()));
+            return;
         }
+
+        List<PotionEffect> potionEffects = new ArrayList<>();
+
+        potionEffects.add(new PotionEffect(PotionEffectType.HEAL, 1, 1));
+
+        Utils.addPotionEffects(getNearbyAlliedPlayers(player, 10, 5, 10), potionEffects);
+
+        setCooldown(BardConfig.getInstance().potionCooldown);
+
     }
 
     @Override

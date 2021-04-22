@@ -35,43 +35,42 @@ public class LotusStrike extends XRPGSkill {
 
     @Override
     public void activate(Event event) {
-        if (event instanceof EntityDamageByEntityEvent) {
-            EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
+        if (!(event instanceof EntityDamageByEntityEvent)) return;
+        EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
 
-            Player player = (Player) e.getDamager();
-            double armor = player.getAttribute(Attribute.GENERIC_ARMOR).getValue();
-            double toughness = player.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).getValue();
-            HashMap<Enchantment, Integer> enchantValues = getProtection(player);
-            int protectionLevel = enchantValues.get(Enchantment.PROTECTION_ENVIRONMENTAL);
-            int fireProtectionLevel = enchantValues.get(Enchantment.PROTECTION_FIRE);
-            int explosionProtectionLevel = enchantValues.get(Enchantment.PROTECTION_EXPLOSIONS);
-            int projectileProtectionLevel = enchantValues.get(Enchantment.PROTECTION_EXPLOSIONS);
+        Player player = (Player) e.getDamager();
+        double armor = player.getAttribute(Attribute.GENERIC_ARMOR).getValue();
+        double toughness = player.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).getValue();
+        HashMap<Enchantment, Integer> enchantValues = getProtection(player);
+        int protectionLevel = enchantValues.get(Enchantment.PROTECTION_ENVIRONMENTAL);
+        int fireProtectionLevel = enchantValues.get(Enchantment.PROTECTION_FIRE);
+        int explosionProtectionLevel = enchantValues.get(Enchantment.PROTECTION_EXPLOSIONS);
+        int projectileProtectionLevel = enchantValues.get(Enchantment.PROTECTION_EXPLOSIONS);
 
-            double fistDamage = brawlerConfig.fistBaseDamage + (armor * brawlerConfig.armorToDamageRatio) + (toughness * brawlerConfig.toughnessToDamageRatio) + (protectionLevel * brawlerConfig.protectionToDamageRatio);
+        double fistDamage = brawlerConfig.fistBaseDamage + (armor * brawlerConfig.armorToDamageRatio) + (toughness * brawlerConfig.toughnessToDamageRatio) + (protectionLevel * brawlerConfig.protectionToDamageRatio);
 
-            if (player.getInventory().getItemInMainHand().getType() == Material.AIR) {
-                e.setDamage(fistDamage);
-                if (isCrit(explosionProtectionLevel)) {
-                    player.sendMessage(ChatColor.GREEN + "You hit a weak spot and dealt bonus damage!");
-                    e.setDamage(fistDamage * brawlerConfig.vitalModifier);
-                }
-                doLotusHaste(projectileProtectionLevel);
-                setFire(e, fireProtectionLevel);
-                if (canUseLotus(player)) {
-                    //Lotus Strike logic
-                    double originalDamage = e.getDamage();
-                    double lotusDamage = originalDamage * brawlerConfig.lotusModifier;
-                    e.setDamage(lotusDamage);
-                    player.sendMessage(ChatColor.GREEN + "Lotus strike dealt " + String.format("%,.2f", lotusDamage - originalDamage) + " bonus damage!");
-                    player.playSound(player.getLocation(), Sound.ITEM_FLINTANDSTEEL_USE, 1F, 0.5F);
-                    applyTriggerEffect(player);
-                } else {
-                    //If !canUseLotus
-                    incrementHitCount();
-                }
-            } else {
-                e.setDamage(brawlerConfig.nonFistDamage); //item isn't hand
+        if (player.getInventory().getItemInMainHand().getType() == Material.AIR) {
+            e.setDamage(fistDamage);
+            if (isCrit(explosionProtectionLevel)) {
+                player.sendMessage(ChatColor.GREEN + "You hit a weak spot and dealt bonus damage!");
+                e.setDamage(fistDamage * brawlerConfig.vitalModifier);
             }
+            doLotusHaste(projectileProtectionLevel);
+            setFire(e, fireProtectionLevel);
+            if (canUseLotus(player)) {
+                //Lotus Strike logic
+                double originalDamage = e.getDamage();
+                double lotusDamage = originalDamage * brawlerConfig.lotusModifier;
+                e.setDamage(lotusDamage);
+                player.sendMessage(ChatColor.GREEN + getSkillName() + " dealt " + String.format("%,.2f", lotusDamage - originalDamage) + " bonus damage!");
+                player.playSound(player.getLocation(), Sound.ITEM_FLINTANDSTEEL_USE, 1F, 0.5F);
+                applyTriggerEffect(player);
+            } else {
+                //If !canUseLotus
+                incrementHitCount();
+            }
+        } else {
+            e.setDamage(brawlerConfig.nonFistDamage); //item isn't hand
         }
     }
 

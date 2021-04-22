@@ -10,7 +10,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 import org.bukkit.event.Event;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.potion.PotionEffect;
@@ -35,6 +34,7 @@ public class InnerStrength extends XRPGSkill {
         super(xrpgPlayer, skillName, plugin);
 
         this.lotusStrike = lotusStrike;
+        xrpgPlayer.getRightClickEventHandler().addSkill(this);
     }
 
     @Override
@@ -49,14 +49,14 @@ public class InnerStrength extends XRPGSkill {
         } else if (event instanceof PlayerInteractEvent) {
             PlayerInteractEvent e = (PlayerInteractEvent) event;
 
-            if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                if (e.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR) {
 
-                    if (lotusStrike.canUseLotus(e.getPlayer())) {
-                        useInnerStrength(e.getPlayer());
-                    }
+            if (e.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR) {
+
+                if (lotusStrike.canUseLotus(e.getPlayer())) {
+                    useInnerStrength(e.getPlayer());
                 }
             }
+
         }
     }
 

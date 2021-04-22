@@ -21,19 +21,21 @@ public class XRPGPlayer {
     private int freeChangeTickets = 2;
 
     //Interact Handlers
-    private RightClickEventHandler rightClickEventHandler = new RightClickEventHandler();
-    private LeftClickEventHandler leftClickEventHandler = new LeftClickEventHandler();
-    private SneakRightClickEventHandler sneakRightClickEventHandler = new SneakRightClickEventHandler();
-    private SneakLeftClickEventHandler sneakLeftClickEventHandler = new SneakLeftClickEventHandler();
+    private final RightClickEventHandler rightClickEventHandler = new RightClickEventHandler();
+    private final LeftClickEventHandler leftClickEventHandler = new LeftClickEventHandler();
+    private final SneakRightClickEventHandler sneakRightClickEventHandler = new SneakRightClickEventHandler();
+    private final SneakLeftClickEventHandler sneakLeftClickEventHandler = new SneakLeftClickEventHandler();
 
     //Interact Handlers (Entity)
-    private RightClickEntityEventHandler rightClickEntityEventHandler = new RightClickEntityEventHandler();
-    private SneakRightClickEntityEventHandler sneakRightClickEntityEventHandler = new SneakRightClickEntityEventHandler();
+    private final RightClickEntityEventHandler rightClickEntityEventHandler = new RightClickEntityEventHandler();
+    private final SneakRightClickEntityEventHandler sneakRightClickEntityEventHandler = new SneakRightClickEntityEventHandler();
     //Damage Handlers
-    private DamageTakenEventHandler damageTakenEventHandler = new DamageTakenEventHandler();
-    private DamageDealtEventHandler damageDealtEventHandler = new DamageDealtEventHandler();
+    private final DamageTakenEventHandler damageTakenEventHandler = new DamageTakenEventHandler();
+    private final DamageDealtEventHandler damageDealtEventHandler = new DamageDealtEventHandler();
     //Bow Handlers
-    private ShootBowEventHandler shootBowEventHandler = new ShootBowEventHandler();
+    private final ShootBowEventHandler shootBowEventHandler = new ShootBowEventHandler();
+    //Other Handlers
+    private final ConsumeItemEventHandler consumeItemEventHandler = new ConsumeItemEventHandler();
 
     //Status Effects
     public transient ConcurrentHashMap<DamageTakenSource, Double> dmgTakenMultipliers = new ConcurrentHashMap<>();
@@ -200,6 +202,10 @@ public class XRPGPlayer {
 
     public SneakRightClickEntityEventHandler getSneakRightClickEntityEventHandler() {
         return sneakRightClickEntityEventHandler;
+    }
+
+    public ConsumeItemEventHandler getConsumeItemEventHandler() {
+        return consumeItemEventHandler;
     }
 
     public ShootBowEventHandler getShootBowEventHandler() {

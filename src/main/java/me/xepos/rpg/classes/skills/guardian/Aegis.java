@@ -22,7 +22,7 @@ public class Aegis extends XRPGSkill {
     public Aegis(XRPGPlayer xrpgPlayer, String skillName, XRPG plugin) {
         super(xrpgPlayer, skillName, plugin);
 
-        xrpgPlayer.
+        xrpgPlayer.getSneakRightClickEventHandler().addSkill(this);
     }
 
     @Override

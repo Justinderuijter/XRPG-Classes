@@ -20,10 +20,10 @@ public class Bard extends XRPGClass {
 
     private final BardConfig bardConfig = BardConfig.getInstance();
 
-    private final EnchantedGoldenAppleAoE eGoldenAppleAoE = new EnchantedGoldenAppleAoE(plugin, "Enchanted Golden Apple AoE");
-    private final GoldenAppleAoE goldenAppleAoE = new GoldenAppleAoE(plugin, "Golden Apple AoE", eGoldenAppleAoE);
+    private final EnchantedGoldenAppleAoE eGoldenAppleAoE = new EnchantedGoldenAppleAoE(plugin, "Enchanted Golden Apple AoE", this);
+    private final GoldenAppleAoE goldenAppleAoE = new GoldenAppleAoE(plugin, "Golden Apple AoE", eGoldenAppleAoE, this);
     private final PotionAoE potionAoE = new PotionAoE(plugin, "Potion AoE");
-    private final PhoenixBlessing phoenixBlessing = new PhoenixBlessing(plugin, "Phoenix Blessing");
+    private final PhoenixBlessing phoenixBlessing = new PhoenixBlessing(plugin, "Phoenix Blessing", this);
     private final Ballad ballad = new Ballad(plugin, "Ballad");
 
     private long soundBarrierCooldown = Utils.setSkillCooldown(bardConfig.soundBarrierCooldown);

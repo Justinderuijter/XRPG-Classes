@@ -24,9 +24,9 @@ public class Assassin extends XRPGClass {
 
     private final AssassinConfig assassinConfig = AssassinConfig.getInstance();
 
-    private final CutThroat cutThroat = new CutThroat(plugin, "Cut-Throat");
-    private final ShadowStep shadowStep = new ShadowStep(plugin, "Shadowstep");
-    private final Smokebomb smokebomb = new Smokebomb(plugin, "Smokebomb");
+    private final CutThroat cutThroat = new CutThroat(plugin, "Cut-Throat", this);
+    private final ShadowStep shadowStep = new ShadowStep(plugin, "Shadowstep", this);
+    private final Smokebomb smokebomb = new Smokebomb(plugin, "Smokebomb", this);
 
 
     @Override
