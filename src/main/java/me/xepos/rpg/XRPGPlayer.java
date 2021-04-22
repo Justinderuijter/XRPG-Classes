@@ -174,71 +174,35 @@ public class XRPGPlayer {
         return rightClickEventHandler;
     }
 
-    public void setRightClickEventHandler(RightClickEventHandler rightClickEventHandler) {
-        this.rightClickEventHandler = rightClickEventHandler;
-    }
-
     public LeftClickEventHandler getLeftClickEventHandler() {
         return leftClickEventHandler;
-    }
-
-    public void setLeftClickEventHandler(LeftClickEventHandler leftClickEventHandler) {
-        this.leftClickEventHandler = leftClickEventHandler;
     }
 
     public SneakRightClickEventHandler getSneakRightClickEventHandler() {
         return sneakRightClickEventHandler;
     }
 
-    public void setSneakRightClickEventHandler(SneakRightClickEventHandler sneakRightClickEventHandler) {
-        this.sneakRightClickEventHandler = sneakRightClickEventHandler;
-    }
-
     public SneakLeftClickEventHandler getSneakLeftClickEventHandler() {
         return sneakLeftClickEventHandler;
-    }
-
-    public void setSneakLeftClickEventHandler(SneakLeftClickEventHandler sneakLeftClickEventHandler) {
-        this.sneakLeftClickEventHandler = sneakLeftClickEventHandler;
     }
 
     public DamageTakenEventHandler getDamageTakenEventHandler() {
         return damageTakenEventHandler;
     }
 
-    public void setDamageTakenEventHandler(DamageTakenEventHandler damageTakenEventHandler) {
-        this.damageTakenEventHandler = damageTakenEventHandler;
-    }
-
     public DamageDealtEventHandler getDamageDealtEventHandler() {
         return damageDealtEventHandler;
-    }
-
-    public void setDamageDealtEventHandler(DamageDealtEventHandler damageDealtEventHandler) {
-        this.damageDealtEventHandler = damageDealtEventHandler;
     }
 
     public RightClickEntityEventHandler getRightClickEntityEventHandler() {
         return rightClickEntityEventHandler;
     }
 
-    public void setRightClickEntityEventHandler(RightClickEntityEventHandler rightClickEntityEventHandler) {
-        this.rightClickEntityEventHandler = rightClickEntityEventHandler;
-    }
-
     public SneakRightClickEntityEventHandler getSneakRightClickEntityEventHandler() {
         return sneakRightClickEntityEventHandler;
     }
 
-    public void setSneakRightClickEntityEventHandler(SneakRightClickEntityEventHandler sneakRightClickEntityEventHandler) {
-        this.sneakRightClickEntityEventHandler = sneakRightClickEntityEventHandler;
-    }
-
     public ShootBowEventHandler getShootBowEventHandler() {
         return shootBowEventHandler;
-    }
-
-    public void setShootBowEventHandler(ShootBowEventHandler shootBowEventHandler) {
-        this.shootBowEventHandler = shootBowEventHandler;
     }
 }
