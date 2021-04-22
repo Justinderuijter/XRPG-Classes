@@ -27,7 +27,7 @@ public final class RavagerConfig extends XRPGConfigFile {
     public boolean ignoreVillagers;
     public PotionEffect slowEffect;
     public int flameSlashCooldown;
-    public int SoaringSlashCooldown;
+    public int soaringSlashCooldown;
 
     public static RavagerConfig getInstance()
     {
@@ -58,7 +58,7 @@ public final class RavagerConfig extends XRPGConfigFile {
         otherDamageMultiplier = get().getDouble("otherDamageMultiplier", 0.7);
         ignoreVillagers = get().getBoolean("ignoreVillagers", true);
         flameSlashCooldown = get().getInt("flameSlashCooldown", 12);
-        SoaringSlashCooldown = get().getInt("SoaringSlashCooldown", 15);
+        soaringSlashCooldown = get().getInt("soaringSlashCooldown", 15);
 
         AttributeModifierManager.getInstance().put(ModifierType.POSITIVE, attackSpeedModifier, Attribute.GENERIC_ATTACK_SPEED);
     }
@@ -80,7 +80,7 @@ public final class RavagerConfig extends XRPGConfigFile {
         get().addDefault("slowEffectDuration", 100);
         get().addDefault("slowEffectAmplifier", 4);
         get().addDefault("flameSlashCooldown", 12);
-        get().addDefault("SoaringSlashCooldown", 15);
+        get().addDefault("soaringSlashCooldown", 15);
     }
 
 }

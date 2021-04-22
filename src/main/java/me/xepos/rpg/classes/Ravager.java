@@ -1,11 +1,11 @@
 package me.xepos.rpg.classes;
 
-import me.xepos.rpg.datatypes.fireballData;
-import me.xepos.rpg.utils.Utils;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.configuration.RavagerConfig;
+import me.xepos.rpg.datatypes.fireballData;
 import me.xepos.rpg.tasks.RavagerLandTask;
 import me.xepos.rpg.tasks.RavagerRageTask;
+import me.xepos.rpg.utils.Utils;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
@@ -34,7 +34,7 @@ public class Ravager extends XRPGClass {
     private final byte maxRage = 100;
     private byte rageLevel = 0;
     private long flameSlashCooldown = Utils.setSkillCooldown(ravagerConfig.flameSlashCooldown);
-    private long soaringSlashCooldown = Utils.setSkillCooldown(ravagerConfig.SoaringSlashCooldown);
+    private long soaringSlashCooldown = Utils.setSkillCooldown(ravagerConfig.soaringSlashCooldown);
     private boolean isLocked = false;
     BukkitTask rageTask = null;
     BukkitTask landTask = null;
@@ -238,7 +238,7 @@ public class Ravager extends XRPGClass {
             }
 
             e.getPlayer().setVelocity(e.getPlayer().getEyeLocation().getDirection().multiply(new Vector(2, 0, 2)).add(new Vector(0, 1, 0)));
-            soaringSlashCooldown = Utils.setSkillCooldown(ravagerConfig.SoaringSlashCooldown);
+            soaringSlashCooldown = Utils.setSkillCooldown(ravagerConfig.soaringSlashCooldown);
             if (landTask == null || landTask.isCancelled())
                 landTask = new RavagerLandTask(e.getPlayer(), ps, partyManager).runTaskTimer(plugin, 5L, 3L);
         }
