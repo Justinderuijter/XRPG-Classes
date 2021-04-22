@@ -16,6 +16,13 @@ public abstract class XRPGBowSkill extends XRPGSkill {
     }
 
     public void setBelongsToCollection(boolean belongsToCollection) {
+        if (belongsToCollection) {
+            if (!getXRPGPlayer().getShootBowEventHandler().getSkills().contains(this)) {
+                getXRPGPlayer().getShootBowEventHandler().getSkills().add(this);
+            }
+        } else {
+            getXRPGPlayer().getShootBowEventHandler().getSkills().remove(this);
+        }
         this.belongsToCollection = belongsToCollection;
     }
 }
