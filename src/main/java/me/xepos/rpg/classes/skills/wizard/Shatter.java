@@ -12,7 +12,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.craftbukkit.libs.jline.internal.Nullable;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -26,10 +25,16 @@ import java.util.List;
 public class Shatter extends XRPGSkill {
     private FireballStackData fireballStackData;
 
-    public Shatter(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin, @Nullable FireballStackData fireballStackData) {
+    public Shatter(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin, FireballStackData fireballStackData) {
         super(xrpgPlayer, skillName, cooldown, plugin);
 
         this.fireballStackData = fireballStackData;
+        xrpgPlayer.getLeftClickEventHandler().addSkill(this);
+    }
+
+    public Shatter(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
+        super(xrpgPlayer, skillName, cooldown, plugin);
+
         xrpgPlayer.getLeftClickEventHandler().addSkill(this);
     }
 

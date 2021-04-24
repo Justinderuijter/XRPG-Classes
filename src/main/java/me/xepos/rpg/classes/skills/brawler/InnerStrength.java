@@ -37,6 +37,12 @@ public class InnerStrength extends XRPGSkill {
         xrpgPlayer.getRightClickEventHandler().addSkill(this);
     }
 
+    public InnerStrength(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
+        super(xrpgPlayer, skillName, cooldown, plugin);
+
+        xrpgPlayer.getRightClickEventHandler().addSkill(this);
+    }
+
     @Override
     public void activate(Event event) {
         if (event instanceof PlayerInteractEntityEvent) {

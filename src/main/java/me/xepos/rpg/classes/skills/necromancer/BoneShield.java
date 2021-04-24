@@ -22,6 +22,12 @@ public class BoneShield extends XRPGSkill {
         xrpgPlayer.getDamageTakenEventHandler().addSkill(this);
     }
 
+    public BoneShield(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
+        super(xrpgPlayer, skillName, cooldown, plugin);
+
+        xrpgPlayer.getDamageTakenEventHandler().addSkill(this);
+    }
+
     @Override
     public void activate(Event event) {
         if (!(event instanceof EntityDamageByEntityEvent)) return;

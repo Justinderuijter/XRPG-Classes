@@ -7,7 +7,6 @@ import me.xepos.rpg.configuration.WizardConfig;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.craftbukkit.libs.jline.internal.Nullable;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -20,10 +19,16 @@ import java.util.List;
 public class Zephyr extends XRPGSkill {
     private FireballStackData fireballStackData;
 
-    public Zephyr(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin, @Nullable FireballStackData fireballStackData) {
+    public Zephyr(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin, FireballStackData fireballStackData) {
         super(xrpgPlayer, skillName, cooldown, plugin);
 
         this.fireballStackData = fireballStackData;
+        xrpgPlayer.getRightClickEventHandler().addSkill(this);
+    }
+
+    public Zephyr(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
+        super(xrpgPlayer, skillName, cooldown, plugin);
+
         xrpgPlayer.getRightClickEventHandler().addSkill(this);
     }
 

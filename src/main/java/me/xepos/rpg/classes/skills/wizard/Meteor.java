@@ -8,7 +8,6 @@ import me.xepos.rpg.datatypes.fireballData;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.libs.jline.internal.Nullable;
 import org.bukkit.entity.Fireball;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -17,7 +16,14 @@ import org.bukkit.util.Vector;
 public class Meteor extends XRPGSkill {
     private FireballStackData fireballStackData;
 
-    public Meteor(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin, @Nullable FireballStackData fireballStackData) {
+    public Meteor(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin, FireballStackData fireballStackData) {
+        super(xrpgPlayer, skillName, cooldown, plugin);
+
+        this.fireballStackData = fireballStackData;
+        xrpgPlayer.getLeftClickEventHandler().addSkill(this);
+    }
+
+    public Meteor(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
         super(xrpgPlayer, skillName, cooldown, plugin);
 
         this.fireballStackData = fireballStackData;
