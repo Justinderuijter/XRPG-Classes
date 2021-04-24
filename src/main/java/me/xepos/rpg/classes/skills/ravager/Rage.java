@@ -32,10 +32,10 @@ public class Rage extends XRPGSkill {
     private boolean isLocked = false;
     BukkitTask rageTask = null;
 
-    public Rage(XRPGPlayer xrpgPlayer, String skillName, XRPG plugin) {
-        super(xrpgPlayer, skillName, plugin);
+    public Rage(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
+        super(xrpgPlayer, skillName, cooldown, plugin);
 
-        setCooldown(-1);
+        setRemainingCooldown(-1);
         xrpgPlayer.getDamageDealtEventHandler().addSkill(this);
     }
 

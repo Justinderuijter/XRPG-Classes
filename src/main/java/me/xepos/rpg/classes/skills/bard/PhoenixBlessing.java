@@ -18,8 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PhoenixBlessing extends XRPGSkill {
-    public PhoenixBlessing(XRPG plugin, String skillName, XRPGPlayer xrpgPlayer) {
-        super(xrpgPlayer, skillName, plugin);
+    public PhoenixBlessing(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
+        super(xrpgPlayer, skillName, cooldown, plugin);
 
         xrpgPlayer.getSneakRightClickEventHandler().addSkill(this);
     }
@@ -32,7 +32,7 @@ public class PhoenixBlessing extends XRPGSkill {
             Player player = e.getPlayer();
 
             if (!isSkillReady()) {
-                player.sendMessage(Utils.getCooldownMessage(getSkillName(), getCooldown()));
+                player.sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
                 return;
             }
             BardConfig bardConfig = BardConfig.getInstance();
@@ -57,7 +57,7 @@ public class PhoenixBlessing extends XRPGSkill {
                     nearbyPlayer.sendMessage(ChatColor.RED + player.getName() + " applied Phoenix's Blessing to " + entity.getName() + " for 5 seconds!");
                 }
 
-                setCooldown(bardConfig.phoenixsBlessingCooldown);
+                setRemainingCooldown(bardConfig.phoenixsBlessingCooldown);
             }
 
         }

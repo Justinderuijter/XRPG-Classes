@@ -16,8 +16,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.RayTraceResult;
 
 public class PurgatoryBat extends XRPGSkill {
-    public PurgatoryBat(XRPGPlayer xrpgPlayer, String skillName, XRPG plugin) {
-        super(xrpgPlayer, skillName, plugin);
+    public PurgatoryBat(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
+        super(xrpgPlayer, skillName, cooldown, plugin);
 
         xrpgPlayer.getRightClickEventHandler().addSkill(this);
     }
@@ -38,7 +38,7 @@ public class PurgatoryBat extends XRPGSkill {
     @SuppressWarnings("all")
     private void doPurgatoryBat(Player player) {
         if (!isSkillReady()) {
-            player.sendMessage(Utils.getCooldownMessage(getSkillName(), getCooldown()));
+            player.sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
         }
 
@@ -58,7 +58,7 @@ public class PurgatoryBat extends XRPGSkill {
             new PurgatoryBatTask(bat, player, necromancerConfig.purgatoryBatDps, necromancerConfig.purgatoryBatDuration, necromancerConfig.isBatDmgSource, getPlugin(), necromancerConfig.purgatoryBatDuration * 20L)
                     .runTaskTimer(getPlugin(), 10, 20);
 
-            setCooldown(necromancerConfig.purgatoryBatCooldown);
+            setRemainingCooldown(necromancerConfig.purgatoryBatCooldown);
         }
     }
 }

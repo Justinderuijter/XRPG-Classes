@@ -9,8 +9,8 @@ import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityShootBowEvent;
 
 public class LightningArrow extends XRPGBowSkill {
-    public LightningArrow(XRPGPlayer xrpgPlayer, String skillName, XRPG plugin) {
-        super(xrpgPlayer, skillName, plugin);
+    public LightningArrow(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
+        super(xrpgPlayer, skillName, cooldown, plugin);
 
         xrpgPlayer.getShootBowEventHandler().addSkill(this);
     }
@@ -22,14 +22,14 @@ public class LightningArrow extends XRPGBowSkill {
         if (!(e.getProjectile() instanceof Arrow)) return;
 
         if (!isSkillReady()) {
-            e.getEntity().sendMessage(Utils.getCooldownMessage(getSkillName(), getCooldown()));
+            e.getEntity().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
         }
         Arrow arrow = (Arrow) e.getProjectile();
 
         arrow.setCustomName("Lightning");
         arrow.setCustomNameVisible(false);
-        setCooldown(RangerConfig.getInstance().arrowOfHungerCooldown);
+        setRemainingCooldown(RangerConfig.getInstance().arrowOfHungerCooldown);
     }
 
     @Override

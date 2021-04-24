@@ -13,8 +13,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.util.Vector;
 
 public class CutThroat extends XRPGSkill {
-    public CutThroat(XRPG plugin, String skillName, XRPGPlayer xrpgPlayer) {
-        super(xrpgPlayer, skillName, plugin);
+    public CutThroat(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
+        super(xrpgPlayer, skillName, cooldown, plugin);
 
         xrpgPlayer.getDamageDealtEventHandler().addSkill(this);
     }
@@ -31,12 +31,12 @@ public class CutThroat extends XRPGSkill {
             //determine if the dot product between the vectors is greater than 0
             //If it is, we can conclude that the attack was a backstab
             if (attackerDirection.dot(victimDirection) > 0) {
-                if (entity.getHealth() <= entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() / (100 / assassinConfig.executeThreshold) && Utils.isSkillReady(getCooldown())) {
+                if (entity.getHealth() <= entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() / (100 / assassinConfig.executeThreshold) && Utils.isSkillReady(getRemainingCooldown())) {
                     entity.setHealth(0.0);
                     if (entity instanceof Player) {
                         e.getDamager().getWorld().getNearbyEntities(e.getDamager().getLocation(), 10, 5, 10, p -> p instanceof Player).forEach(p -> p.sendMessage(entity.getName() + " was executed by " + e.getDamager().getName() + "!"));
                     }
-                    setCooldown(assassinConfig.cutThroatCooldown);
+                    setRemainingCooldown(assassinConfig.cutThroatCooldown);
 
                 } else {
                     double finalDmg = e.getDamage() * assassinConfig.backStrikeMultiplier;

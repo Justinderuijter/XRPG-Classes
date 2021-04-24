@@ -10,8 +10,8 @@ import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityShootBowEvent;
 
 public class EnderArrow extends XRPGBowSkill {
-    public EnderArrow(XRPGPlayer xrpgPlayer, String skillName, XRPG plugin) {
-        super(xrpgPlayer, skillName, plugin);
+    public EnderArrow(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
+        super(xrpgPlayer, skillName, cooldown, plugin);
     }
 
     @Override
@@ -22,7 +22,7 @@ public class EnderArrow extends XRPGBowSkill {
         if (getXRPGPlayer().getShootBowEventHandler().getCurrentSkill() != this) return;
 
         if (!isSkillReady()) {
-            e.getEntity().sendMessage(Utils.getCooldownMessage(getSkillName(), getCooldown()));
+            e.getEntity().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
         }
         Arrow arrow = (Arrow) e.getProjectile();
@@ -30,7 +30,7 @@ public class EnderArrow extends XRPGBowSkill {
         arrow.setPickupStatus(AbstractArrow.PickupStatus.CREATIVE_ONLY);
         arrow.setCustomName("Ender");
         arrow.setCustomNameVisible(false);
-        setCooldown(RangerConfig.getInstance().lightningArrowCooldown);
+        setRemainingCooldown(RangerConfig.getInstance().lightningArrowCooldown);
     }
 
     @Override

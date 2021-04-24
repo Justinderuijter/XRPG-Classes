@@ -26,8 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Smokebomb extends XRPGSkill {
-    public Smokebomb(XRPG plugin, String skillName, XRPGPlayer xrpgPlayer) {
-        super(xrpgPlayer, skillName, plugin);
+    public Smokebomb(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
+        super(xrpgPlayer, skillName, cooldown, plugin);
 
         xrpgPlayer.getRightClickEventHandler().addSkill(this);
     }
@@ -47,7 +47,7 @@ public class Smokebomb extends XRPGSkill {
             }
 
             if (!isSkillReady()) {
-                e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), getCooldown()));
+                e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
                 return;
             }
 
@@ -74,7 +74,7 @@ public class Smokebomb extends XRPGSkill {
                     ((CraftPlayer) ent).getHandle().playerConnection.sendPacket(entityEquipmentPacket);//send affected players the packet
                 }
 
-                setCooldown(assassinConfig.smokeBombCooldown);
+                setRemainingCooldown(assassinConfig.smokeBombCooldown);
                 new EndInvisibilityTask(e.getPlayer(), affectedPlayers).runTaskLater(getPlugin(), assassinConfig.smokeBombDuration * 20L);
             }
         } else if (event instanceof EntityDamageByEntityEvent) {

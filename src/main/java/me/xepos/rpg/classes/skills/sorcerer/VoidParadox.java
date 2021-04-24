@@ -16,8 +16,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.RayTraceResult;
 
 public class VoidParadox extends XRPGSkill {
-    public VoidParadox(XRPGPlayer xrpgPlayer, String skillName, XRPG plugin) {
-        super(xrpgPlayer, skillName, plugin);
+    public VoidParadox(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
+        super(xrpgPlayer, skillName, cooldown, plugin);
 
         xrpgPlayer.getLeftClickEventHandler().addSkill(this);
     }
@@ -40,7 +40,7 @@ public class VoidParadox extends XRPGSkill {
 
     private void doVoidParadox(Player caster) {
         if (!isSkillReady()) {
-            caster.sendMessage(Utils.getCooldownMessage(getSkillName(), getCooldown()));
+            caster.sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
         }
 
@@ -61,7 +61,7 @@ public class VoidParadox extends XRPGSkill {
                 target.damage(15, caster);
             }
 
-            setCooldown(sorcererConfig.voidParadoxCooldown);
+            setRemainingCooldown(sorcererConfig.voidParadoxCooldown);
         }
     }
 }

@@ -9,8 +9,8 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 
 public class Focus extends XRPGSkill {
 
-    public Focus(XRPGPlayer xrpgPlayer, String skillName, XRPG plugin) {
-        super(xrpgPlayer, skillName, plugin);
+    public Focus(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
+        super(xrpgPlayer, skillName, cooldown, plugin);
 
         xrpgPlayer.getShootBowEventHandler().addSkill(this);
     }

@@ -15,8 +15,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 public class BoneShield extends XRPGSkill {
     private ArmyOfTheUndead armyOfTheUndead;
 
-    public BoneShield(XRPGPlayer xrpgPlayer, String skillName, XRPG plugin, @Nullable ArmyOfTheUndead armyOfTheUndead) {
-        super(xrpgPlayer, skillName, plugin);
+    public BoneShield(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin, @Nullable ArmyOfTheUndead armyOfTheUndead) {
+        super(xrpgPlayer, skillName, cooldown, plugin);
 
         this.armyOfTheUndead = armyOfTheUndead;
         xrpgPlayer.getDamageTakenEventHandler().addSkill(this);
@@ -42,7 +42,7 @@ public class BoneShield extends XRPGSkill {
                 player.setAbsorptionAmount(player.getAbsorptionAmount() + absorptionHearts);
                 player.sendMessage(ChatColor.DARK_GREEN + getSkillName() + " will absorb " + absorptionHearts + " damage!");
                 player.sendMessage(Utils.getPassiveCooldownMessage(getSkillName(), necromancerConfig.boneShieldCooldown));
-                setCooldown(necromancerConfig.boneShieldCooldown);
+                setRemainingCooldown(necromancerConfig.boneShieldCooldown);
             }
         }
     }

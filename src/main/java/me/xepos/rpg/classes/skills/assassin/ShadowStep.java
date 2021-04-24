@@ -27,8 +27,8 @@ public class ShadowStep extends XRPGSkill {
     private ArmorStand substitute = null;
 
 
-    public ShadowStep(XRPG plugin, String skillName, XRPGPlayer xrpgPlayer) {
-        super(xrpgPlayer, skillName, plugin);
+    public ShadowStep(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
+        super(xrpgPlayer, skillName, cooldown, plugin);
 
         xrpgPlayer.getRightClickEventHandler().addSkill(this);
     }
@@ -76,7 +76,7 @@ public class ShadowStep extends XRPGSkill {
         Player player = e.getPlayer();
         if (substitute == null) {
             if (!isSkillReady()) {
-                player.sendMessage(Utils.getCooldownMessage("Substitute", getCooldown()));
+                player.sendMessage(Utils.getCooldownMessage("Substitute", getRemainingCooldown()));
                 return;
             }
             AssassinConfig assassinConfig = AssassinConfig.getInstance();
@@ -94,7 +94,7 @@ public class ShadowStep extends XRPGSkill {
             setArmorStandArmor(player, armorStand);
 
             substitute = armorStand;
-            setCooldown(assassinConfig.shadowStepCooldown);
+            setRemainingCooldown(assassinConfig.shadowStepCooldown);
 
             new BukkitRunnable() {
                 @Override

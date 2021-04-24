@@ -12,8 +12,8 @@ import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 public class FlameSlash extends XRPGSkill {
-    public FlameSlash(XRPGPlayer xrpgPlayer, String skillName, XRPG plugin) {
-        super(xrpgPlayer, skillName, plugin);
+    public FlameSlash(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
+        super(xrpgPlayer, skillName, cooldown, plugin);
 
         xrpgPlayer.getLeftClickEventHandler().addSkill(this);
     }
@@ -34,7 +34,7 @@ public class FlameSlash extends XRPGSkill {
     private void doFlameSlash(PlayerInteractEvent e) {
 
         if (!isSkillReady()) {
-            e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), getCooldown()));
+            e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
         }
 
@@ -44,7 +44,7 @@ public class FlameSlash extends XRPGSkill {
         if (!getPlugin().fireBalls.containsKey(fireball.getEntityId()))
             getPlugin().fireBalls.put(fireball.getEntityId(), new fireballData(6.0, 10));
 
-        setCooldown(RavagerConfig.getInstance().flameSlashCooldown);
+        setRemainingCooldown(RavagerConfig.getInstance().flameSlashCooldown);
 
     }
 }

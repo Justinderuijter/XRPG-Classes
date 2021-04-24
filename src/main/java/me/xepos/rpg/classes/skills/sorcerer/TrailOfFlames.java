@@ -21,8 +21,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class TrailOfFlames extends XRPGSkill {
-    public TrailOfFlames(XRPGPlayer xrpgPlayer, String skillName, XRPG plugin) {
-        super(xrpgPlayer, skillName, plugin);
+    public TrailOfFlames(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
+        super(xrpgPlayer, skillName, cooldown, plugin);
 
         xrpgPlayer.getRightClickEventHandler().addSkill(this);
     }
@@ -45,7 +45,7 @@ public class TrailOfFlames extends XRPGSkill {
 
     private void doTrailOfFlames(Player caster) {
         if (!isSkillReady()) {
-            caster.sendMessage(Utils.getCooldownMessage(getSkillName(), getCooldown()));
+            caster.sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
         }
 
@@ -106,7 +106,7 @@ public class TrailOfFlames extends XRPGSkill {
                 }
             }.runTaskTimer(getPlugin(), 20, 10);
 
-            setCooldown(sorcererConfig.trailOfFlamesCooldown);
+            setRemainingCooldown(sorcererConfig.trailOfFlamesCooldown);
         }
 
     }

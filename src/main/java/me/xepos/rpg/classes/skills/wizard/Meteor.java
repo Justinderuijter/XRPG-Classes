@@ -17,8 +17,8 @@ import org.bukkit.util.Vector;
 public class Meteor extends XRPGSkill {
     final FireballStackData fireballStackData;
 
-    public Meteor(XRPGPlayer xrpgPlayer, String skillName, XRPG plugin, @Nullable FireballStackData fireballStackData) {
-        super(xrpgPlayer, skillName, plugin);
+    public Meteor(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin, @Nullable FireballStackData fireballStackData) {
+        super(xrpgPlayer, skillName, cooldown, plugin);
 
         this.fireballStackData = fireballStackData;
         xrpgPlayer.getLeftClickEventHandler().addSkill(this);
@@ -40,7 +40,7 @@ public class Meteor extends XRPGSkill {
 
     private void doMeteor(PlayerInteractEvent e) {
         if (!isSkillReady()) {
-            e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), getCooldown()));
+            e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
         }
         WizardConfig wizardConfig = WizardConfig.getInstance();
@@ -62,6 +62,6 @@ public class Meteor extends XRPGSkill {
         if (!getPlugin().fireBalls.containsKey(fireball.getEntityId()))
             getPlugin().fireBalls.put(fireball.getEntityId(), new fireballData(wizardConfig.meteorExplosionStrength * (stacks + 1), 10));
 
-        setCooldown(wizardConfig.meteorCooldown);
+        setRemainingCooldown(wizardConfig.meteorCooldown);
     }
 }

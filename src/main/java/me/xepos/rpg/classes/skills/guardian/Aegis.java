@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Aegis extends XRPGSkill {
-    public Aegis(XRPGPlayer xrpgPlayer, String skillName, XRPG plugin) {
-        super(xrpgPlayer, skillName, plugin);
+    public Aegis(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
+        super(xrpgPlayer, skillName, cooldown, plugin);
 
         xrpgPlayer.getSneakRightClickEventHandler().addSkill(this);
     }
@@ -42,7 +42,7 @@ public class Aegis extends XRPGSkill {
         Player player = e.getPlayer();
         if (player.getInventory().getItemInOffHand().getType() == Material.SHIELD) {
             if (!isSkillReady()) {
-                player.sendMessage(Utils.getCooldownMessage(getSkillName(), getCooldown()));
+                player.sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
                 return;
             }
             GuardianConfig guardianConfig = GuardianConfig.getInstance();
@@ -61,7 +61,7 @@ public class Aegis extends XRPGSkill {
             }
             if (nearbyPlayers.size() > 0) {
                 player.sendMessage(ChatColor.GREEN + "Applied " + getSkillName() + " to " + nearbyPlayers.size() + " player(s)!");
-                setCooldown(guardianConfig.aegisCooldown);
+                setRemainingCooldown(guardianConfig.aegisCooldown);
             }
         }
 

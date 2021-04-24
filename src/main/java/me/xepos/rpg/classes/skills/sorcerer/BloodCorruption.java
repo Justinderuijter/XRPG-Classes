@@ -16,7 +16,7 @@ import org.bukkit.util.RayTraceResult;
 
 public class BloodCorruption extends XRPGSkill {
     public BloodCorruption(XRPGPlayer xrpgPlayer, String skillName, XRPG plugin) {
-        super(xrpgPlayer, skillName, plugin);
+        super(xrpgPlayer, skillName, , plugin, );
 
         xrpgPlayer.getLeftClickEventHandler().addSkill(this);
     }
@@ -39,7 +39,7 @@ public class BloodCorruption extends XRPGSkill {
 
     private void doBloodCorruption(Player caster) {
         if (!isSkillReady()) {
-            caster.sendMessage(Utils.getCooldownMessage(getSkillName(), getCooldown()));
+            caster.sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
         }
 
@@ -50,7 +50,7 @@ public class BloodCorruption extends XRPGSkill {
             caster.sendMessage("Hit " + result.getHitEntity().getName());
             LivingEntity target = (LivingEntity) result.getHitEntity();
             new BloodCorruptionTask(caster, target).runTaskLater(getPlugin(), sorcererConfig.bloodCorruptionDuration * 20L);
-            setCooldown(sorcererConfig.bloodCorruptionCooldown);
+            setRemainingCooldown(sorcererConfig.bloodCorruptionCooldown);
         }
     }
 }

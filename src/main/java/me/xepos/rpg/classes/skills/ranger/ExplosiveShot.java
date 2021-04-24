@@ -9,8 +9,8 @@ import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityShootBowEvent;
 
 public class ExplosiveShot extends XRPGBowSkill {
-    public ExplosiveShot(XRPGPlayer xrpgPlayer, String skillName, XRPG plugin) {
-        super(xrpgPlayer, skillName, plugin);
+    public ExplosiveShot(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
+        super(xrpgPlayer, skillName, cooldown, plugin);
     }
 
     @Override
@@ -21,14 +21,14 @@ public class ExplosiveShot extends XRPGBowSkill {
         if (getXRPGPlayer().getShootBowEventHandler().getCurrentSkill() != this) return;
 
         if (!isSkillReady()) {
-            e.getEntity().sendMessage(Utils.getCooldownMessage(getSkillName(), getCooldown()));
+            e.getEntity().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
         }
         Arrow arrow = (Arrow) e.getProjectile();
 
         arrow.setCustomName("Explosion");
         arrow.setCustomNameVisible(false);
-        setCooldown(RangerConfig.getInstance().explosiveShotCooldown);
+        setRemainingCooldown(RangerConfig.getInstance().explosiveShotCooldown);
     }
 
     @Override

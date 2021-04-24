@@ -30,8 +30,8 @@ public class InnerStrength extends XRPGSkill {
         add(new PotionEffect(PotionEffectType.ABSORPTION, brawlerConfig.effectDuration * 20, 0, false, false, true));
     }};
 
-    public InnerStrength(XRPG plugin, String skillName, XRPGPlayer xrpgPlayer, LotusStrike lotusStrike) {
-        super(xrpgPlayer, skillName, plugin);
+    public InnerStrength(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin, LotusStrike lotusStrike) {
+        super(xrpgPlayer, skillName, cooldown, plugin);
 
         this.lotusStrike = lotusStrike;
         xrpgPlayer.getRightClickEventHandler().addSkill(this);

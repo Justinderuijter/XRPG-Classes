@@ -13,8 +13,8 @@ import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 public class ShieldBash extends XRPGSkill {
-    public ShieldBash(XRPGPlayer xrpgPlayer, String skillName, XRPG plugin) {
-        super(xrpgPlayer, skillName, plugin);
+    public ShieldBash(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
+        super(xrpgPlayer, skillName, cooldown, plugin);
 
         xrpgPlayer.getSneakLeftClickEventHandler().addSkill(this);
     }
@@ -40,7 +40,7 @@ public class ShieldBash extends XRPGSkill {
             //Check if the location is valid and player isn't allied before casting shield Bash
             if (getProtectionSet().isLocationValid(player.getLocation(), target.getLocation()) && !getPartyManager().isPlayerAllied(player, target)) {
                 if (!isSkillReady()) {
-                    player.sendMessage(Utils.getCooldownMessage(getSkillName(), getCooldown()));
+                    player.sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
                     return;
                 }
 
@@ -50,7 +50,7 @@ public class ShieldBash extends XRPGSkill {
                 else
                     player.sendMessage(ChatColor.RED + target.getName() + " cannot be stunned for " + xrpgPlayer.getStunblockDuration() + " seconds!");
 
-                setCooldown(guardianConfig.shieldBashCooldown);
+                setRemainingCooldown(guardianConfig.shieldBashCooldown);
             }
         }
     }

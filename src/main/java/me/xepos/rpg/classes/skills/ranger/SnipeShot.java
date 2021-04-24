@@ -11,8 +11,8 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class SnipeShot extends XRPGBowSkill {
-    public SnipeShot(XRPGPlayer xrpgPlayer, String skillName, XRPG plugin) {
-        super(xrpgPlayer, skillName, plugin);
+    public SnipeShot(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
+        super(xrpgPlayer, skillName, cooldown, plugin);
 
         xrpgPlayer.getShootBowEventHandler().addSkill(this);
     }
@@ -24,11 +24,11 @@ public class SnipeShot extends XRPGBowSkill {
         if (!(e.getProjectile() instanceof Arrow)) return;
 
         if (!isSkillReady()) {
-            e.getEntity().sendMessage(Utils.getCooldownMessage(getSkillName(), getCooldown()));
+            e.getEntity().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
         }
         doSnipeShot(e, (Arrow) e.getProjectile());
-        setCooldown(RangerConfig.getInstance().snipeShotCooldown);
+        setRemainingCooldown(RangerConfig.getInstance().snipeShotCooldown);
     }
 
     @Override

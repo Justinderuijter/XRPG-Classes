@@ -10,8 +10,8 @@ import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityShootBowEvent;
 
 public class ArrowOfDarkness extends XRPGBowSkill {
-    public ArrowOfDarkness(XRPGPlayer xrpgPlayer, String skillName, XRPG plugin) {
-        super(xrpgPlayer, skillName, plugin);
+    public ArrowOfDarkness(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
+        super(xrpgPlayer, skillName, cooldown, plugin);
 
         xrpgPlayer.getShootBowEventHandler().addSkill(this);
     }
@@ -24,7 +24,7 @@ public class ArrowOfDarkness extends XRPGBowSkill {
         if (getXRPGPlayer().getShootBowEventHandler().getCurrentSkill() != this) return;
 
         if (!isSkillReady()) {
-            e.getEntity().sendMessage(Utils.getCooldownMessage(getSkillName(), getCooldown()));
+            e.getEntity().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
         }
         Arrow arrow = (Arrow) e.getProjectile();
@@ -32,7 +32,7 @@ public class ArrowOfDarkness extends XRPGBowSkill {
         arrow.setPickupStatus(AbstractArrow.PickupStatus.CREATIVE_ONLY);
         arrow.setCustomName("Darkness");
         arrow.setCustomNameVisible(false);
-        setCooldown(RangerConfig.getInstance().arrowOfDarknessCooldown);
+        setRemainingCooldown(RangerConfig.getInstance().arrowOfDarknessCooldown);
     }
 
     @Override

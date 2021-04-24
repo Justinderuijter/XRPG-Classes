@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EnchantedGoldenAppleAoE extends XRPGSkill {
-    public EnchantedGoldenAppleAoE(XRPG plugin, String skillName, XRPGPlayer xrpgPlayer) {
-        super(xrpgPlayer, skillName, plugin);
+    public EnchantedGoldenAppleAoE(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
+        super(xrpgPlayer, skillName, cooldown, plugin);
 
         xrpgPlayer.getConsumeItemEventHandler().addSkill(this);
     }
@@ -25,8 +25,8 @@ public class EnchantedGoldenAppleAoE extends XRPGSkill {
         if (!(event instanceof PlayerItemConsumeEvent)) return;
         PlayerItemConsumeEvent e = (PlayerItemConsumeEvent) event;
 
-        if (!Utils.isSkillReady(getCooldown())) {
-            e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), getCooldown()));
+        if (!Utils.isSkillReady(getRemainingCooldown())) {
+            e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             e.setCancelled(true);
             return;
         }
@@ -40,7 +40,7 @@ public class EnchantedGoldenAppleAoE extends XRPGSkill {
 
         Utils.addPotionEffects(getNearbyAlliedPlayers(e.getPlayer(), 10, 5, 10), potionEffects);
 
-        setCooldown(BardConfig.getInstance().eGoldenAppleCooldown);
+        setRemainingCooldown(BardConfig.getInstance().eGoldenAppleCooldown);
 
     }
 

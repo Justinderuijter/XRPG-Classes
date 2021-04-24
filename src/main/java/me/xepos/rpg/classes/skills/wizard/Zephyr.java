@@ -6,6 +6,7 @@ import me.xepos.rpg.classes.skills.XRPGSkill;
 import me.xepos.rpg.configuration.WizardConfig;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Sound;
+import org.bukkit.craftbukkit.libs.jline.internal.Nullable;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -18,8 +19,8 @@ import java.util.List;
 public class Zephyr extends XRPGSkill {
     final FireballStackData fireballStackData;
 
-    public Zephyr(XRPGPlayer xrpgPlayer, String skillName, XRPG plugin, FireballStackData fireballStackData) {
-        super(xrpgPlayer, skillName, plugin);
+    public Zephyr(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin, @Nullable FireballStackData fireballStackData) {
+        super(xrpgPlayer, skillName, cooldown, plugin);
 
         this.fireballStackData = fireballStackData;
         xrpgPlayer.getRightClickEventHandler().addSkill(this);
@@ -37,7 +38,7 @@ public class Zephyr extends XRPGSkill {
 
     private void doZephyr(PlayerInteractEvent e) {
         if (!isSkillReady()) {
-            e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), getCooldown()));
+            e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
         }
         WizardConfig wizardConfig = WizardConfig.getInstance();
@@ -63,6 +64,6 @@ public class Zephyr extends XRPGSkill {
 
             }
         }
-        setCooldown(wizardConfig.zephyrCooldown - fireBallStacks);
+        setRemainingCooldown(wizardConfig.zephyrCooldown - fireBallStacks);
     }
 }

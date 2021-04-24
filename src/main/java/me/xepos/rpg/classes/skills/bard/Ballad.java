@@ -13,8 +13,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import java.util.List;
 
 public class Ballad extends XRPGSkill {
-    public Ballad(XRPG plugin, String skillName, XRPGPlayer xrpgPlayer) {
-        super(xrpgPlayer, skillName, plugin);
+    public Ballad(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
+        super(xrpgPlayer, skillName, cooldown, plugin);
 
         xrpgPlayer.getRightClickEventHandler().addSkill(this);
     }
@@ -26,7 +26,7 @@ public class Ballad extends XRPGSkill {
         Player caster = e.getPlayer();
 
         if (!isSkillReady()) {
-            caster.sendMessage(Utils.getCooldownMessage(getSkillName(), getCooldown()));
+            caster.sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
         }
         BardConfig bardConfig = BardConfig.getInstance();
@@ -36,7 +36,7 @@ public class Ballad extends XRPGSkill {
             new HealOverTimeTask(nearbyPlayer, bardConfig.balledHealPerProc, bardConfig.balledMaxProcs).runTaskTimer(getPlugin(), 1L, bardConfig.balledProcDelay * 20L);
         }
 
-        setCooldown(bardConfig.balladCooldown);
+        setRemainingCooldown(bardConfig.balladCooldown);
     }
 
     @Override

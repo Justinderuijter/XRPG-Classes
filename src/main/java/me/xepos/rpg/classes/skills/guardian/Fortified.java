@@ -14,8 +14,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import java.util.Locale;
 
 public class Fortified extends XRPGSkill {
-    public Fortified(XRPGPlayer xrpgPlayer, String skillName, XRPG plugin) {
-        super(xrpgPlayer, skillName, plugin);
+    public Fortified(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
+        super(xrpgPlayer, skillName, cooldown, plugin);
 
         xrpgPlayer.getDamageTakenEventHandler().addSkill(this);
     }

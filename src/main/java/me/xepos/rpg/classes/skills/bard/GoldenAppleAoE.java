@@ -17,8 +17,8 @@ import java.util.List;
 public class GoldenAppleAoE extends XRPGSkill {
     private final EnchantedGoldenAppleAoE GAppleAoE;
 
-    public GoldenAppleAoE(XRPG plugin, String skillName, XRPGPlayer xrpgPlayer, @Nullable EnchantedGoldenAppleAoE GAppleAoE) {
-        super(xrpgPlayer, skillName, plugin);
+    public GoldenAppleAoE(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin, @Nullable EnchantedGoldenAppleAoE GAppleAoE) {
+        super(xrpgPlayer, skillName, cooldown, plugin);
 
         this.GAppleAoE = GAppleAoE;
         xrpgPlayer.getConsumeItemEventHandler().addSkill(this);
@@ -30,13 +30,13 @@ public class GoldenAppleAoE extends XRPGSkill {
         PlayerItemConsumeEvent e = (PlayerItemConsumeEvent) event;
         if (GAppleAoE != null) {
             if (!isSkillReady() || !GAppleAoE.isSkillReady()) {
-                e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), Math.max(GAppleAoE.getCooldown(), getCooldown())));
+                e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), Math.max(GAppleAoE.getRemainingCooldown(), getRemainingCooldown())));
                 e.setCancelled(true);
                 return;
             }
         } else {
             if (!isSkillReady()) {
-                e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), getCooldown()));
+                e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
                 e.setCancelled(true);
                 return;
             }
@@ -48,7 +48,7 @@ public class GoldenAppleAoE extends XRPGSkill {
 
         Utils.addPotionEffects(getNearbyAlliedPlayers(e.getPlayer(), 10, 5, 10), potionEffects);
 
-        setCooldown(BardConfig.getInstance().goldenAppleCooldown);
+        setRemainingCooldown(BardConfig.getInstance().goldenAppleCooldown);
 
     }
 
@@ -60,8 +60,8 @@ public class GoldenAppleAoE extends XRPGSkill {
     @Override
     public boolean isSkillReady() {
         if (GAppleAoE != null) {
-            return getCooldown() > System.currentTimeMillis() && GAppleAoE.getCooldown() > System.currentTimeMillis();
+            return getRemainingCooldown() > System.currentTimeMillis() && GAppleAoE.getRemainingCooldown() > System.currentTimeMillis();
         }
-        return super.getCooldown() > System.currentTimeMillis();
+        return super.getRemainingCooldown() > System.currentTimeMillis();
     }
 }

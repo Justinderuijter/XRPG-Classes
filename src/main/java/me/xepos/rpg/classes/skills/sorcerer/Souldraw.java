@@ -14,8 +14,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.RayTraceResult;
 
 public class Souldraw extends XRPGSkill {
-    public Souldraw(XRPGPlayer xrpgPlayer, String skillName, XRPG plugin) {
-        super(xrpgPlayer, skillName, plugin);
+    public Souldraw(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
+        super(xrpgPlayer, skillName, cooldown, plugin);
 
         xrpgPlayer.getRightClickEventHandler().addSkill(this);
     }
@@ -46,7 +46,7 @@ public class Souldraw extends XRPGSkill {
                 target.damage(sorcererConfig.souldrawDamage, caster);
                 //Heal the attacker for half of the damage dealt
                 Utils.healLivingEntity(caster, target.getLastDamage() / 2);
-                setCooldown(sorcererConfig.souldrawCooldown);
+                setRemainingCooldown(sorcererConfig.souldrawCooldown);
             }
         }
     }

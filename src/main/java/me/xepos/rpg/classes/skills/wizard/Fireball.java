@@ -18,8 +18,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 public class Fireball extends XRPGSkill {
     private final FireballStackData fireballStackData;
 
-    public Fireball(XRPGPlayer xrpgPlayer, String skillName, XRPG plugin) {
-        super(xrpgPlayer, skillName, plugin);
+    public Fireball(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
+        super(xrpgPlayer, skillName, cooldown, plugin);
 
         fireballStackData = new FireballStackData(xrpgPlayer, skillName, plugin);
         xrpgPlayer.getRightClickEventHandler().addSkill(this);
@@ -42,7 +42,7 @@ public class Fireball extends XRPGSkill {
     private void doFireball(PlayerInteractEvent e) {
         //Cancel if skill is still on cooldown and send a message.
         if (!isSkillReady()) {
-            e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), getCooldown()));
+            e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
         }
         WizardConfig wizardConfig = WizardConfig.getInstance();
@@ -59,7 +59,7 @@ public class Fireball extends XRPGSkill {
 
         this.incrementFireBallStacks(this.fireballStackData.getMaxFireballStacks());
         this.fireballStackData.setLastStackGained(System.currentTimeMillis());
-        setCooldown(wizardConfig.smallFireballCooldown);
+        setRemainingCooldown(wizardConfig.smallFireballCooldown);
 
         TextComponent text = new TextComponent("You now have " + this.fireballStackData.getFireBallStacks() + " " + getSkillName() + " stacks");
         text.setColor(ChatColor.DARK_GREEN.asBungee());

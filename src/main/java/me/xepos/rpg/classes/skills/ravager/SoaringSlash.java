@@ -14,8 +14,8 @@ import org.bukkit.util.Vector;
 public class SoaringSlash extends XRPGSkill {
     BukkitTask landTask = null;
 
-    public SoaringSlash(XRPGPlayer xrpgPlayer, String skillName, XRPG plugin) {
-        super(xrpgPlayer, skillName, plugin);
+    public SoaringSlash(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
+        super(xrpgPlayer, skillName, cooldown, plugin);
 
         xrpgPlayer.getSneakLeftClickEventHandler().addSkill(this);
     }
@@ -26,12 +26,12 @@ public class SoaringSlash extends XRPGSkill {
         PlayerInteractEvent e = (PlayerInteractEvent) event;
 
         if (!isSkillReady()) {
-            e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), getCooldown()));
+            e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
         }
 
         e.getPlayer().setVelocity(e.getPlayer().getEyeLocation().getDirection().multiply(new Vector(2, 0, 2)).add(new Vector(0, 1, 0)));
-        setCooldown(RavagerConfig.getInstance().soaringSlashCooldown);
+        setRemainingCooldown(RavagerConfig.getInstance().soaringSlashCooldown);
         if (landTask == null || landTask.isCancelled())
             landTask = new RavagerLandTask(e.getPlayer(), getProtectionSet(), getPartyManager()).runTaskTimer(getPlugin(), 5L, 3L);
     }

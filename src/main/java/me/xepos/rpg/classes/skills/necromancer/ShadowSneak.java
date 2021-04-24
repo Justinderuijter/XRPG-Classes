@@ -22,8 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ShadowSneak extends XRPGSkill {
-    public ShadowSneak(XRPGPlayer xrpgPlayer, String skillName, XRPG plugin) {
-        super(xrpgPlayer, skillName, plugin);
+    public ShadowSneak(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
+        super(xrpgPlayer, skillName, cooldown, plugin);
 
         xrpgPlayer.getSneakRightClickEventHandler().addSkill(this);
     }
@@ -43,7 +43,7 @@ public class ShadowSneak extends XRPGSkill {
 
     private void doShadowSneak(Player player) {
         if (!isSkillReady()) {
-            player.sendMessage(Utils.getCooldownMessage(getSkillName(), getCooldown()));
+            player.sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
         }
 
@@ -62,7 +62,7 @@ public class ShadowSneak extends XRPGSkill {
 
                 new BleedTask(livingEntity, player, necromancerConfig.shadowSneakTicks, necromancerConfig.shadowSneakDamagePerTick).runTaskTimer(getPlugin(), 11, 20);
             }
-            setCooldown(necromancerConfig.shadowSneakCooldown);
+            setRemainingCooldown(necromancerConfig.shadowSneakCooldown);
         }
     }
 

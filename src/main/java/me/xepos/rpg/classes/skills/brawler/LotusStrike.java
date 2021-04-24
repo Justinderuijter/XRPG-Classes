@@ -20,8 +20,8 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.*;
 
 public class LotusStrike extends XRPGSkill {
-    public LotusStrike(XRPG plugin, String skillName, XRPGPlayer xrpgPlayer) {
-        super(xrpgPlayer, skillName, plugin);
+    public LotusStrike(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
+        super(xrpgPlayer, skillName, cooldown, plugin);
     }
 
     BrawlerConfig brawlerConfig = BrawlerConfig.getInstance();

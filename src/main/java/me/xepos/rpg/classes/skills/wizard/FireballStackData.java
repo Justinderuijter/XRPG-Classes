@@ -12,10 +12,10 @@ public class FireballStackData extends XRPGSkill {
     private long lastStackGained = System.currentTimeMillis();
 
 
-    public FireballStackData(XRPGPlayer xrpgPlayer, String skillName, XRPG plugin) {
-        super(xrpgPlayer, skillName, plugin);
+    public FireballStackData(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
+        super(xrpgPlayer, skillName, cooldown, plugin);
 
-        setCooldown(-1);
+        setRemainingCooldown(-1);
         xrpgPlayer.getRightClickEventHandler().addSkill(this);
         xrpgPlayer.getSneakRightClickEventHandler().addSkill(this);
     }

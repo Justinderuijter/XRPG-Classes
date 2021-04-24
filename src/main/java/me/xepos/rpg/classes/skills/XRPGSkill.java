@@ -4,7 +4,6 @@ import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.dependencies.parties.IPartyManager;
 import me.xepos.rpg.dependencies.protection.ProtectionSet;
-import me.xepos.rpg.enums.SkillActivationType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 
@@ -14,20 +13,23 @@ import java.util.List;
 public abstract class XRPGSkill {
 
     private XRPGPlayer xrpgPlayer;
-    private long cooldown;
-    private String skillName;
-    private SkillActivationType activationType;
     private final XRPG plugin;
     private final ProtectionSet protectionSet;
     private final IPartyManager partyManager;
 
-    public XRPGSkill(XRPGPlayer xrpgPlayer, String skillName, XRPG plugin) {
+    //Stats
+    private long remainingCooldown;
+    private String skillName;
+    private int cooldown;
+
+    public XRPGSkill(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
         this.xrpgPlayer = xrpgPlayer;
         this.plugin = plugin;
         this.skillName = skillName;
+        this.cooldown = cooldown;
         this.protectionSet = plugin.getProtectionSet();
         this.partyManager = plugin.getPartyManager();
-        this.cooldown = System.currentTimeMillis();
+        this.remainingCooldown = System.currentTimeMillis();
     }
 
 
@@ -35,12 +37,12 @@ public abstract class XRPGSkill {
 
     public abstract void initialize();
 
-    public long getCooldown() {
-        return cooldown;
+    public long getRemainingCooldown() {
+        return remainingCooldown;
     }
 
-    public void setCooldown(int cooldownInSeconds) {
-        this.cooldown = System.currentTimeMillis() + (cooldownInSeconds * 1000L);
+    public void setRemainingCooldown(int cooldownInSeconds) {
+        this.remainingCooldown = System.currentTimeMillis() + (cooldownInSeconds * 1000L);
     }
 
     public String getSkillName() {
@@ -52,7 +54,7 @@ public abstract class XRPGSkill {
     }
 
     public boolean isSkillReady() {
-        return cooldown <= System.currentTimeMillis();
+        return remainingCooldown <= System.currentTimeMillis();
     }
 
     public XRPG getPlugin() {
@@ -80,11 +82,11 @@ public abstract class XRPGSkill {
         this.xrpgPlayer = xrpgPlayer;
     }
 
-    public SkillActivationType getActivationType() {
-        return activationType;
+    public int getCooldown() {
+        return cooldown;
     }
 
-    public void setActivationType(SkillActivationType activationType) {
-        this.activationType = activationType;
+    public void setCooldown(int cooldown) {
+        this.cooldown = cooldown;
     }
 }

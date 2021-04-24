@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BloodPurification extends XRPGSkill {
-    public BloodPurification(XRPGPlayer xrpgPlayer, String skillName, XRPG plugin) {
-        super(xrpgPlayer, skillName, plugin);
+    public BloodPurification(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
+        super(xrpgPlayer, skillName, cooldown, plugin);
 
         xrpgPlayer.getRightClickEventHandler().addSkill(this);
     }
@@ -43,7 +43,7 @@ public class BloodPurification extends XRPGSkill {
 
     private void doBloodPurification(Player caster) {
         if (!isSkillReady()) {
-            caster.sendMessage(Utils.getCooldownMessage(getSkillName(), getCooldown()));
+            caster.sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
         }
 
@@ -63,7 +63,7 @@ public class BloodPurification extends XRPGSkill {
             }
         }
 
-        setCooldown(SorcererConfig.getInstance().bloodPurificationCooldown);
+        setRemainingCooldown(SorcererConfig.getInstance().bloodPurificationCooldown);
     }
 
     private void cleanseBadPotionEffects(LivingEntity livingTarget) {

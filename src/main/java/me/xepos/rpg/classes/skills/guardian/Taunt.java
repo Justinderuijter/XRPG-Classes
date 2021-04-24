@@ -13,8 +13,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import java.util.List;
 
 public class Taunt extends XRPGSkill {
-    public Taunt(XRPGPlayer xrpgPlayer, String skillName, XRPG plugin) {
-        super(xrpgPlayer, skillName, plugin);
+    public Taunt(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
+        super(xrpgPlayer, skillName, cooldown, plugin);
 
         xrpgPlayer.getDamageDealtEventHandler().addSkill(this);
     }

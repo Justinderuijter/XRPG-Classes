@@ -13,8 +13,8 @@ import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 public class WindBarrier extends XRPGSkill {
-    public WindBarrier(XRPGPlayer xrpgPlayer, String skillName, XRPG plugin) {
-        super(xrpgPlayer, skillName, plugin);
+    public WindBarrier(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
+        super(xrpgPlayer, skillName, cooldown, plugin);
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -28,8 +28,8 @@ public class WindBarrier extends XRPGSkill {
             if (e.getDamager() instanceof Projectile || e.getDamager() instanceof Explosive) {
                 if (isSkillReady()) {
                     e.setCancelled(true);
-                    setCooldown(WizardConfig.getInstance().forcefieldCooldown);
-                    player.sendMessage(ChatColor.RED + getSkillName() + " is now on cooldown for " + getCooldown() + " seconds!");
+                    setRemainingCooldown(WizardConfig.getInstance().forcefieldCooldown);
+                    player.sendMessage(ChatColor.RED + getSkillName() + " is now on cooldown for " + getRemainingCooldown() + " seconds!");
                 }
             }
         }

@@ -16,8 +16,8 @@ import java.util.List;
 
 public class PotionAoE extends XRPGSkill {
 
-    public PotionAoE(XRPG plugin, String skillName, XRPGPlayer xrpgPlayer) {
-        super(xrpgPlayer, skillName, plugin);
+    public PotionAoE(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
+        super(xrpgPlayer, skillName, cooldown, plugin);
 
         xrpgPlayer.getConsumeItemEventHandler().addSkill(this);
     }
@@ -28,7 +28,7 @@ public class PotionAoE extends XRPGSkill {
         PlayerItemConsumeEvent e = (PlayerItemConsumeEvent) event;
         Player player = e.getPlayer();
         if (!isSkillReady()) {
-            player.sendMessage(Utils.getCooldownMessage(getSkillName(), getCooldown()));
+            player.sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
         }
 
@@ -38,7 +38,7 @@ public class PotionAoE extends XRPGSkill {
 
         Utils.addPotionEffects(getNearbyAlliedPlayers(player, 10, 5, 10), potionEffects);
 
-        setCooldown(BardConfig.getInstance().potionCooldown);
+        setRemainingCooldown(BardConfig.getInstance().potionCooldown);
 
     }
 

@@ -15,8 +15,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.RayTraceResult;
 
 public class Overheat extends XRPGSkill {
-    public Overheat(XRPGPlayer xrpgPlayer, String skillName, XRPG plugin) {
-        super(xrpgPlayer, skillName, plugin);
+    public Overheat(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
+        super(xrpgPlayer, skillName, cooldown, plugin);
 
         xrpgPlayer.getLeftClickEventHandler().addSkill(this);
     }
@@ -39,7 +39,7 @@ public class Overheat extends XRPGSkill {
 
     private void doOverheat(Player caster) {
         if (!isSkillReady()) {
-            caster.sendMessage(Utils.getCooldownMessage(getSkillName(), getCooldown()));
+            caster.sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
         }
 
@@ -48,7 +48,7 @@ public class Overheat extends XRPGSkill {
             SorcererConfig sorcererConfig = SorcererConfig.getInstance();
             //doRayTrace only returns livingEntities so no need to check
             new OverheatTask((LivingEntity) result.getHitEntity()).runTaskLater(getPlugin(), sorcererConfig.overheatDuration * 20L);
-            setCooldown(sorcererConfig.overheatCooldown);
+            setRemainingCooldown(sorcererConfig.overheatCooldown);
         }
     }
 }

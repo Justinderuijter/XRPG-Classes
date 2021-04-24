@@ -26,8 +26,8 @@ import java.util.List;
 public class Shatter extends XRPGSkill {
     final FireballStackData fireballStackData;
 
-    public Shatter(XRPGPlayer xrpgPlayer, String skillName, XRPG plugin, @Nullable FireballStackData fireballStackData) {
-        super(xrpgPlayer, skillName, plugin);
+    public Shatter(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin, @Nullable FireballStackData fireballStackData) {
+        super(xrpgPlayer, skillName, cooldown, plugin);
 
         this.fireballStackData = fireballStackData;
         xrpgPlayer.getLeftClickEventHandler().addSkill(this);
@@ -49,7 +49,7 @@ public class Shatter extends XRPGSkill {
 
     private void doShatter(PlayerInteractEvent e) {
         if (!isSkillReady()) {
-            e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), getCooldown()));
+            e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
         }
         WizardConfig wizardConfig = WizardConfig.getInstance();
@@ -65,7 +65,7 @@ public class Shatter extends XRPGSkill {
             fireBallStacks = fireballStackData.getFireBallStacks();
         }
 
-        setCooldown(wizardConfig.shatterCooldown - fireBallStacks);
+        setRemainingCooldown(wizardConfig.shatterCooldown - fireBallStacks);
     }
 
     public void shatterLogic(PlayerInteractEvent e, LivingEntity livingEntity) {
