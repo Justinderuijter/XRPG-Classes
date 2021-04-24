@@ -5,6 +5,7 @@ import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.classes.skills.XRPGSkill;
 import me.xepos.rpg.configuration.WizardConfig;
 import me.xepos.rpg.utils.Utils;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.craftbukkit.libs.jline.internal.Nullable;
 import org.bukkit.entity.LivingEntity;
@@ -17,7 +18,7 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.List;
 
 public class Zephyr extends XRPGSkill {
-    final FireballStackData fireballStackData;
+    private FireballStackData fireballStackData;
 
     public Zephyr(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin, @Nullable FireballStackData fireballStackData) {
         super(xrpgPlayer, skillName, cooldown, plugin);
@@ -28,12 +29,21 @@ public class Zephyr extends XRPGSkill {
 
     @Override
     public void activate(Event event) {
+        if (!(event instanceof PlayerInteractEvent)) return;
+        PlayerInteractEvent e = (PlayerInteractEvent) event;
+        if (e.getItem() == null || e.getItem().getType() != Material.STICK) return;
 
+        doZephyr(e);
     }
 
     @Override
     public void initialize() {
-
+        for (XRPGSkill skill : getXRPGPlayer().getRightClickEventHandler().getSkills()) {
+            if (skill instanceof me.xepos.rpg.classes.skills.wizard.Fireball) {
+                this.fireballStackData = ((me.xepos.rpg.classes.skills.wizard.Fireball) skill).getFireballStackData();
+                return;
+            }
+        }
     }
 
     private void doZephyr(PlayerInteractEvent e) {

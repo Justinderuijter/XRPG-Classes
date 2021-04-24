@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Shatter extends XRPGSkill {
-    final FireballStackData fireballStackData;
+    private FireballStackData fireballStackData;
 
     public Shatter(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin, @Nullable FireballStackData fireballStackData) {
         super(xrpgPlayer, skillName, cooldown, plugin);
@@ -44,7 +44,12 @@ public class Shatter extends XRPGSkill {
 
     @Override
     public void initialize() {
-
+        for (XRPGSkill skill : getXRPGPlayer().getRightClickEventHandler().getSkills()) {
+            if (skill instanceof me.xepos.rpg.classes.skills.wizard.Fireball) {
+                this.fireballStackData = ((me.xepos.rpg.classes.skills.wizard.Fireball) skill).getFireballStackData();
+                return;
+            }
+        }
     }
 
     private void doShatter(PlayerInteractEvent e) {

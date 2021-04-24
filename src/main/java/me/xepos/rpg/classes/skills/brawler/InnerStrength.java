@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Random;
 
 public class InnerStrength extends XRPGSkill {
-    private final LotusStrike lotusStrike;
+    private LotusStrike lotusStrike;
     BrawlerConfig brawlerConfig = BrawlerConfig.getInstance();
 
     private List<PotionEffect> defEffects = new ArrayList<PotionEffect>() {{
@@ -62,7 +62,12 @@ public class InnerStrength extends XRPGSkill {
 
     @Override
     public void initialize() {
-
+        for (XRPGSkill skill : getXRPGPlayer().getDamageDealtEventHandler().getSkills()) {
+            if (skill instanceof LotusStrike) {
+                this.lotusStrike = (LotusStrike) skill;
+                return;
+            }
+        }
     }
 
     private void useInnerStrength(Player player) {

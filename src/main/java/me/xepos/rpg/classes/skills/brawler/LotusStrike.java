@@ -22,6 +22,8 @@ import java.util.*;
 public class LotusStrike extends XRPGSkill {
     public LotusStrike(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
         super(xrpgPlayer, skillName, cooldown, plugin);
+
+        xrpgPlayer.getDamageDealtEventHandler().addSkill(this);
     }
 
     BrawlerConfig brawlerConfig = BrawlerConfig.getInstance();

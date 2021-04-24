@@ -49,6 +49,11 @@ public class BoneShield extends XRPGSkill {
 
     @Override
     public void initialize() {
-
+        for (XRPGSkill skill : getXRPGPlayer().getDamageDealtEventHandler().getSkills()) {
+            if (skill instanceof ArmyOfTheUndead) {
+                this.armyOfTheUndead = (ArmyOfTheUndead) skill;
+                return;
+            }
+        }
     }
 }

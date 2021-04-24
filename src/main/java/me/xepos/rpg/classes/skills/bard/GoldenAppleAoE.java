@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GoldenAppleAoE extends XRPGSkill {
-    private final EnchantedGoldenAppleAoE GAppleAoE;
+    private EnchantedGoldenAppleAoE GAppleAoE;
 
     public GoldenAppleAoE(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin, @Nullable EnchantedGoldenAppleAoE GAppleAoE) {
         super(xrpgPlayer, skillName, cooldown, plugin);
@@ -54,7 +54,12 @@ public class GoldenAppleAoE extends XRPGSkill {
 
     @Override
     public void initialize() {
-
+        for (XRPGSkill skill : getXRPGPlayer().getConsumeItemEventHandler().getSkills()) {
+            if (skill instanceof EnchantedGoldenAppleAoE) {
+                this.GAppleAoE = (EnchantedGoldenAppleAoE) skill;
+                return;
+            }
+        }
     }
 
     @Override
