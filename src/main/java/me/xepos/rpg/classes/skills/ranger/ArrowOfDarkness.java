@@ -12,6 +12,8 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 public class ArrowOfDarkness extends XRPGBowSkill {
     public ArrowOfDarkness(XRPGPlayer xrpgPlayer, String skillName, XRPG plugin) {
         super(xrpgPlayer, skillName, plugin);
+
+        xrpgPlayer.getShootBowEventHandler().addSkill(this);
     }
 
     @Override
@@ -19,6 +21,7 @@ public class ArrowOfDarkness extends XRPGBowSkill {
         if (!(event instanceof EntityShootBowEvent)) return;
         EntityShootBowEvent e = (EntityShootBowEvent) event;
         if (!(e.getProjectile() instanceof Arrow)) return;
+        if (getXRPGPlayer().getShootBowEventHandler().getCurrentSkill() != this) return;
 
         if (!isSkillReady()) {
             e.getEntity().sendMessage(Utils.getCooldownMessage(getSkillName(), getCooldown()));

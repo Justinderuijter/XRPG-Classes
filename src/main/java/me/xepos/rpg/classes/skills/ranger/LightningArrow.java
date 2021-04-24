@@ -11,6 +11,8 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 public class LightningArrow extends XRPGBowSkill {
     public LightningArrow(XRPGPlayer xrpgPlayer, String skillName, XRPG plugin) {
         super(xrpgPlayer, skillName, plugin);
+
+        xrpgPlayer.getShootBowEventHandler().addSkill(this);
     }
 
     @Override

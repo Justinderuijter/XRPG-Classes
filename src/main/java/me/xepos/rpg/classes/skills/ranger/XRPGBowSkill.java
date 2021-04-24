@@ -9,20 +9,11 @@ public abstract class XRPGBowSkill extends XRPGSkill {
         super(xrpgPlayer, skillName, plugin);
     }
 
-    private boolean belongsToCollection = false;
+    public void enable() {
 
-    public boolean isBelongsToCollection() {
-        return belongsToCollection;
     }
 
-    public void setBelongsToCollection(boolean belongsToCollection) {
-        if (belongsToCollection) {
-            if (!getXRPGPlayer().getShootBowEventHandler().getSkills().contains(this)) {
-                getXRPGPlayer().getShootBowEventHandler().getSkills().add(this);
-            }
-        } else {
-            getXRPGPlayer().getShootBowEventHandler().getSkills().remove(this);
-        }
-        this.belongsToCollection = belongsToCollection;
+    public void disable() {
+
     }
 }

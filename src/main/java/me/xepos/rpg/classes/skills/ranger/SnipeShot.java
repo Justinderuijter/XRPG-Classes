@@ -13,6 +13,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class SnipeShot extends XRPGBowSkill {
     public SnipeShot(XRPGPlayer xrpgPlayer, String skillName, XRPG plugin) {
         super(xrpgPlayer, skillName, plugin);
+
+        xrpgPlayer.getShootBowEventHandler().addSkill(this);
     }
 
     @Override

@@ -6,6 +6,7 @@ import me.xepos.rpg.database.IDatabaseManager;
 import me.xepos.rpg.database.tasks.savePlayerDataTask;
 import me.xepos.rpg.enums.DamageTakenSource;
 import me.xepos.rpg.utils.Utils;
+import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -16,12 +17,12 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.UUID;
 
 
-public class ClassListener implements Listener
-{
+public class ClassListener implements Listener {
     private final XRPG plugin;
     private final IDatabaseManager databaseManager;
 
@@ -57,36 +58,32 @@ public class ClassListener implements Listener
     }
 
     @EventHandler
-    public void onPrePlayerJoin(AsyncPlayerPreLoginEvent e){
-        if (e.getLoginResult() == AsyncPlayerPreLoginEvent.Result.ALLOWED){
+    public void onPrePlayerJoin(AsyncPlayerPreLoginEvent e) {
+        if (e.getLoginResult() == AsyncPlayerPreLoginEvent.Result.ALLOWED) {
             this.databaseManager.loadPlayerData(e.getUniqueId());
         }
 
     }
 
     @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent e)
-    {
+    public void onPlayerJoin(PlayerJoinEvent e) {
         Player player = e.getPlayer();
         XRPGPlayer xrpgPlayer = null;
-        if (XRPG.RPGPlayers.containsKey(player.getUniqueId()))
-        {
+        if (XRPG.RPGPlayers.containsKey(player.getUniqueId())) {
             xrpgPlayer = Utils.GetRPG(player);
             xrpgPlayer.setPlayer(player);
         }
 
-        if (xrpgPlayer != null && xrpgPlayer.getPlayer() != null){
+        if (xrpgPlayer != null && xrpgPlayer.getPlayer() != null) {
             player.sendMessage("You are now " + XRPG.RPGPlayers.get(player.getUniqueId()).getPlayerClass().toString());
             Utils.GetRPG(player).onJoin(e);
-        }
-        else {
+        } else {
             player.kickPlayer("Something went wrong while loading XRPG data.");
         }
     }
 
     @EventHandler
-    public void onPlayerLeave(PlayerQuitEvent e)
-    {
+    public void onPlayerLeave(PlayerQuitEvent e) {
         UUID playerId = e.getPlayer().getUniqueId();
         XRPGPlayer xrpgPlayer = XRPG.RPGPlayers.get(playerId);
         new savePlayerDataTask(databaseManager, xrpgPlayer).runTaskAsynchronously(plugin);
@@ -95,54 +92,61 @@ public class ClassListener implements Listener
 
 
     @EventHandler
-    public void onPlayerConsumeItem(PlayerItemConsumeEvent e)
-    {
+    public void onPlayerConsumeItem(PlayerItemConsumeEvent e) {
         Player player = e.getPlayer();
         Utils.GetRPG(player).onPlayerConsumeItem(e);
     }
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent e) {
-        Player player = e.getPlayer();
+        XRPGPlayer xrpgPlayer = Utils.GetRPG(e.getPlayer());
         //Utils.GetRPG(player).onUseItem(e);
+
+
         if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            if (player.isSneaking())
-                Utils.GetRPG(player).getSneakRightClickEventHandler().invoke(e);
-            else
-                Utils.GetRPG(player).getRightClickEventHandler().invoke(e);
+            if (e.getPlayer().isSneaking()) {
+                xrpgPlayer.getSneakRightClickEventHandler().invoke(e);
+            } else {
+                xrpgPlayer.getRightClickEventHandler().invoke(e);
+            }
 
         } else if (e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK) {
-            if (player.isSneaking())
-                Utils.GetRPG(player).getSneakLeftClickEventHandler().invoke(e);
-            else
-                Utils.GetRPG(player).getLeftClickEventHandler().invoke(e);
-
+            if (e.getPlayer().isSneaking()) {
+                doBowCycle(e.getItem(), xrpgPlayer);
+                xrpgPlayer.getSneakLeftClickEventHandler().invoke(e);
+            } else {
+                doBowCycle(e.getItem(), xrpgPlayer);
+                xrpgPlayer.getLeftClickEventHandler().invoke(e);
+            }
         }
+
     }
 
     @EventHandler
-    public void onPlayerInteractEntity(PlayerInteractEntityEvent e)
-    {
+    public void onPlayerInteractEntity(PlayerInteractEntityEvent e) {
         Player player = e.getPlayer();
         Utils.GetRPG(player).onInteractWithEntity(e);
     }
 
     @EventHandler
-    public void onProjectileLaunch(ProjectileLaunchEvent e)
-    {
-        if (e.getEntity().getShooter() instanceof Player)
-        {
-            Player player = (Player)e.getEntity().getShooter();
+    public void onProjectileLaunch(ProjectileLaunchEvent e) {
+        if (e.getEntity().getShooter() instanceof Player) {
+            Player player = (Player) e.getEntity().getShooter();
             Utils.GetRPG(player).onProjectileLaunch(e);
         }
     }
 
     @EventHandler
-    public void onEntityShootBow(EntityShootBowEvent e){
-        if (e.getEntity() instanceof Player)
-        {
+    public void onEntityShootBow(EntityShootBowEvent e) {
+        if (e.getEntity() instanceof Player) {
             Player player = (Player) e.getEntity();
             Utils.GetRPG(player).onShootBow(e);
+        }
+    }
+
+    private void doBowCycle(ItemStack item, XRPGPlayer xrpgPlayer) {
+        if (item != null && item.getType() == Material.BOW) {
+            xrpgPlayer.getShootBowEventHandler().next();
         }
     }
 }

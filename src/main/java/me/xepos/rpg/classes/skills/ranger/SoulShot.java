@@ -11,6 +11,8 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 public class SoulShot extends XRPGBowSkill {
     public SoulShot(XRPGPlayer xrpgPlayer, String skillName, XRPG plugin) {
         super(xrpgPlayer, skillName, plugin);
+
+        xrpgPlayer.getShootBowEventHandler().addSkill(this);
     }
 
     @Override
