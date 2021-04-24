@@ -26,7 +26,6 @@ public class Meteor extends XRPGSkill {
     public Meteor(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
         super(xrpgPlayer, skillName, cooldown, plugin);
 
-        this.fireballStackData = fireballStackData;
         xrpgPlayer.getLeftClickEventHandler().addSkill(this);
     }
 
