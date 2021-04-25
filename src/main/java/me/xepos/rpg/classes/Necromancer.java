@@ -1,12 +1,11 @@
 package me.xepos.rpg.classes;
 
-import me.xepos.rpg.utils.Utils;
 import me.xepos.rpg.XRPG;
-
 import me.xepos.rpg.configuration.NecromancerConfig;
-import me.xepos.rpg.entities.NecromancerFollower;
+import me.xepos.rpg.entities.Follower;
 import me.xepos.rpg.tasks.BleedTask;
 import me.xepos.rpg.tasks.PurgatoryBatTask;
+import me.xepos.rpg.utils.Utils;
 import net.minecraft.server.v1_16_R3.EntityLiving;
 import org.bukkit.ChatColor;
 import org.bukkit.FluidCollisionMode;
@@ -43,18 +42,18 @@ public class Necromancer extends XRPGClass {
     private long shadowSneakCooldown = Utils.setSkillCooldown(necromancerConfig.shadowSneakCooldown);
     private long boneShieldCooldown = Utils.setSkillCooldown(necromancerConfig.boneShieldCooldown);
     private long purgatoryBatCooldown = Utils.setSkillCooldown(necromancerConfig.purgatoryBatCooldown);
-    public List<NecromancerFollower> followers = new ArrayList<>();
+    public List<Follower> followers = new ArrayList<>();
 
     @Override
     public void onHit(EntityDamageByEntityEvent e) {
-        for (NecromancerFollower follower : followers) {
-                EntityLiving entityLiving = ((CraftLivingEntity) e.getEntity()).getHandle();
-                if (entityLiving instanceof NecromancerFollower) {
-                    if (!followers.contains(entityLiving))
-                        follower.setGoalTarget(entityLiving, EntityTargetEvent.TargetReason.OWNER_ATTACKED_TARGET, true);
-                } else {
+        for (Follower follower : followers) {
+            EntityLiving entityLiving = ((CraftLivingEntity) e.getEntity()).getHandle();
+            if (entityLiving instanceof Follower) {
+                if (!followers.contains(entityLiving))
                     follower.setGoalTarget(entityLiving, EntityTargetEvent.TargetReason.OWNER_ATTACKED_TARGET, true);
-                }
+            } else {
+                follower.setGoalTarget(entityLiving, EntityTargetEvent.TargetReason.OWNER_ATTACKED_TARGET, true);
+            }
         }
 
         if (((Player) e.getDamager()).getInventory().getItemInMainHand().getType().toString().toLowerCase().contains("_hoe")) {
@@ -116,8 +115,8 @@ public class Necromancer extends XRPGClass {
     public void onInteractWithEntity(PlayerInteractEntityEvent e) {
         if (e.getRightClicked() instanceof LivingEntity) {
             LivingEntity entity = (LivingEntity) e.getRightClicked();
-            if (((CraftLivingEntity) entity).getHandle() instanceof NecromancerFollower) {
-                NecromancerFollower follower = (NecromancerFollower) ((CraftLivingEntity) entity).getHandle();
+            if (((CraftLivingEntity) entity).getHandle() instanceof Follower) {
+                Follower follower = (Follower) ((CraftLivingEntity) entity).getHandle();
                 if (!e.getPlayer().isSneaking()) {
                     e.getPlayer().sendMessage(follower.getEntityType().toString());
                     e.getPlayer().sendMessage("Owner: " + follower.getOwner().getName());

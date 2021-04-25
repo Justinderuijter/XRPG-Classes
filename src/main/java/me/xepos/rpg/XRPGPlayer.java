@@ -2,6 +2,8 @@ package me.xepos.rpg;
 
 import me.xepos.rpg.classes.Ranger;
 import me.xepos.rpg.classes.XRPGClass;
+import me.xepos.rpg.classes.skills.IFollowerContainer;
+import me.xepos.rpg.classes.skills.XRPGSkill;
 import me.xepos.rpg.enums.DamageTakenSource;
 import me.xepos.rpg.handlers.EventHandler;
 import me.xepos.rpg.handlers.ShootBowEventHandler;
@@ -11,7 +13,9 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -21,6 +25,9 @@ public class XRPGPlayer {
     private transient XRPGClass playerClass;
     private String classId;
     private int freeChangeTickets = 2;
+
+    //For convenience
+    private List<IFollowerContainer> followerSkills = new ArrayList<>();
 
     private final HashMap<String, EventHandler> handlerList = new HashMap<String, EventHandler>() {{
         //Interact Handlers
@@ -185,5 +192,18 @@ public class XRPGPlayer {
 
     public void addEventHandler(String handlerName, EventHandler handler) {
         this.handlerList.put(handlerName.toUpperCase(), handler);
+    }
+
+    public List<IFollowerContainer> getFollowerSkills() {
+        return followerSkills;
+    }
+
+    public void setFollowerSkills(List<XRPGSkill> skills) {
+        followerSkills.clear();
+        for (XRPGSkill skill : skills) {
+            if (skill instanceof IFollowerContainer) {
+                followerSkills.add((IFollowerContainer) skill);
+            }
+        }
     }
 }

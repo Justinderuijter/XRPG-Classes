@@ -5,7 +5,7 @@ import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.configuration.NecromancerConfig;
 import me.xepos.rpg.dependencies.parties.IPartyManager;
 import me.xepos.rpg.dependencies.protection.ProtectionSet;
-import me.xepos.rpg.entities.NecromancerFollower;
+import me.xepos.rpg.entities.Follower;
 import me.xepos.rpg.enums.DamageTakenSource;
 import me.xepos.rpg.events.XRPGDamageTakenAddedEvent;
 import me.xepos.rpg.events.XRPGDamageTakenRemovedEvent;
@@ -57,7 +57,7 @@ public class PurgatoryBatTask extends BukkitRunnable {
         }
 
 
-        List<LivingEntity> livingEntities = new ArrayList(bat.getWorld().getNearbyEntities(bat.getLocation(), 2, 2, 2, p -> p instanceof LivingEntity && p != player && p != bat && !(((CraftLivingEntity) p).getHandle() instanceof NecromancerFollower)));
+        List<LivingEntity> livingEntities = new ArrayList(bat.getWorld().getNearbyEntities(bat.getLocation(), 2, 2, 2, p -> p instanceof LivingEntity && p != player && p != bat && !(((CraftLivingEntity) p).getHandle() instanceof Follower)));
         for (LivingEntity entity : livingEntities) {
             if (entity instanceof Player) {
                 Player target = (Player) entity;

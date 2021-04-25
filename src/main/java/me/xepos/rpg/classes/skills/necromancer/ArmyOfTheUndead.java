@@ -2,14 +2,16 @@ package me.xepos.rpg.classes.skills.necromancer;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.classes.skills.IFollowerContainer;
 import me.xepos.rpg.classes.skills.XRPGSkill;
-import me.xepos.rpg.entities.NecromancerFollower;
+import me.xepos.rpg.entities.Follower;
 import me.xepos.rpg.entities.type.FollowerZombie;
 import me.xepos.rpg.entities.type.FollowerZombieVillager;
 import me.xepos.rpg.utils.Utils;
 import net.minecraft.server.v1_16_R3.EntityLiving;
 import net.minecraft.server.v1_16_R3.EntityTypes;
 import net.minecraft.server.v1_16_R3.WorldServer;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftEntity;
@@ -24,8 +26,9 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ArmyOfTheUndead extends XRPGSkill {
-    private final List<NecromancerFollower> followers = new ArrayList<>();
+public class ArmyOfTheUndead extends XRPGSkill implements IFollowerContainer {
+    private final List<Follower> followers = new ArrayList<>();
+    private byte maxFollowers = 3;
 
     public ArmyOfTheUndead(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
         super(xrpgPlayer, skillName, cooldown, plugin);
@@ -41,15 +44,20 @@ public class ArmyOfTheUndead extends XRPGSkill {
         if (!(e.getEntity() instanceof LivingEntity)) return;
         LivingEntity livingEntity = (LivingEntity) e.getEntity();
 
-        if (livingEntity.getHealth() <= e.getFinalDamage()) {
+        if (livingEntity.getHealth() <= e.getFinalDamage() && followers.size() < maxFollowers) {
             recruitFollower(e);
-            return;
+
+            Bukkit.getScheduler().runTaskTimerAsynchronously(getPlugin(), () ->
+                            followers.removeIf(follower -> !follower.valid || !follower.isAlive())
+                    , 20, 20);
+            return; //Code below doesn't need to get executed when the target dies.
+
         }
 
 
-        for (NecromancerFollower follower : followers) {
+        for (Follower follower : followers) {
             EntityLiving entityLiving = ((CraftLivingEntity) e.getEntity()).getHandle();
-            if (entityLiving instanceof NecromancerFollower) {
+            if (entityLiving instanceof Follower) {
                 if (!followers.contains(entityLiving))
                     follower.setGoalTarget(entityLiving, EntityTargetEvent.TargetReason.OWNER_ATTACKED_TARGET, true);
             } else {
@@ -63,19 +71,36 @@ public class ArmyOfTheUndead extends XRPGSkill {
 
     }
 
-    public List<NecromancerFollower> getFollowers() {
+    @Override
+    public List<Follower> getFollowers() {
         return followers;
     }
 
+    @Override
+    public void addFollower(Follower follower) {
+        followers.add(follower);
+    }
+
+    @Override
     public int getFollowerCount() {
         return followers.size();
+    }
+
+    @Override
+    public byte getMaxFollowers() {
+        return this.maxFollowers;
+    }
+
+    @Override
+    public void setMaxFollowers(byte maxFollowers) {
+        this.maxFollowers = maxFollowers;
     }
 
     @SuppressWarnings("unchecked")
     private void recruitFollower(EntityDamageByEntityEvent e) {
 
-        EntityTypes<? extends NecromancerFollower> type =
-                (EntityTypes<? extends NecromancerFollower>) ((CraftEntity) e.getEntity()).getHandle().getEntityType();
+        EntityTypes<? extends Follower> type =
+                (EntityTypes<? extends Follower>) ((CraftEntity) e.getEntity()).getHandle().getEntityType();
 
         Player killer = (Player) e.getDamager();
 
@@ -104,7 +129,7 @@ public class ArmyOfTheUndead extends XRPGSkill {
         } finally {
             //then do this stuff
             if (instance != null) {
-                NecromancerFollower follower = (NecromancerFollower) instance;
+                Follower follower = (Follower) instance;
 
                 this.followers.add(follower);
 

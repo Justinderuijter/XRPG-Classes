@@ -8,10 +8,10 @@ import org.bukkit.entity.LivingEntity;
 
 import java.util.Objects;
 
-public abstract class NecromancerFollower extends EntityCreature{
+public abstract class Follower extends EntityCreature {
     private LivingEntity owner;
 
-    public NecromancerFollower(EntityTypes<? extends EntityCreature> type, Location loc, LivingEntity owner) {
+    public Follower(EntityTypes<? extends EntityCreature> type, Location loc, LivingEntity owner) {
         super(type, ((CraftWorld) Objects.requireNonNull(loc.getWorld())).getHandle());
         this.setPosition(loc.getX(), loc.getY(), loc.getZ());
         this.owner = owner;

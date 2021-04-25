@@ -1,8 +1,8 @@
 package me.xepos.rpg.listeners;
 
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.classes.Necromancer;
-import me.xepos.rpg.entities.NecromancerFollower;
+import me.xepos.rpg.classes.skills.IFollowerContainer;
+import me.xepos.rpg.entities.Follower;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftLivingEntity;
@@ -18,23 +18,17 @@ public class EntityListener implements Listener {
         doNecromancerCheck(e);
     }
 
-    //region Necromancer logic
-    @SuppressWarnings("unchecked")
-    public void doNecromancerCheck(EntityDeathEvent e)
-    {
-        if (((CraftEntity)e.getEntity()).getHandle() instanceof NecromancerFollower) {
-            NecromancerFollower follower = (NecromancerFollower) ((CraftLivingEntity)e.getEntity()).getHandle();
-            if (follower.getOwner() instanceof Player)
-            {
+    public void doNecromancerCheck(EntityDeathEvent e) {
+        if (((CraftEntity) e.getEntity()).getHandle() instanceof Follower) {
+            Follower follower = (Follower) ((CraftLivingEntity) e.getEntity()).getHandle();
+            if (follower.getOwner() instanceof Player) {
                 XRPGPlayer xrpgPlayer = Utils.GetRPG((Player) follower.getOwner());
-                if (xrpgPlayer.getPlayerClass() instanceof Necromancer)
-                {
-                    Necromancer necromancer = (Necromancer) xrpgPlayer.getPlayerClass();
-                    necromancer.followers.remove(follower);
+
+                for (IFollowerContainer skill : xrpgPlayer.getFollowerSkills()) {
+                    skill.getFollowers().remove(follower);
                 }
             }
 
         }
     }
-    //endregion
 }

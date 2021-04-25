@@ -1,6 +1,6 @@
 package me.xepos.rpg.entities.pathfinders;
 
-import me.xepos.rpg.entities.NecromancerFollower;
+import me.xepos.rpg.entities.Follower;
 import net.minecraft.server.v1_16_R3.EntityLiving;
 import net.minecraft.server.v1_16_R3.PathfinderGoalTarget;
 import org.bukkit.entity.Player;
@@ -9,12 +9,12 @@ import org.bukkit.event.entity.EntityTargetEvent;
 import java.util.EnumSet;
 
 public class PathfinderGoalOwnerHurtTarget extends PathfinderGoalTarget {
-    private final NecromancerFollower a; //this (CustomCreature)
+    private final Follower a; //this (CustomCreature)
     private final EntityLiving owner; //owner
     private EntityLiving b; //target
     private int c;
 
-    public PathfinderGoalOwnerHurtTarget(NecromancerFollower creature, EntityLiving owner) {
+    public PathfinderGoalOwnerHurtTarget(Follower creature, EntityLiving owner) {
         super(creature, false);
         this.a = creature;
         this.owner = owner;
