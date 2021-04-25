@@ -1,12 +1,12 @@
 package me.xepos.rpg.handlers;
 
 import me.xepos.rpg.classes.skills.XRPGSkill;
-import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.Event;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SneakRightClickEventHandler implements IEventHandler {
+public class SneakRightClickEventHandler {
     private List<XRPGSkill> skills = new ArrayList<>();
 
     public List<XRPGSkill> getSkills() {
@@ -26,7 +26,7 @@ public class SneakRightClickEventHandler implements IEventHandler {
         skills.remove(skill);
     }
 
-    public void invoke(PlayerInteractEvent e) {
+    public void invoke(Event e) {
         for (XRPGSkill skill : skills) {
             skill.activate(e);
         }
