@@ -2,7 +2,6 @@ package me.xepos.rpg.classes.skills.ranger;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.configuration.RangerConfig;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.entity.Arrow;
 import org.bukkit.event.Event;
@@ -30,7 +29,7 @@ public class SoulShot extends XRPGBowSkill {
         arrow.setDamage(0);
         arrow.setCustomName("Soul");
         arrow.setCustomNameVisible(false);
-        setRemainingCooldown(RangerConfig.getInstance().soulShotCooldown);
+        setRemainingCooldown(getCooldown());
     }
 
     @Override

@@ -27,7 +27,7 @@ public class ArrowOfHunger extends XRPGBowSkill {
         Arrow arrow = (Arrow) e.getProjectile();
 
         arrow.addCustomEffect(RangerConfig.getInstance().hungerEffect, false);
-        setRemainingCooldown(RangerConfig.getInstance().arrowOfHungerCooldown);
+        setRemainingCooldown(getCooldown());
     }
 
     @Override

@@ -3,7 +3,6 @@ package me.xepos.rpg.classes.skills.wizard;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.classes.skills.XRPGSkill;
-import me.xepos.rpg.configuration.WizardConfig;
 import me.xepos.rpg.datatypes.fireballData;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Location;
@@ -53,10 +52,10 @@ public class Meteor extends XRPGSkill {
             e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
         }
-        WizardConfig wizardConfig = WizardConfig.getInstance();
+        //WizardConfig wizardConfig = WizardConfig.getInstance();
 
         //Meteor Skill logic
-        Location loc = Utils.getTargetBlock(e.getPlayer(), wizardConfig.maxCastRange).getLocation();
+        Location loc = Utils.getTargetBlock(e.getPlayer(), 32).getLocation();
         e.getPlayer().sendMessage("X: " + loc.getX() + " Y: " + loc.getY() + " Z: " + loc.getZ()); //debug message
 
         int stacks = 0;
@@ -70,8 +69,8 @@ public class Meteor extends XRPGSkill {
         fireball.setDirection(new Vector(0, -1, 0));
 
         if (!getPlugin().fireBalls.containsKey(fireball.getEntityId()))
-            getPlugin().fireBalls.put(fireball.getEntityId(), new fireballData(wizardConfig.meteorExplosionStrength * (stacks + 1), 10));
+            getPlugin().fireBalls.put(fireball.getEntityId(), new fireballData(getDamage() * (stacks + 1), 10));
 
-        setRemainingCooldown(wizardConfig.meteorCooldown);
+        setRemainingCooldown(getCooldown());
     }
 }

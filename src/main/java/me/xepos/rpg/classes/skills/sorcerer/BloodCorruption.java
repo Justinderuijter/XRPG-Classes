@@ -2,6 +2,7 @@ package me.xepos.rpg.classes.skills.sorcerer;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.classes.skills.IEffectDuration;
 import me.xepos.rpg.classes.skills.XRPGSkill;
 import me.xepos.rpg.configuration.SorcererConfig;
 import me.xepos.rpg.tasks.BloodCorruptionTask;
@@ -14,9 +15,12 @@ import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.RayTraceResult;
 
-public class BloodCorruption extends XRPGSkill {
-    public BloodCorruption(XRPGPlayer xrpgPlayer, String skillName, XRPG plugin) {
-        super(xrpgPlayer, skillName, , plugin, );
+public class BloodCorruption extends XRPGSkill implements IEffectDuration {
+
+    private int duration = 4;
+
+    public BloodCorruption(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
+        super(xrpgPlayer, skillName, cooldown, plugin);
 
         xrpgPlayer.getLeftClickEventHandler().addSkill(this);
     }
@@ -49,8 +53,18 @@ public class BloodCorruption extends XRPGSkill {
 
             caster.sendMessage("Hit " + result.getHitEntity().getName());
             LivingEntity target = (LivingEntity) result.getHitEntity();
-            new BloodCorruptionTask(caster, target).runTaskLater(getPlugin(), sorcererConfig.bloodCorruptionDuration * 20L);
-            setRemainingCooldown(sorcererConfig.bloodCorruptionCooldown);
+            new BloodCorruptionTask(caster, target).runTaskLater(getPlugin(), duration * 20L);
+            setRemainingCooldown(getCooldown());
         }
+    }
+
+    @Override
+    public int getEffectDuration() {
+        return duration;
+    }
+
+    @Override
+    public void setEffectDuration(int duration) {
+        this.duration = duration;
     }
 }

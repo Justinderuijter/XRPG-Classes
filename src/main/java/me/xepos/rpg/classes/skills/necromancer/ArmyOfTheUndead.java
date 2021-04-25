@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ArmyOfTheUndead extends XRPGSkill {
-    private List<NecromancerFollower> followers = new ArrayList<>();
+    private final List<NecromancerFollower> followers = new ArrayList<>();
 
     public ArmyOfTheUndead(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
         super(xrpgPlayer, skillName, cooldown, plugin);

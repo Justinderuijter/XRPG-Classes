@@ -2,8 +2,8 @@ package me.xepos.rpg.classes.skills.wizard;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.classes.skills.IEffectDuration;
 import me.xepos.rpg.classes.skills.XRPGSkill;
-import me.xepos.rpg.configuration.WizardConfig;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -16,8 +16,9 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.List;
 
-public class Zephyr extends XRPGSkill {
+public class Zephyr extends XRPGSkill implements IEffectDuration {
     private FireballStackData fireballStackData;
+    private int duration = 3;
 
     public Zephyr(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin, FireballStackData fireballStackData) {
         super(xrpgPlayer, skillName, cooldown, plugin);
@@ -56,9 +57,9 @@ public class Zephyr extends XRPGSkill {
             e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
         }
-        WizardConfig wizardConfig = WizardConfig.getInstance();
+        //WizardConfig wizardConfig = WizardConfig.getInstance();
 
-        List<LivingEntity> entities = Utils.getLivingEntitiesInLine(e.getPlayer(), wizardConfig.maxCastRange);
+        List<LivingEntity> entities = Utils.getLivingEntitiesInLine(e.getPlayer(), 16);
         e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.ENTITY_PUFFER_FISH_BLOW_UP, 0.5F, 1F);
 
         int fireBallStacks = 0;
@@ -73,12 +74,22 @@ public class Zephyr extends XRPGSkill {
                     Player target = (Player) entity;
                     target.playSound(target.getLocation(), Sound.ENTITY_PUFFER_FISH_BLOW_UP, 0.5F, 1F);
                     if (getProtectionSet().isLocationValid(e.getPlayer().getLocation(), target.getLocation()))
-                        entity.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, wizardConfig.zephyrBaseDuration + (entities.size() - 1) * 10, fireBallStacks, false, false, false));
+                        entity.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, duration + (entities.size() - 1) * 10, fireBallStacks, false, false, false));
                 } else
-                    entity.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, wizardConfig.zephyrBaseDuration + (entities.size() - 1) * 10, fireBallStacks, false, false, false));
+                    entity.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, duration + (entities.size() - 1) * 10, fireBallStacks, false, false, false));
 
             }
         }
-        setRemainingCooldown(wizardConfig.zephyrCooldown - fireBallStacks);
+        setRemainingCooldown(getCooldown() - fireBallStacks);
+    }
+
+    @Override
+    public int getEffectDuration() {
+        return duration;
+    }
+
+    @Override
+    public void setEffectDuration(int duration) {
+        this.duration = duration;
     }
 }

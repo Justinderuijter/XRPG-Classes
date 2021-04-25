@@ -2,7 +2,6 @@ package me.xepos.rpg.classes.skills.ranger;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.configuration.RangerConfig;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.entity.Arrow;
 import org.bukkit.event.Event;
@@ -28,7 +27,7 @@ public class ExplosiveShot extends XRPGBowSkill {
 
         arrow.setCustomName("Explosion");
         arrow.setCustomNameVisible(false);
-        setRemainingCooldown(RangerConfig.getInstance().explosiveShotCooldown);
+        setRemainingCooldown(getCooldown());
     }
 
     @Override

@@ -2,8 +2,8 @@ package me.xepos.rpg.classes.skills.bard;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.classes.skills.IRepeatingTrigger;
 import me.xepos.rpg.classes.skills.XRPGSkill;
-import me.xepos.rpg.configuration.BardConfig;
 import me.xepos.rpg.tasks.HealOverTimeTask;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.entity.Player;
@@ -12,7 +12,11 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.util.List;
 
-public class Ballad extends XRPGSkill {
+public class Ballad extends XRPGSkill implements IRepeatingTrigger {
+
+    private byte maxProcs = 10;
+    private int procInterval = 1;
+
     public Ballad(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
         super(xrpgPlayer, skillName, cooldown, plugin);
 
@@ -29,18 +33,37 @@ public class Ballad extends XRPGSkill {
             caster.sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
         }
-        BardConfig bardConfig = BardConfig.getInstance();
 
         List<Player> nearbyPlayers = getNearbyAlliedPlayers(caster, 10, 5, 10);
         for (Player nearbyPlayer : nearbyPlayers) {
-            new HealOverTimeTask(nearbyPlayer, bardConfig.balledHealPerProc, bardConfig.balledMaxProcs).runTaskTimer(getPlugin(), 1L, bardConfig.balledProcDelay * 20L);
+            new HealOverTimeTask(nearbyPlayer, getDamage(), getMaxProcs()).runTaskTimer(getPlugin(), 1L, procInterval * 20L);
         }
 
-        setRemainingCooldown(bardConfig.balladCooldown);
+        setRemainingCooldown(getCooldown());
     }
 
     @Override
     public void initialize() {
 
+    }
+
+    @Override
+    public int getInterval() {
+        return procInterval;
+    }
+
+    @Override
+    public void setInterval(int delay) {
+        this.procInterval = delay;
+    }
+
+    @Override
+    public byte getMaxProcs() {
+        return maxProcs;
+    }
+
+    @Override
+    public void setMaxProcs(byte maxProcs) {
+        this.maxProcs = maxProcs;
     }
 }

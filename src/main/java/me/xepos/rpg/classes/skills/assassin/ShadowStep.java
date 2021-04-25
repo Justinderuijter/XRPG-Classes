@@ -2,8 +2,8 @@ package me.xepos.rpg.classes.skills.assassin;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.classes.skills.IEffectDuration;
 import me.xepos.rpg.classes.skills.XRPGSkill;
-import me.xepos.rpg.configuration.AssassinConfig;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -22,9 +22,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
 
-public class ShadowStep extends XRPGSkill {
+public class ShadowStep extends XRPGSkill implements IEffectDuration {
 
     private ArmorStand substitute = null;
+    private int shadowStepDuration = 5;
 
 
     public ShadowStep(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
@@ -76,10 +77,9 @@ public class ShadowStep extends XRPGSkill {
         Player player = e.getPlayer();
         if (substitute == null) {
             if (!isSkillReady()) {
-                player.sendMessage(Utils.getCooldownMessage("Substitute", getRemainingCooldown()));
+                player.sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
                 return;
             }
-            AssassinConfig assassinConfig = AssassinConfig.getInstance();
 
             //Creating armorstand at player's location and setting the right properties
             ArmorStand armorStand = player.getWorld().spawn(player.getLocation(), ArmorStand.class);
@@ -94,7 +94,7 @@ public class ShadowStep extends XRPGSkill {
             setArmorStandArmor(player, armorStand);
 
             substitute = armorStand;
-            setRemainingCooldown(assassinConfig.shadowStepCooldown);
+            setRemainingCooldown(getCooldown());
 
             new BukkitRunnable() {
                 @Override
@@ -104,7 +104,7 @@ public class ShadowStep extends XRPGSkill {
                         substitute = null;
                     }
                 }
-            }.runTaskLater(getPlugin(), assassinConfig.shadowStepDuration * 20L);
+            }.runTaskLater(getPlugin(), shadowStepDuration * 20L);
         } else {
             player.teleport(substitute.getLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
             substitute.remove();
@@ -115,5 +115,15 @@ public class ShadowStep extends XRPGSkill {
     @Override
     public void initialize() {
 
+    }
+
+    @Override
+    public int getEffectDuration() {
+        return shadowStepDuration;
+    }
+
+    @Override
+    public void setEffectDuration(int duration) {
+        this.shadowStepDuration = duration;
     }
 }

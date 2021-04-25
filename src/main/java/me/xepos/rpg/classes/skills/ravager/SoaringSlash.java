@@ -3,7 +3,6 @@ package me.xepos.rpg.classes.skills.ravager;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.classes.skills.XRPGSkill;
-import me.xepos.rpg.configuration.RavagerConfig;
 import me.xepos.rpg.tasks.RavagerLandTask;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.event.Event;
@@ -31,7 +30,7 @@ public class SoaringSlash extends XRPGSkill {
         }
 
         e.getPlayer().setVelocity(e.getPlayer().getEyeLocation().getDirection().multiply(new Vector(2, 0, 2)).add(new Vector(0, 1, 0)));
-        setRemainingCooldown(RavagerConfig.getInstance().soaringSlashCooldown);
+        setRemainingCooldown(getCooldown());
         if (landTask == null || landTask.isCancelled())
             landTask = new RavagerLandTask(e.getPlayer(), getProtectionSet(), getPartyManager()).runTaskTimer(getPlugin(), 5L, 3L);
     }

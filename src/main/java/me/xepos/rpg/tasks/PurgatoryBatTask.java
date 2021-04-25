@@ -50,8 +50,7 @@ public class PurgatoryBatTask extends BukkitRunnable {
 
     @Override
     public void run() {
-        if (count >= maxCount)
-        {
+        if (count >= maxCount) {
             bat.remove();
             this.cancel();
             return;
@@ -63,10 +62,7 @@ public class PurgatoryBatTask extends BukkitRunnable {
             if (entity instanceof Player) {
                 Player target = (Player) entity;
                 if (protectionSet.isLocationValid(player.getLocation(), entity.getLocation()) && partyManager.isPlayerAllied(player, target)) {
-                    if (isBatDmgSource)
-                        target.damage(damage, bat);
-                    else
-                        target.damage(damage, player);
+                    target.damage(damage, player);
 
                     if (count == 0) {
                         XRPGPlayer xrgPlayer = Utils.GetRPG((Player) entity);
@@ -87,10 +83,7 @@ public class PurgatoryBatTask extends BukkitRunnable {
                     }
                 }
             } else {
-                if (isBatDmgSource)
-                    entity.damage(damage, bat);
-                else
-                    entity.damage(damage, player);
+                entity.damage(damage, player);
 
             }
         }

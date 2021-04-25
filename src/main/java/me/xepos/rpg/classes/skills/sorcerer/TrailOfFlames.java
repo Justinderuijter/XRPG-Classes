@@ -2,8 +2,9 @@ package me.xepos.rpg.classes.skills.sorcerer;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.classes.skills.IIgnoreVillager;
+import me.xepos.rpg.classes.skills.IRepeatingTrigger;
 import me.xepos.rpg.classes.skills.XRPGSkill;
-import me.xepos.rpg.configuration.SorcererConfig;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
@@ -20,7 +21,12 @@ import org.bukkit.util.RayTraceResult;
 import java.util.HashSet;
 import java.util.Set;
 
-public class TrailOfFlames extends XRPGSkill {
+public class TrailOfFlames extends XRPGSkill implements IIgnoreVillager, IRepeatingTrigger {
+
+    private boolean areVillagersIgnored = true;
+    private int interval = 10;
+    private byte maxProcs = 10;
+
     public TrailOfFlames(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
         super(xrpgPlayer, skillName, cooldown, plugin);
 
@@ -54,15 +60,13 @@ public class TrailOfFlames extends XRPGSkill {
         if (result != null && result.getHitEntity() != null) {
             //Utils.rayTrace() only returns LivingEntity
             LivingEntity target = (LivingEntity) result.getHitEntity();
-            SorcererConfig sorcererConfig = SorcererConfig.getInstance();
 
             new BukkitRunnable() {
                 int count = 0;
-                final int maxCount = 10;
 
                 @Override
                 public void run() {
-                    if (count >= maxCount) {
+                    if (count >= maxProcs) {
                         cancel();
                         return;
                     }
@@ -70,16 +74,15 @@ public class TrailOfFlames extends XRPGSkill {
 
                     count++;
                 }
-            }.runTaskTimer(getPlugin(), 10, 10);
+            }.runTaskTimer(getPlugin(), 10, interval);
 
             new BukkitRunnable() {
                 final Set<LivingEntity> livingEntities = new HashSet<>();
-                final int maxCount = 10;
                 int count = 0;
 
                 @Override
                 public void run() {
-                    if (count >= maxCount) {
+                    if (count >= maxProcs) {
                         cancel();
                         return;
                     }
@@ -93,21 +96,51 @@ public class TrailOfFlames extends XRPGSkill {
                     }
 
                     for (LivingEntity livingEntity : livingEntities) {
-                        if ((livingEntity instanceof Villager && sorcererConfig.trailOfFlamesIgnoreVillagers) ||
+                        if ((livingEntity instanceof Villager && areVillagersIgnored) ||
                                 (livingEntity instanceof Player && !getProtectionSet().isLocationValid(caster.getLocation(), livingEntity.getLocation()))) {
                             //Skip over villagers if the config setting is true.
                             //Skip over players if they are allied or are in safezone.
                             continue;
                         }
-                        livingEntity.damage(sorcererConfig.trailOfFlamesDamage, caster);
+                        livingEntity.damage(getDamage(), caster);
                     }
 
                     count++;
                 }
-            }.runTaskTimer(getPlugin(), 20, 10);
+            }.runTaskTimer(getPlugin(), 20, interval);
 
-            setRemainingCooldown(sorcererConfig.trailOfFlamesCooldown);
+            setRemainingCooldown(getCooldown());
         }
 
+    }
+
+    @Override
+    public void setVillagersIgnored(boolean setIgnored) {
+        this.areVillagersIgnored = setIgnored;
+    }
+
+    @Override
+    public boolean areVillagersIgnored() {
+        return areVillagersIgnored;
+    }
+
+    @Override
+    public int getInterval() {
+        return interval;
+    }
+
+    @Override
+    public void setInterval(int delay) {
+        this.interval = delay;
+    }
+
+    @Override
+    public byte getMaxProcs() {
+        return maxProcs;
+    }
+
+    @Override
+    public void setMaxProcs(byte maxProcs) {
+        this.maxProcs = maxProcs;
     }
 }

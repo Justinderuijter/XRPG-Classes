@@ -2,8 +2,8 @@ package me.xepos.rpg.classes.skills.sorcerer;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.classes.skills.IEffectDuration;
 import me.xepos.rpg.classes.skills.XRPGSkill;
-import me.xepos.rpg.configuration.SorcererConfig;
 import me.xepos.rpg.tasks.ShowPlayerTask;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Bukkit;
@@ -15,7 +15,10 @@ import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.RayTraceResult;
 
-public class VoidParadox extends XRPGSkill {
+public class VoidParadox extends XRPGSkill implements IEffectDuration {
+
+    private int duration = 5;
+
     public VoidParadox(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
         super(xrpgPlayer, skillName, cooldown, plugin);
 
@@ -47,7 +50,6 @@ public class VoidParadox extends XRPGSkill {
 
         RayTraceResult result = Utils.rayTrace(caster, 16, FluidCollisionMode.NEVER);
         if (result.getHitEntity() != null) {
-            SorcererConfig sorcererConfig = SorcererConfig.getInstance();
             LivingEntity target = (LivingEntity) result.getHitEntity();
             if (target instanceof Player) {
                 Player targetPlayer = (Player) target;
@@ -55,13 +57,23 @@ public class VoidParadox extends XRPGSkill {
                     for (Player player : Bukkit.getServer().getOnlinePlayers()) {
                         targetPlayer.hidePlayer(getPlugin(), player);
                     }
-                    new ShowPlayerTask(getPlugin(), targetPlayer).runTaskLater(getPlugin(), (long) sorcererConfig.voidParadoxDuration * 20);
+                    new ShowPlayerTask(getPlugin(), targetPlayer).runTaskLater(getPlugin(), duration * 20L);
                 }
             } else {
-                target.damage(15, caster);
+                target.damage(getDamage(), caster);
             }
 
-            setRemainingCooldown(sorcererConfig.voidParadoxCooldown);
+            setRemainingCooldown(getCooldown());
         }
+    }
+
+    @Override
+    public int getEffectDuration() {
+        return duration;
+    }
+
+    @Override
+    public void setEffectDuration(int duration) {
+        this.duration = duration;
     }
 }

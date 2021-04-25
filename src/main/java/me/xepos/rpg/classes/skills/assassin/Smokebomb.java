@@ -3,8 +3,8 @@ package me.xepos.rpg.classes.skills.assassin;
 import com.mojang.datafixers.util.Pair;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.classes.skills.IEffectDuration;
 import me.xepos.rpg.classes.skills.XRPGSkill;
-import me.xepos.rpg.configuration.AssassinConfig;
 import me.xepos.rpg.tasks.EndInvisibilityTask;
 import me.xepos.rpg.utils.Utils;
 import net.minecraft.server.v1_16_R3.EnumItemSlot;
@@ -25,7 +25,10 @@ import org.bukkit.inventory.EquipmentSlot;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Smokebomb extends XRPGSkill {
+public class Smokebomb extends XRPGSkill implements IEffectDuration {
+
+    private int smokebombDuration = 10;
+
     public Smokebomb(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
         super(xrpgPlayer, skillName, cooldown, plugin);
 
@@ -53,7 +56,7 @@ public class Smokebomb extends XRPGSkill {
 
             if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_AIR) {
 
-                AssassinConfig assassinConfig = AssassinConfig.getInstance();
+                //AssassinConfig assassinConfig = AssassinConfig.getInstance();
 
                 e.getPlayer().setInvisible(true);
                 e.getPlayer().sendMessage("You're now invisible!");
@@ -74,8 +77,8 @@ public class Smokebomb extends XRPGSkill {
                     ((CraftPlayer) ent).getHandle().playerConnection.sendPacket(entityEquipmentPacket);//send affected players the packet
                 }
 
-                setRemainingCooldown(assassinConfig.smokeBombCooldown);
-                new EndInvisibilityTask(e.getPlayer(), affectedPlayers).runTaskLater(getPlugin(), assassinConfig.smokeBombDuration * 20L);
+                setRemainingCooldown(getCooldown());
+                new EndInvisibilityTask(e.getPlayer(), affectedPlayers).runTaskLater(getPlugin(), smokebombDuration * 20L);
             }
         } else if (event instanceof EntityDamageByEntityEvent) {
             EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
@@ -97,5 +100,15 @@ public class Smokebomb extends XRPGSkill {
                 }
             }
         }
+    }
+
+    @Override
+    public int getEffectDuration() {
+        return smokebombDuration;
+    }
+
+    @Override
+    public void setEffectDuration(int duration) {
+        this.smokebombDuration = duration;
     }
 }

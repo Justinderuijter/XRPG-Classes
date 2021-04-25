@@ -18,9 +18,11 @@ public abstract class XRPGSkill {
     private final IPartyManager partyManager;
 
     //Stats
-    private long remainingCooldown;
     private String skillName;
     private int cooldown;
+    private long remainingCooldown;
+    private double damage;
+    private double damageMultiplier = 1.0;
 
     public XRPGSkill(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
         this.xrpgPlayer = xrpgPlayer;
@@ -88,5 +90,21 @@ public abstract class XRPGSkill {
 
     public void setCooldown(int cooldown) {
         this.cooldown = cooldown;
+    }
+
+    public double getDamage() {
+        return damage;
+    }
+
+    public void setDamage(double damage) {
+        this.damage = damage;
+    }
+
+    public double getDamageMultiplier() {
+        return damageMultiplier;
+    }
+
+    public void setDamageMultiplier(double damageMultiplier) {
+        this.damageMultiplier = damageMultiplier;
     }
 }

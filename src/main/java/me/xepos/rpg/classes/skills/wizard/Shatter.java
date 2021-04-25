@@ -2,8 +2,9 @@ package me.xepos.rpg.classes.skills.wizard;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.classes.skills.IDamageTakenEffect;
+import me.xepos.rpg.classes.skills.IEffectDuration;
 import me.xepos.rpg.classes.skills.XRPGSkill;
-import me.xepos.rpg.configuration.WizardConfig;
 import me.xepos.rpg.enums.DamageTakenSource;
 import me.xepos.rpg.events.XRPGDamageTakenAddedEvent;
 import me.xepos.rpg.tasks.RemoveDTModifierTask;
@@ -22,8 +23,11 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Shatter extends XRPGSkill {
+public class Shatter extends XRPGSkill implements IEffectDuration, IDamageTakenEffect {
     private FireballStackData fireballStackData;
+    private int duration = 4;
+    private double shatterDTAmount = 1.2;
+    private int shatterDTDuration = 4;
 
     public Shatter(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin, FireballStackData fireballStackData) {
         super(xrpgPlayer, skillName, cooldown, plugin);
@@ -62,8 +66,8 @@ public class Shatter extends XRPGSkill {
             e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
         }
-        WizardConfig wizardConfig = WizardConfig.getInstance();
-        Location loc = Utils.getTargetBlock(e.getPlayer(), wizardConfig.maxCastRange).getLocation();
+
+        Location loc = Utils.getTargetBlock(e.getPlayer(), 32).getLocation();
         List<LivingEntity> livingEntities = new ArrayList(loc.getWorld().getNearbyEntities(loc, 3, 3, 3, p -> p instanceof LivingEntity && p != e.getPlayer()));
 
         e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_GLASS_BREAK, 1F, 1F);
@@ -75,14 +79,13 @@ public class Shatter extends XRPGSkill {
             fireBallStacks = fireballStackData.getFireBallStacks();
         }
 
-        setRemainingCooldown(wizardConfig.shatterCooldown - fireBallStacks);
+        setRemainingCooldown(getCooldown() - fireBallStacks);
     }
 
     public void shatterLogic(PlayerInteractEvent e, LivingEntity livingEntity) {
-        WizardConfig wizardConfig = WizardConfig.getInstance();
 
         DamageTakenSource damageTakenSource = DamageTakenSource.SHATTER;
-        PotionEffect potionEffect = new PotionEffect(PotionEffectType.SLOW, wizardConfig.shatterDuration * 20, 1, false, false, false);
+        PotionEffect potionEffect = new PotionEffect(PotionEffectType.SLOW, duration * 20, 1, false, false, false);
 
         if (livingEntity instanceof Player) {
             Player targetPlayer = (Player) livingEntity;
@@ -90,17 +93,47 @@ public class Shatter extends XRPGSkill {
             if (getProtectionSet().isLocationValid(e.getPlayer().getLocation(), targetPlayer.getLocation())) {
                 //Add potion effect and fire event
                 targetPlayer.addPotionEffect(potionEffect);
-                XRPGDamageTakenAddedEvent event = new XRPGDamageTakenAddedEvent(e.getPlayer(), targetPlayer, damageTakenSource, wizardConfig.shatterDTAmount);
+                XRPGDamageTakenAddedEvent event = new XRPGDamageTakenAddedEvent(e.getPlayer(), targetPlayer, damageTakenSource, shatterDTAmount);
                 Bukkit.getServer().getPluginManager().callEvent(event);
 
                 //Apply DTModifier if the event isn't cancelled
                 if (!event.isCancelled()) {
-                    Utils.addDTModifier(targetPlayer, damageTakenSource, wizardConfig.shatterDTAmount);
-                    new RemoveDTModifierTask(e.getPlayer(), (Player) livingEntity, damageTakenSource).runTaskLater(getPlugin(), wizardConfig.shatterDuration * 20L);
+                    Utils.addDTModifier(targetPlayer, damageTakenSource, shatterDTAmount);
+                    new RemoveDTModifierTask(e.getPlayer(), (Player) livingEntity, damageTakenSource).runTaskLater(getPlugin(), shatterDTDuration * 20L);
                 }
             }
         } else {
             livingEntity.addPotionEffect(potionEffect);
         }
+    }
+
+    @Override
+    public int getEffectDuration() {
+        return duration;
+    }
+
+    @Override
+    public void setEffectDuration(int duration) {
+        this.duration = duration;
+    }
+
+    @Override
+    public double getDamageTaken() {
+        return shatterDTAmount;
+    }
+
+    @Override
+    public void setDamageTaken(double damageTakenAmount) {
+        this.shatterDTAmount = damageTakenAmount;
+    }
+
+    @Override
+    public int getDamageTakenDuration() {
+        return shatterDTDuration;
+    }
+
+    @Override
+    public void setDamageTakenDuration(int damageTakenDuration) {
+        this.shatterDTDuration = damageTakenDuration;
     }
 }

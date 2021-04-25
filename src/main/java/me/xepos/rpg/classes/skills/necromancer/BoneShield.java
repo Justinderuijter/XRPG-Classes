@@ -3,7 +3,6 @@ package me.xepos.rpg.classes.skills.necromancer;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.classes.skills.XRPGSkill;
-import me.xepos.rpg.configuration.NecromancerConfig;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.ChatColor;
 import org.bukkit.attribute.Attribute;
@@ -37,18 +36,17 @@ public class BoneShield extends XRPGSkill {
         double maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
         if (isSkillReady()) {
             if (player.getHealth() <= maxHealth / 2) {
-                NecromancerConfig necromancerConfig = NecromancerConfig.getInstance();
 
                 double absorptionHearts;
                 if (armyOfTheUndead == null)
-                    absorptionHearts = necromancerConfig.shieldPerFollower;
+                    absorptionHearts = getDamage();
                 else
-                    absorptionHearts = this.armyOfTheUndead.getFollowerCount() * necromancerConfig.shieldPerFollower;
+                    absorptionHearts = this.armyOfTheUndead.getFollowerCount() * getDamage();
 
                 player.setAbsorptionAmount(player.getAbsorptionAmount() + absorptionHearts);
                 player.sendMessage(ChatColor.DARK_GREEN + getSkillName() + " will absorb " + absorptionHearts + " damage!");
-                player.sendMessage(Utils.getPassiveCooldownMessage(getSkillName(), necromancerConfig.boneShieldCooldown));
-                setRemainingCooldown(necromancerConfig.boneShieldCooldown);
+                player.sendMessage(Utils.getPassiveCooldownMessage(getSkillName(), getCooldown()));
+                setRemainingCooldown(getCooldown());
             }
         }
     }

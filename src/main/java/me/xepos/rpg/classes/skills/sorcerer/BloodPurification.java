@@ -63,7 +63,7 @@ public class BloodPurification extends XRPGSkill {
             }
         }
 
-        setRemainingCooldown(SorcererConfig.getInstance().bloodPurificationCooldown);
+        setRemainingCooldown(getCooldown());
     }
 
     private void cleanseBadPotionEffects(LivingEntity livingTarget) {

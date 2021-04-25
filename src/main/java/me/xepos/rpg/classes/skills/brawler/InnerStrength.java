@@ -2,8 +2,8 @@ package me.xepos.rpg.classes.skills.brawler;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.classes.skills.IEffectDuration;
 import me.xepos.rpg.classes.skills.XRPGSkill;
-import me.xepos.rpg.configuration.BrawlerConfig;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
@@ -19,15 +19,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class InnerStrength extends XRPGSkill {
+public class InnerStrength extends XRPGSkill implements IEffectDuration {
     private LotusStrike lotusStrike;
-    BrawlerConfig brawlerConfig = BrawlerConfig.getInstance();
+    private int potionDuration = 6;
 
-    private List<PotionEffect> defEffects = new ArrayList<PotionEffect>() {{
-        add(new PotionEffect(PotionEffectType.REGENERATION, brawlerConfig.effectDuration * 20, 1, false, false, true));
-        add(new PotionEffect(PotionEffectType.SLOW_FALLING, brawlerConfig.effectDuration * 20, 0, false, false, true));
-        add(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, brawlerConfig.effectDuration * 20, 0, false, false, true));
-        add(new PotionEffect(PotionEffectType.ABSORPTION, brawlerConfig.effectDuration * 20, 0, false, false, true));
+    private final List<PotionEffect> defEffects = new ArrayList<PotionEffect>() {{
+        add(new PotionEffect(PotionEffectType.REGENERATION, potionDuration * 20, 1, false, false, true));
+        add(new PotionEffect(PotionEffectType.SLOW_FALLING, potionDuration * 20, 0, false, false, true));
+        add(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, potionDuration * 20, 0, false, false, true));
+        add(new PotionEffect(PotionEffectType.ABSORPTION, potionDuration * 20, 0, false, false, true));
     }};
 
     public InnerStrength(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin, LotusStrike lotusStrike) {
@@ -78,8 +78,8 @@ public class InnerStrength extends XRPGSkill {
 
     private void useInnerStrength(Player player) {
         applyTriggerEffect(player);
-        Utils.healLivingEntity(player, brawlerConfig.innerStrengthHealAmount);
-        player.sendMessage("Inner Strength healed you for " + brawlerConfig.innerStrengthHealAmount);
+        Utils.healLivingEntity(player, getDamage());
+        player.sendMessage("Inner Strength healed you for " + getDamage());
     }
 
     private void applyTriggerEffect(Player player) {
@@ -89,4 +89,15 @@ public class InnerStrength extends XRPGSkill {
 
         lotusStrike.incrementHitCount();
     }
+
+    @Override
+    public int getEffectDuration() {
+        return potionDuration;
+    }
+
+    @Override
+    public void setEffectDuration(int duration) {
+        this.potionDuration = duration;
+    }
+
 }

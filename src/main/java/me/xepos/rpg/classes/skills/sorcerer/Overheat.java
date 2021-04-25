@@ -2,8 +2,8 @@ package me.xepos.rpg.classes.skills.sorcerer;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.classes.skills.IDelayedTrigger;
 import me.xepos.rpg.classes.skills.XRPGSkill;
-import me.xepos.rpg.configuration.SorcererConfig;
 import me.xepos.rpg.tasks.OverheatTask;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.FluidCollisionMode;
@@ -14,7 +14,10 @@ import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.RayTraceResult;
 
-public class Overheat extends XRPGSkill {
+public class Overheat extends XRPGSkill implements IDelayedTrigger {
+
+    private int delay = 5;
+
     public Overheat(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
         super(xrpgPlayer, skillName, cooldown, plugin);
 
@@ -45,10 +48,19 @@ public class Overheat extends XRPGSkill {
 
         RayTraceResult result = Utils.rayTrace(caster, 16, FluidCollisionMode.NEVER);
         if (result != null && result.getHitEntity() != null) {
-            SorcererConfig sorcererConfig = SorcererConfig.getInstance();
             //doRayTrace only returns livingEntities so no need to check
-            new OverheatTask((LivingEntity) result.getHitEntity()).runTaskLater(getPlugin(), sorcererConfig.overheatDuration * 20L);
-            setRemainingCooldown(sorcererConfig.overheatCooldown);
+            new OverheatTask((LivingEntity) result.getHitEntity()).runTaskLater(getPlugin(), delay * 20L);
+            setRemainingCooldown(getCooldown());
         }
+    }
+
+    @Override
+    public int getTriggerDelay() {
+        return delay;
+    }
+
+    @Override
+    public void setTriggerDelay(int delay) {
+        this.delay = delay;
     }
 }

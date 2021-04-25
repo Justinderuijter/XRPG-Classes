@@ -3,7 +3,6 @@ package me.xepos.rpg.classes.skills.wizard;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.classes.skills.XRPGSkill;
-import me.xepos.rpg.configuration.WizardConfig;
 import me.xepos.rpg.datatypes.fireballData;
 import me.xepos.rpg.utils.Utils;
 import net.md_5.bungee.api.ChatMessageType;
@@ -21,7 +20,7 @@ public class Fireball extends XRPGSkill {
     public Fireball(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
         super(xrpgPlayer, skillName, cooldown, plugin);
 
-        fireballStackData = new FireballStackData(xrpgPlayer, skillName, plugin);
+        fireballStackData = new FireballStackData(xrpgPlayer, skillName, -1, plugin);
         xrpgPlayer.getRightClickEventHandler().addSkill(this);
     }
 
@@ -45,7 +44,6 @@ public class Fireball extends XRPGSkill {
             e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
         }
-        WizardConfig wizardConfig = WizardConfig.getInstance();
 
         //Skill logic
         e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.ENTITY_BLAZE_SHOOT, 1F, 1F);
@@ -54,12 +52,12 @@ public class Fireball extends XRPGSkill {
 
         if (!getPlugin().fireBalls.containsKey(fireball.getEntityId())) {
             //For some reason damage is halved so doubling it to get proper value
-            getPlugin().fireBalls.put(fireball.getEntityId(), new fireballData(wizardConfig.smallFireballDamage * 2, 10));
+            getPlugin().fireBalls.put(fireball.getEntityId(), new fireballData(getDamage() * 2, 10));
         }
 
         this.incrementFireBallStacks(this.fireballStackData.getMaxFireballStacks());
         this.fireballStackData.setLastStackGained(System.currentTimeMillis());
-        setRemainingCooldown(wizardConfig.smallFireballCooldown);
+        setRemainingCooldown(getCooldown());
 
         TextComponent text = new TextComponent("You now have " + this.fireballStackData.getFireBallStacks() + " " + getSkillName() + " stacks");
         text.setColor(ChatColor.DARK_GREEN.asBungee());

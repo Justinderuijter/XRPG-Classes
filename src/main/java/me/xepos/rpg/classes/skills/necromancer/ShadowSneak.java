@@ -2,6 +2,8 @@ package me.xepos.rpg.classes.skills.necromancer;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.classes.skills.IDelayedTrigger;
+import me.xepos.rpg.classes.skills.IRepeatingTrigger;
 import me.xepos.rpg.classes.skills.XRPGSkill;
 import me.xepos.rpg.configuration.NecromancerConfig;
 import me.xepos.rpg.tasks.BleedTask;
@@ -21,7 +23,13 @@ import org.bukkit.util.Vector;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShadowSneak extends XRPGSkill {
+public class ShadowSneak extends XRPGSkill implements IDelayedTrigger, IRepeatingTrigger {
+
+    private int batDespawnDelay = 3;
+    private byte maxProcs = 5;
+    private int interval = 1;
+
+
     public ShadowSneak(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
         super(xrpgPlayer, skillName, cooldown, plugin);
 
@@ -50,19 +58,18 @@ public class ShadowSneak extends XRPGSkill {
         RayTraceResult result = player.getLocation().getWorld().rayTrace(player.getEyeLocation(), player.getEyeLocation().getDirection(), 20, FluidCollisionMode.NEVER, true, 0.3, p -> p instanceof LivingEntity && p != player);
         if (result != null && result.getHitEntity() != null) {
             LivingEntity livingEntity = (LivingEntity) result.getHitEntity();
-            NecromancerConfig necromancerConfig = NecromancerConfig.getInstance();
 
             List<Bat> bats = summonBats(player);
-            removeBats(bats, getPlugin(), necromancerConfig.batDespawnDelay * 20);
+            removeBats(bats, getPlugin(), batDespawnDelay * 20L);
 
             Vector direction = livingEntity.getLocation().getDirection().setY(0.).normalize().multiply(-2.);
             player.teleport(livingEntity.getLocation().add(direction), PlayerTeleportEvent.TeleportCause.PLUGIN);
             if (livingEntity instanceof Player && getProtectionSet().isLocationValid(player.getLocation(), livingEntity.getLocation()) && !getPartyManager().isPlayerAllied(player, (Player) livingEntity)) {
-                livingEntity.damage(necromancerConfig.shadowSneakDamage, player);
+                livingEntity.damage(getDamage(), player);
 
-                new BleedTask(livingEntity, player, necromancerConfig.shadowSneakTicks, necromancerConfig.shadowSneakDamagePerTick).runTaskTimer(getPlugin(), 11, 20);
+                new BleedTask(livingEntity, player, maxProcs, getDamage()).runTaskTimer(getPlugin(), 11, interval * 20L);
             }
-            setRemainingCooldown(necromancerConfig.shadowSneakCooldown);
+            setRemainingCooldown(getCooldown());
         }
     }
 
@@ -89,5 +96,35 @@ public class ShadowSneak extends XRPGSkill {
                 }
             }
         }.runTaskLater(plugin, delay);
+    }
+
+    @Override
+    public int getTriggerDelay() {
+        return batDespawnDelay;
+    }
+
+    @Override
+    public void setTriggerDelay(int delay) {
+        this.batDespawnDelay = delay;
+    }
+
+    @Override
+    public int getInterval() {
+        return interval;
+    }
+
+    @Override
+    public void setInterval(int delay) {
+        this.interval = delay;
+    }
+
+    @Override
+    public byte getMaxProcs() {
+        return maxProcs;
+    }
+
+    @Override
+    public void setMaxProcs(byte maxProcs) {
+        this.maxProcs = maxProcs;
     }
 }

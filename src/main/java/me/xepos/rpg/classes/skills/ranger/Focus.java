@@ -12,6 +12,7 @@ public class Focus extends XRPGSkill {
     public Focus(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
         super(xrpgPlayer, skillName, cooldown, plugin);
 
+        setRemainingCooldown(-1);
         xrpgPlayer.getShootBowEventHandler().addSkill(this);
     }
 

@@ -2,6 +2,7 @@ package me.xepos.rpg.classes.skills.guardian;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.classes.skills.IEffectDuration;
 import me.xepos.rpg.classes.skills.XRPGSkill;
 import me.xepos.rpg.configuration.GuardianConfig;
 import me.xepos.rpg.enums.DamageTakenSource;
@@ -18,7 +19,10 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Aegis extends XRPGSkill {
+public class Aegis extends XRPGSkill implements IEffectDuration {
+
+    private byte duration = 4;
+
     public Aegis(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
         super(xrpgPlayer, skillName, cooldown, plugin);
 
@@ -50,20 +54,31 @@ public class Aegis extends XRPGSkill {
             List<Player> nearbyPlayers = new ArrayList(player.getWorld().getNearbyEntities(player.getLocation(), guardianConfig.aegisRangeHorizontal, guardianConfig.aegisRangeVertical, guardianConfig.aegisRangeHorizontal, p -> p instanceof Player && getPartyManager().isPlayerAllied(player, (Player) p)));
             for (Player target : nearbyPlayers) {
                 //Applying the DTModifier if event is cancelled
-                XRPGDamageTakenAddedEvent event = new XRPGDamageTakenAddedEvent(player, target, DamageTakenSource.AEGIS, guardianConfig.aegisDmgReduction);
+                XRPGDamageTakenAddedEvent event = new XRPGDamageTakenAddedEvent(player, target, DamageTakenSource.AEGIS, getDamageMultiplier());
                 Bukkit.getServer().getPluginManager().callEvent(event);
                 if (!event.isCancelled()) {
-                    Utils.addDTModifier(target, DamageTakenSource.AEGIS, guardianConfig.aegisDmgReduction);
+                    Utils.addDTModifier(target, DamageTakenSource.AEGIS, getDamageMultiplier());
                     target.sendMessage(player.getDisplayName() + " Granted you " + getSkillName() + "!");
 
-                    new RemoveDTModifierTask(player, target, DamageTakenSource.AEGIS).runTaskLater(getPlugin(), guardianConfig.aegisDuration * 20L);
+                    new RemoveDTModifierTask(player, target, DamageTakenSource.AEGIS).runTaskLater(getPlugin(), duration);
                 }
             }
             if (nearbyPlayers.size() > 0) {
                 player.sendMessage(ChatColor.GREEN + "Applied " + getSkillName() + " to " + nearbyPlayers.size() + " player(s)!");
-                setRemainingCooldown(guardianConfig.aegisCooldown);
+                setRemainingCooldown(getCooldown());
             }
         }
 
     }
+
+    @Override
+    public int getEffectDuration() {
+        return duration;
+    }
+
+    @Override
+    public void setEffectDuration(int duration) {
+        this.duration = (byte) duration;
+    }
+
 }

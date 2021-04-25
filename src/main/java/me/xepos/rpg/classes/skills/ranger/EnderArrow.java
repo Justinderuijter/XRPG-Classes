@@ -2,7 +2,6 @@ package me.xepos.rpg.classes.skills.ranger;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.configuration.RangerConfig;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.Arrow;
@@ -30,7 +29,7 @@ public class EnderArrow extends XRPGBowSkill {
         arrow.setPickupStatus(AbstractArrow.PickupStatus.CREATIVE_ONLY);
         arrow.setCustomName("Ender");
         arrow.setCustomNameVisible(false);
-        setRemainingCooldown(RangerConfig.getInstance().lightningArrowCooldown);
+        setRemainingCooldown(getCooldown());
     }
 
     @Override

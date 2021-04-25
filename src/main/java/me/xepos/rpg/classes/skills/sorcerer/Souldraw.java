@@ -3,7 +3,6 @@ package me.xepos.rpg.classes.skills.sorcerer;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.classes.skills.XRPGSkill;
-import me.xepos.rpg.configuration.SorcererConfig;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Material;
@@ -40,13 +39,12 @@ public class Souldraw extends XRPGSkill {
         if (isSkillReady()) {
             RayTraceResult result = Utils.rayTrace(caster, 16, FluidCollisionMode.NEVER);
             if (result.getHitEntity() != null) {
-                SorcererConfig sorcererConfig = SorcererConfig.getInstance();
 
                 LivingEntity target = (LivingEntity) result.getHitEntity();
-                target.damage(sorcererConfig.souldrawDamage, caster);
+                target.damage(getDamage(), caster);
                 //Heal the attacker for half of the damage dealt
                 Utils.healLivingEntity(caster, target.getLastDamage() / 2);
-                setRemainingCooldown(sorcererConfig.souldrawCooldown);
+                setRemainingCooldown(getCooldown());
             }
         }
     }

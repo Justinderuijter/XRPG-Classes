@@ -28,7 +28,7 @@ public class SnipeShot extends XRPGBowSkill {
             return;
         }
         doSnipeShot(e, (Arrow) e.getProjectile());
-        setRemainingCooldown(RangerConfig.getInstance().snipeShotCooldown);
+        setRemainingCooldown(getCooldown());
     }
 
     @Override
