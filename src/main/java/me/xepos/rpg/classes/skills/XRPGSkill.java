@@ -32,6 +32,10 @@ public abstract class XRPGSkill {
         this.protectionSet = plugin.getProtectionSet();
         this.partyManager = plugin.getPartyManager();
         this.remainingCooldown = System.currentTimeMillis();
+
+        if (this instanceof IFollowerContainer) {
+            xrpgPlayer.getFollowerSkills().add((IFollowerContainer) this);
+        }
     }
 
 

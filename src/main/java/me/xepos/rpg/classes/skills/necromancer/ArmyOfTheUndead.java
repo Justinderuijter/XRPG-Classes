@@ -11,7 +11,6 @@ import me.xepos.rpg.utils.Utils;
 import net.minecraft.server.v1_16_R3.EntityLiving;
 import net.minecraft.server.v1_16_R3.EntityTypes;
 import net.minecraft.server.v1_16_R3.WorldServer;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftEntity;
@@ -46,10 +45,6 @@ public class ArmyOfTheUndead extends XRPGSkill implements IFollowerContainer {
 
         if (livingEntity.getHealth() <= e.getFinalDamage() && followers.size() < maxFollowers) {
             recruitFollower(e);
-
-            Bukkit.getScheduler().runTaskTimerAsynchronously(getPlugin(), () ->
-                            followers.removeIf(follower -> !follower.valid || !follower.isAlive())
-                    , 20, 20);
             return; //Code below doesn't need to get executed when the target dies.
 
         }
