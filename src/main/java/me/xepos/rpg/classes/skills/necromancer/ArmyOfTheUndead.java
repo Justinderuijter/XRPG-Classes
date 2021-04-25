@@ -2,7 +2,6 @@ package me.xepos.rpg.classes.skills.necromancer;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.classes.Necromancer;
 import me.xepos.rpg.classes.skills.XRPGSkill;
 import me.xepos.rpg.entities.NecromancerFollower;
 import me.xepos.rpg.entities.type.FollowerZombie;
@@ -31,7 +30,7 @@ public class ArmyOfTheUndead extends XRPGSkill {
     public ArmyOfTheUndead(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
         super(xrpgPlayer, skillName, cooldown, plugin);
 
-        xrpgPlayer.getDamageDealtEventHandler().addSkill(this);
+        xrpgPlayer.getEventHandler("DAMAGE_DEALT").addSkill(this);
     }
 
     @Override
@@ -43,7 +42,8 @@ public class ArmyOfTheUndead extends XRPGSkill {
         LivingEntity livingEntity = (LivingEntity) e.getEntity();
 
         if (livingEntity.getHealth() <= e.getFinalDamage()) {
-
+            recruitFollower(e);
+            return;
         }
 
 
@@ -72,55 +72,46 @@ public class ArmyOfTheUndead extends XRPGSkill {
     }
 
     @SuppressWarnings("unchecked")
-    private void doSomething(EntityDamageByEntityEvent e) {
-        if (Utils.GetRPG((Player) e.getDamager()).getDamageDealtEventHandler()) {
+    private void recruitFollower(EntityDamageByEntityEvent e) {
 
-            EntityTypes<? extends NecromancerFollower> type =
-                    (EntityTypes<? extends NecromancerFollower>) ((CraftEntity) e.getEntity()).getHandle().getEntityType();
+        EntityTypes<? extends NecromancerFollower> type =
+                (EntityTypes<? extends NecromancerFollower>) ((CraftEntity) e.getEntity()).getHandle().getEntityType();
 
-            Player owner = (Player) e.getDamager();
+        Player killer = (Player) e.getDamager();
 
-            if (owner != null) {
-                owner.sendMessage("Owner not null!");
+        Object instance = null;
+        String entityTypeName = Utils.enumTypeFormatter(e.getEntity().getType().name(), "_");
 
+        killer.sendMessage("me.xepos.rpg.entities.type.Follower" + entityTypeName);
+        killer.sendMessage(type.toString());
 
-                Object instance = null;
-                String entityTypeName = Utils.enumTypeFormatter(e.getEntity().getType().name(), "_");
+        try {
+            //Get supported type
+            Class<?> clazz = Class.forName("me.xepos.rpg.entities.type.Follower" + entityTypeName);
+            Constructor<?> constructor = clazz.getConstructor(EntityTypes.class, Location.class, LivingEntity.class);
+            instance = constructor.newInstance(type, e.getEntity().getLocation(), killer);
+        } catch (Exception ex) {
+            if (entityTypeName.contains("llager")
+                    || entityTypeName.equalsIgnoreCase("witch")
+                    || entityTypeName.equalsIgnoreCase("vindicator")
+                    || entityTypeName.equalsIgnoreCase("illusioner")
+                    || entityTypeName.equalsIgnoreCase("evoker")) {
+                instance = new FollowerZombieVillager(EntityTypes.ZOMBIE_VILLAGER, e.getEntity().getLocation(), killer);
+            } else {
+                instance = new FollowerZombie(EntityTypes.ZOMBIE, e.getEntity().getLocation(), killer);
+            }
 
-                owner.sendMessage("me.xepos.rpg.entities.type.Follower" + entityTypeName);
-                owner.sendMessage(type.toString());
+        } finally {
+            //then do this stuff
+            if (instance != null) {
+                NecromancerFollower follower = (NecromancerFollower) instance;
 
-                try {
-                    //Get supported type
-                    Class<?> clazz = Class.forName("me.xepos.rpg.entities.type.Follower" + entityTypeName);
-                    Constructor<?> constructor = clazz.getConstructor(EntityTypes.class, Location.class, LivingEntity.class);
-                    instance = constructor.newInstance(type, e.getEntity().getLocation(), owner);
-                } catch (Exception ex) {
-                    if (entityTypeName.contains("llager")
-                            || entityTypeName.equalsIgnoreCase("witch")
-                            || entityTypeName.equalsIgnoreCase("vindicator")
-                            || entityTypeName.equalsIgnoreCase("illusioner")
-                            || entityTypeName.equalsIgnoreCase("evoker")) {
-                        instance = new FollowerZombieVillager(EntityTypes.ZOMBIE_VILLAGER, e.getEntity().getLocation(), owner);
-                    } else {
-                        instance = new FollowerZombie(EntityTypes.ZOMBIE, e.getEntity().getLocation(), owner);
-                    }
+                this.followers.add(follower);
 
-                } finally {
-                    //then do this stuff
-                    if (instance != null) {
-                        NecromancerFollower follower = (NecromancerFollower) instance;
-                        //follower.setOwner(owner);
-
-                        Necromancer necromancer = (Necromancer) Utils.GetRPG(e.getEntity().getKiller()).getPlayerClass();
-                        necromancer.followers.add(follower);
-
-                        WorldServer world = ((CraftWorld) owner.getWorld()).getHandle();
-                        world.addEntity(follower);
-                    }
-                }
-
+                WorldServer world = ((CraftWorld) killer.getWorld()).getHandle();
+                world.addEntity(follower);
             }
         }
+
     }
 }

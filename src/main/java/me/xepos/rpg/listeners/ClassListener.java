@@ -5,6 +5,7 @@ import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.database.IDatabaseManager;
 import me.xepos.rpg.database.tasks.savePlayerDataTask;
 import me.xepos.rpg.enums.DamageTakenSource;
+import me.xepos.rpg.handlers.ShootBowEventHandler;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
@@ -40,7 +41,7 @@ public class ClassListener implements Listener {
             if (xrpgPlayer.isStunned())
                 e.setCancelled(true);
             else
-                xrpgPlayer.getDamageDealtEventHandler().invoke(e);
+                xrpgPlayer.getEventHandler("DAMAGE_DEALT").invoke(e);
         }
 
         if (e.getEntity() instanceof Player) {
@@ -52,7 +53,7 @@ public class ClassListener implements Listener {
                     e.setDamage(e.getDamage() * xrpgPlayer.dmgTakenMultipliers.get(dtSource));
                 }
             }
-            xrpgPlayer.getDamageTakenEventHandler().invoke(e);
+            xrpgPlayer.getEventHandler("DAMAGE_TAKEN").invoke(e);
             //xrpgPlayer.onHurt(e);
         }
     }
@@ -105,18 +106,19 @@ public class ClassListener implements Listener {
 
         if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if (e.getPlayer().isSneaking()) {
-                xrpgPlayer.getSneakRightClickEventHandler().invoke(e);
+                xrpgPlayer.getEventHandler("SNEAK_RIGHT_CLICK").invoke(e);
             } else {
-                xrpgPlayer.getRightClickEventHandler().invoke(e);
+                xrpgPlayer.getEventHandler("RIGHT_CLICK").invoke(e);
             }
 
         } else if (e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK) {
+
+            doBowCycle(e.getItem(), xrpgPlayer);
+
             if (e.getPlayer().isSneaking()) {
-                doBowCycle(e.getItem(), xrpgPlayer);
-                xrpgPlayer.getSneakLeftClickEventHandler().invoke(e);
+                xrpgPlayer.getEventHandler("SNEAK_LEFT_CLICK").invoke(e);
             } else {
-                doBowCycle(e.getItem(), xrpgPlayer);
-                xrpgPlayer.getLeftClickEventHandler().invoke(e);
+                xrpgPlayer.getEventHandler("LEFT_CLICK").invoke(e);
             }
         }
 
@@ -124,8 +126,12 @@ public class ClassListener implements Listener {
 
     @EventHandler
     public void onPlayerInteractEntity(PlayerInteractEntityEvent e) {
-        Player player = e.getPlayer();
-        Utils.GetRPG(player).onInteractWithEntity(e);
+        XRPGPlayer xrpgPlayer = Utils.GetRPG(e.getPlayer());
+        if (e.getPlayer().isSneaking()) {
+            xrpgPlayer.getEventHandler("SNEAK_RIGHT_CLICK_ENTITY").invoke(e);
+        } else {
+            xrpgPlayer.getEventHandler("RIGHT_CLICK_ENTITY").invoke(e);
+        }
     }
 
     @EventHandler
@@ -140,13 +146,13 @@ public class ClassListener implements Listener {
     public void onEntityShootBow(EntityShootBowEvent e) {
         if (e.getEntity() instanceof Player) {
             Player player = (Player) e.getEntity();
-            Utils.GetRPG(player).onShootBow(e);
+            Utils.GetRPG(player).getEventHandler("SHOOT_BOW").invoke(e);
         }
     }
 
     private void doBowCycle(ItemStack item, XRPGPlayer xrpgPlayer) {
         if (item != null && item.getType() == Material.BOW) {
-            xrpgPlayer.getShootBowEventHandler().next();
+            ((ShootBowEventHandler) xrpgPlayer.getEventHandler("SHOOT_BOW")).next();
         }
     }
 }
