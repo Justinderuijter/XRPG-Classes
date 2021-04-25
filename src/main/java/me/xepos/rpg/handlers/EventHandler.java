@@ -6,7 +6,7 @@ import org.bukkit.event.Event;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SneakRightClickEventHandler {
+public class EventHandler {
     private List<XRPGSkill> skills = new ArrayList<>();
 
     public List<XRPGSkill> getSkills() {
@@ -31,4 +31,9 @@ public class SneakRightClickEventHandler {
             skill.activate(e);
         }
     }
+
+    public boolean containsSkill(XRPGSkill skill) {
+        return skills.stream().anyMatch(skill.getClass()::isInstance);
+    }
+
 }

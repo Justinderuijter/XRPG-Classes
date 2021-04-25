@@ -3,13 +3,15 @@ package me.xepos.rpg;
 import me.xepos.rpg.classes.Ranger;
 import me.xepos.rpg.classes.XRPGClass;
 import me.xepos.rpg.enums.DamageTakenSource;
-import me.xepos.rpg.handlers.*;
+import me.xepos.rpg.handlers.EventHandler;
+import me.xepos.rpg.handlers.ShootBowEventHandler;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.*;
 
+import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -20,22 +22,27 @@ public class XRPGPlayer {
     private String classId;
     private int freeChangeTickets = 2;
 
-    //Interact Handlers
-    private final RightClickEventHandler rightClickEventHandler = new RightClickEventHandler();
-    private final LeftClickEventHandler leftClickEventHandler = new LeftClickEventHandler();
-    private final SneakRightClickEventHandler sneakRightClickEventHandler = new SneakRightClickEventHandler();
-    private final SneakLeftClickEventHandler sneakLeftClickEventHandler = new SneakLeftClickEventHandler();
+    private final HashMap<String, EventHandler> handlerList = new HashMap<String, EventHandler>() {{
+        //Interact Handlers
+        put("RIGHT_CLICK", new EventHandler());
+        put("LEFT_CLICK", new EventHandler());
+        put("SNEAK_RIGHT_CLICK", new EventHandler());
+        put("SNEAK_LEFT_CLICK", new EventHandler());
 
-    //Interact Handlers (Entity)
-    private final RightClickEntityEventHandler rightClickEntityEventHandler = new RightClickEntityEventHandler();
-    private final SneakRightClickEntityEventHandler sneakRightClickEntityEventHandler = new SneakRightClickEntityEventHandler();
-    //Damage Handlers
-    private final DamageTakenEventHandler damageTakenEventHandler = new DamageTakenEventHandler();
-    private final DamageDealtEventHandler damageDealtEventHandler = new DamageDealtEventHandler();
-    //Bow Handlers
-    private final ShootBowEventHandler shootBowEventHandler = new ShootBowEventHandler();
-    //Other Handlers
-    private final ConsumeItemEventHandler consumeItemEventHandler = new ConsumeItemEventHandler();
+        //Interact Handlers (Entity)
+        put("RIGHT_CLICK_ENTITY", new EventHandler());
+        put("SNEAK_RIGHT_CLICK_ENTITY", new EventHandler());
+
+        //Damage Handlers
+        put("DAMAGE_TAKEN", new EventHandler());
+        put("DAMAGE_DEALT", new EventHandler());
+
+        //Bow Handlers
+        put("SHOOT_BOW", new ShootBowEventHandler());
+
+        //Other Handlers
+        put("CONSUME_ITEM", new EventHandler());
+    }};
 
     //Status Effects
     public transient ConcurrentHashMap<DamageTakenSource, Double> dmgTakenMultipliers = new ConcurrentHashMap<>();
@@ -172,43 +179,11 @@ public class XRPGPlayer {
     //                              //
     //////////////////////////////////
 
-    public RightClickEventHandler getRightClickEventHandler() {
-        return rightClickEventHandler;
+    public EventHandler getEventHandler(String handlerName) {
+        return handlerList.get(handlerName.toUpperCase());
     }
 
-    public LeftClickEventHandler getLeftClickEventHandler() {
-        return leftClickEventHandler;
-    }
-
-    public SneakRightClickEventHandler getSneakRightClickEventHandler() {
-        return sneakRightClickEventHandler;
-    }
-
-    public SneakLeftClickEventHandler getSneakLeftClickEventHandler() {
-        return sneakLeftClickEventHandler;
-    }
-
-    public DamageTakenEventHandler getDamageTakenEventHandler() {
-        return damageTakenEventHandler;
-    }
-
-    public DamageDealtEventHandler getDamageDealtEventHandler() {
-        return damageDealtEventHandler;
-    }
-
-    public RightClickEntityEventHandler getRightClickEntityEventHandler() {
-        return rightClickEntityEventHandler;
-    }
-
-    public SneakRightClickEntityEventHandler getSneakRightClickEntityEventHandler() {
-        return sneakRightClickEntityEventHandler;
-    }
-
-    public ConsumeItemEventHandler getConsumeItemEventHandler() {
-        return consumeItemEventHandler;
-    }
-
-    public ShootBowEventHandler getShootBowEventHandler() {
-        return shootBowEventHandler;
+    public void addEventHandler(String handlerName, EventHandler handler) {
+        this.handlerList.put(handlerName.toUpperCase(), handler);
     }
 }
