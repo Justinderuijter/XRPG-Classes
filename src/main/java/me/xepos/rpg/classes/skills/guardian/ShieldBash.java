@@ -2,24 +2,23 @@ package me.xepos.rpg.classes.skills.guardian;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.classes.skills.IDelayedTrigger;
-import me.xepos.rpg.classes.skills.IEffectDuration;
 import me.xepos.rpg.classes.skills.XRPGSkill;
 import me.xepos.rpg.tasks.ApplyStunTask;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
-public class ShieldBash extends XRPGSkill implements IDelayedTrigger, IEffectDuration {
+public class ShieldBash extends XRPGSkill {
 
     private int castDelay = 5;
     private byte duration = 2;
 
-    public ShieldBash(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
-        super(xrpgPlayer, skillName, cooldown, plugin);
+    public ShieldBash(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
+        super(xrpgPlayer, skillVariables, plugin);
 
         xrpgPlayer.getEventHandler("DAMAGE_DEALT").addSkill(this);
     }
@@ -59,25 +58,5 @@ public class ShieldBash extends XRPGSkill implements IDelayedTrigger, IEffectDur
                 setRemainingCooldown(getCooldown());
             }
         }
-    }
-
-    @Override
-    public int getTriggerDelay() {
-        return castDelay;
-    }
-
-    @Override
-    public void setTriggerDelay(int delay) {
-        this.castDelay = delay;
-    }
-
-    @Override
-    public int getEffectDuration() {
-        return duration;
-    }
-
-    @Override
-    public void setEffectDuration(int duration) {
-        this.duration = (byte) duration;
     }
 }

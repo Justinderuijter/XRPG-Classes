@@ -2,8 +2,6 @@ package me.xepos.rpg.classes.skills.wizard;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.classes.skills.IDamageTakenEffect;
-import me.xepos.rpg.classes.skills.IEffectDuration;
 import me.xepos.rpg.classes.skills.XRPGSkill;
 import me.xepos.rpg.enums.DamageTakenSource;
 import me.xepos.rpg.events.XRPGDamageTakenAddedEvent;
@@ -13,6 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -23,21 +22,21 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Shatter extends XRPGSkill implements IEffectDuration, IDamageTakenEffect {
+public class Shatter extends XRPGSkill {
     private FireballStackData fireballStackData;
     private int duration = 4;
     private double shatterDTAmount = 1.2;
     private int shatterDTDuration = 4;
 
-    public Shatter(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin, FireballStackData fireballStackData) {
-        super(xrpgPlayer, skillName, cooldown, plugin);
+    public Shatter(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, FireballStackData fireballStackData) {
+        super(xrpgPlayer, skillVariables, plugin);
 
         this.fireballStackData = fireballStackData;
         xrpgPlayer.getEventHandler("LEFT_CLICK").addSkill(this);
     }
 
-    public Shatter(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
-        super(xrpgPlayer, skillName, cooldown, plugin);
+    public Shatter(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
+        super(xrpgPlayer, skillVariables, plugin);
 
         xrpgPlayer.getEventHandler("LEFT_CLICK").addSkill(this);
     }
@@ -53,7 +52,7 @@ public class Shatter extends XRPGSkill implements IEffectDuration, IDamageTakenE
 
     @Override
     public void initialize() {
-        for (XRPGSkill skill : getXRPGPlayer().getEventHandler("LEFT_CLICK").getSkills()) {
+        for (XRPGSkill skill : getXRPGPlayer().getEventHandler("RIGHT_CLICK").getSkills()) {
             if (skill instanceof me.xepos.rpg.classes.skills.wizard.Fireball) {
                 this.fireballStackData = ((me.xepos.rpg.classes.skills.wizard.Fireball) skill).getFireballStackData();
                 return;
@@ -105,35 +104,5 @@ public class Shatter extends XRPGSkill implements IEffectDuration, IDamageTakenE
         } else {
             livingEntity.addPotionEffect(potionEffect);
         }
-    }
-
-    @Override
-    public int getEffectDuration() {
-        return duration;
-    }
-
-    @Override
-    public void setEffectDuration(int duration) {
-        this.duration = duration;
-    }
-
-    @Override
-    public double getDamageTaken() {
-        return shatterDTAmount;
-    }
-
-    @Override
-    public void setDamageTaken(double damageTakenAmount) {
-        this.shatterDTAmount = damageTakenAmount;
-    }
-
-    @Override
-    public int getDamageTakenDuration() {
-        return shatterDTDuration;
-    }
-
-    @Override
-    public void setDamageTakenDuration(int damageTakenDuration) {
-        this.shatterDTDuration = damageTakenDuration;
     }
 }

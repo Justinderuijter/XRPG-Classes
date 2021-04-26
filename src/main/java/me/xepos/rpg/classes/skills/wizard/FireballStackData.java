@@ -3,6 +3,7 @@ package me.xepos.rpg.classes.skills.wizard;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.classes.skills.XRPGSkill;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.Event;
 
 public class FireballStackData extends XRPGSkill {
@@ -11,8 +12,8 @@ public class FireballStackData extends XRPGSkill {
     private long lastStackGained = System.currentTimeMillis();
 
 
-    public FireballStackData(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
-        super(xrpgPlayer, skillName, cooldown, plugin);
+    public FireballStackData(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
+        super(xrpgPlayer, skillVariables, plugin);
 
         setRemainingCooldown(-1);
         xrpgPlayer.getEventHandler("RIGHT_CLICK").addSkill(this);

@@ -5,6 +5,7 @@ import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.classes.skills.XRPGSkill;
 import org.bukkit.ChatColor;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Explosive;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -12,8 +13,8 @@ import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 public class WindBarrier extends XRPGSkill {
-    public WindBarrier(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
-        super(xrpgPlayer, skillName, cooldown, plugin);
+    public WindBarrier(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
+        super(xrpgPlayer, skillVariables, plugin);
     }
 
     @SuppressWarnings("ConstantConditions")

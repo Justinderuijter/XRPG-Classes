@@ -11,6 +11,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -31,8 +32,8 @@ public class Rage extends XRPGSkill {
     private boolean isLocked = false;
     BukkitTask rageTask = null;
 
-    public Rage(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
-        super(xrpgPlayer, skillName, cooldown, plugin);
+    public Rage(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
+        super(xrpgPlayer, skillVariables, plugin);
 
         setRemainingCooldown(-1);
         xrpgPlayer.getEventHandler("DAMAGE_DEALT").addSkill(this);

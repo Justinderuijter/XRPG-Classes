@@ -10,6 +10,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.SmallFireball;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -17,11 +18,11 @@ import org.bukkit.event.player.PlayerInteractEvent;
 public class Fireball extends XRPGSkill {
     private final FireballStackData fireballStackData;
 
-    public Fireball(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
-        super(xrpgPlayer, skillName, cooldown, plugin);
+    public Fireball(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
+        super(xrpgPlayer, skillVariables, plugin);
 
-        fireballStackData = new FireballStackData(xrpgPlayer, skillName, -1, plugin);
-        xrpgPlayer.getRightClickEventHandler().addSkill(this);
+        fireballStackData = new FireballStackData(xrpgPlayer, skillVariables, plugin);
+        xrpgPlayer.getEventHandler("RIGHT_CLICK").addSkill(this);
     }
 
     @Override

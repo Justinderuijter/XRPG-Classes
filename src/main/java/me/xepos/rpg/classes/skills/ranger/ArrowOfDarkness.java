@@ -2,17 +2,19 @@ package me.xepos.rpg.classes.skills.ranger;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.handlers.ShootBowEventHandler;
 import me.xepos.rpg.utils.Utils;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.Arrow;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityShootBowEvent;
 
 public class ArrowOfDarkness extends XRPGBowSkill {
-    public ArrowOfDarkness(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
-        super(xrpgPlayer, skillName, cooldown, plugin);
+    public ArrowOfDarkness(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
+        super(xrpgPlayer, skillVariables, plugin);
 
-        xrpgPlayer.getShootBowEventHandler().addSkill(this);
+        xrpgPlayer.getEventHandler("SHOOT_BOW").addSkill(this);
     }
 
     @Override
@@ -20,7 +22,7 @@ public class ArrowOfDarkness extends XRPGBowSkill {
         if (!(event instanceof EntityShootBowEvent)) return;
         EntityShootBowEvent e = (EntityShootBowEvent) event;
         if (!(e.getProjectile() instanceof Arrow)) return;
-        if (getXRPGPlayer().getShootBowEventHandler().getCurrentSkill() != this) return;
+        if (((ShootBowEventHandler) getXRPGPlayer().getEventHandler("SHOOT_BOW")).getCurrentSkill() != this) return;
 
         if (!isSkillReady()) {
             e.getEntity().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));

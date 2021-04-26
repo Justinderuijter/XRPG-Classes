@@ -2,24 +2,24 @@ package me.xepos.rpg.classes.skills.ranger;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.classes.skills.ISkillPotionEffect;
 import me.xepos.rpg.handlers.ShootBowEventHandler;
 import me.xepos.rpg.utils.Utils;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Arrow;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public class ArrowOfHunger extends XRPGBowSkill implements ISkillPotionEffect {
+public class ArrowOfHunger extends XRPGBowSkill {
 
     private int amplifier = 3;
     private int potionDuration = 400;
 
     private final PotionEffect hungerEffect = new PotionEffect(PotionEffectType.HUNGER, potionDuration, amplifier, false, false, true);
 
-    public ArrowOfHunger(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
-        super(xrpgPlayer, skillName, cooldown, plugin);
+    public ArrowOfHunger(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
+        super(xrpgPlayer, skillVariables, plugin);
     }
 
     @Override
@@ -42,30 +42,5 @@ public class ArrowOfHunger extends XRPGBowSkill implements ISkillPotionEffect {
     @Override
     public void initialize() {
 
-    }
-
-    @Override
-    public int getAmplifier() {
-        return amplifier;
-    }
-
-    @Override
-    public void setAmplifier(int amplifier) {
-        this.amplifier = amplifier;
-    }
-
-    @Override
-    public int getPotionDuration() {
-        return potionDuration;
-    }
-
-    @Override
-    public void setPotionDuration(int potionDuration) {
-        this.potionDuration = potionDuration;
-    }
-
-    @Override
-    public PotionEffect getPotionEffect() {
-        return hungerEffect;
     }
 }

@@ -7,6 +7,7 @@ import me.xepos.rpg.datatypes.fireballData;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Fireball;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -15,17 +16,17 @@ import org.bukkit.util.Vector;
 public class Meteor extends XRPGSkill {
     private FireballStackData fireballStackData;
 
-    public Meteor(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin, FireballStackData fireballStackData) {
-        super(xrpgPlayer, skillName, cooldown, plugin);
+    public Meteor(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, FireballStackData fireballStackData) {
+        super(xrpgPlayer, skillVariables, plugin);
 
         this.fireballStackData = fireballStackData;
-        xrpgPlayer.getLeftClickEventHandler().addSkill(this);
+        xrpgPlayer.getEventHandler("LEFT_CLICK").addSkill(this);
     }
 
-    public Meteor(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
-        super(xrpgPlayer, skillName, cooldown, plugin);
+    public Meteor(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
+        super(xrpgPlayer, skillVariables, plugin);
 
-        xrpgPlayer.getLeftClickEventHandler().addSkill(this);
+        xrpgPlayer.getEventHandler("LEFT_CLICK").addSkill(this);
     }
 
     @Override
@@ -39,7 +40,7 @@ public class Meteor extends XRPGSkill {
 
     @Override
     public void initialize() {
-        for (XRPGSkill skill : getXRPGPlayer().getRightClickEventHandler().getSkills()) {
+        for (XRPGSkill skill : getXRPGPlayer().getEventHandler("RIGHT_CLICK").getSkills()) {
             if (skill instanceof me.xepos.rpg.classes.skills.wizard.Fireball) {
                 this.fireballStackData = ((me.xepos.rpg.classes.skills.wizard.Fireball) skill).getFireballStackData();
                 return;

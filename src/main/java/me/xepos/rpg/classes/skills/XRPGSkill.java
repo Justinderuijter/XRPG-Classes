@@ -4,6 +4,7 @@ import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.dependencies.parties.IPartyManager;
 import me.xepos.rpg.dependencies.protection.ProtectionSet;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 
@@ -18,17 +19,14 @@ public abstract class XRPGSkill {
     private final IPartyManager partyManager;
 
     //Stats
-    private String skillName;
-    private int cooldown;
+    private final ConfigurationSection skillVariables;
     private long remainingCooldown;
-    private double damage;
-    private double damageMultiplier = 1.0;
 
-    public XRPGSkill(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
+    public XRPGSkill(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         this.xrpgPlayer = xrpgPlayer;
         this.plugin = plugin;
-        this.skillName = skillName;
-        this.cooldown = cooldown;
+        //this.skillName = skillName;
+        this.skillVariables = skillVariables;
         this.protectionSet = plugin.getProtectionSet();
         this.partyManager = plugin.getPartyManager();
         this.remainingCooldown = System.currentTimeMillis();
@@ -52,11 +50,7 @@ public abstract class XRPGSkill {
     }
 
     public String getSkillName() {
-        return skillName;
-    }
-
-    public void setSkillName(String skillName) {
-        this.skillName = skillName;
+        return skillVariables.getString("name", "");
     }
 
     public boolean isSkillReady() {
@@ -88,27 +82,15 @@ public abstract class XRPGSkill {
         this.xrpgPlayer = xrpgPlayer;
     }
 
-    public int getCooldown() {
-        return cooldown;
-    }
-
-    public void setCooldown(int cooldown) {
-        this.cooldown = cooldown;
+    public double getCooldown() {
+        return skillVariables.getDouble("cooldown", -1);
     }
 
     public double getDamage() {
-        return damage;
-    }
-
-    public void setDamage(double damage) {
-        this.damage = damage;
+        return skillVariables.getDouble("damage", 0);
     }
 
     public double getDamageMultiplier() {
-        return damageMultiplier;
-    }
-
-    public void setDamageMultiplier(double damageMultiplier) {
-        this.damageMultiplier = damageMultiplier;
+        return skillVariables.getDouble("damage-multiplier");
     }
 }

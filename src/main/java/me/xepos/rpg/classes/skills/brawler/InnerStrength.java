@@ -2,10 +2,10 @@ package me.xepos.rpg.classes.skills.brawler;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.classes.skills.IEffectDuration;
 import me.xepos.rpg.classes.skills.XRPGSkill;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class InnerStrength extends XRPGSkill implements IEffectDuration {
+public class InnerStrength extends XRPGSkill {
     private LotusStrike lotusStrike;
     private int potionDuration = 6;
 
@@ -30,16 +30,16 @@ public class InnerStrength extends XRPGSkill implements IEffectDuration {
         add(new PotionEffect(PotionEffectType.ABSORPTION, potionDuration * 20, 0, false, false, true));
     }};
 
-    public InnerStrength(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin, LotusStrike lotusStrike) {
-        super(xrpgPlayer, skillName, cooldown, plugin);
+    public InnerStrength(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, LotusStrike lotusStrike) {
+        super(xrpgPlayer, skillVariables, plugin);
 
         this.lotusStrike = lotusStrike;
 
         xrpgPlayer.getEventHandler("RIGHT_CLICK").addSkill(this);
     }
 
-    public InnerStrength(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
-        super(xrpgPlayer, skillName, cooldown, plugin);
+    public InnerStrength(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
+        super(xrpgPlayer, skillVariables, plugin);
 
         xrpgPlayer.getEventHandler("RIGHT_CLICK").addSkill(this);
     }
@@ -89,16 +89,6 @@ public class InnerStrength extends XRPGSkill implements IEffectDuration {
         player.addPotionEffect(defEffects.get(rand.nextInt(defEffects.size())));
 
         lotusStrike.incrementHitCount();
-    }
-
-    @Override
-    public int getEffectDuration() {
-        return potionDuration;
-    }
-
-    @Override
-    public void setEffectDuration(int duration) {
-        this.potionDuration = duration;
     }
 
 }

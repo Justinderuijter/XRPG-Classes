@@ -6,6 +6,7 @@ import me.xepos.rpg.classes.skills.XRPGSkill;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -13,8 +14,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.RayTraceResult;
 
 public class Souldraw extends XRPGSkill {
-    public Souldraw(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
-        super(xrpgPlayer, skillName, cooldown, plugin);
+    public Souldraw(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
+        super(xrpgPlayer, skillVariables, plugin);
 
         xrpgPlayer.getEventHandler("RIGHT_CLICK").addSkill(this);
     }

@@ -2,14 +2,13 @@ package me.xepos.rpg.classes.skills.sorcerer;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.classes.skills.IIgnoreVillager;
-import me.xepos.rpg.classes.skills.IRepeatingTrigger;
 import me.xepos.rpg.classes.skills.XRPGSkill;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
@@ -21,16 +20,16 @@ import org.bukkit.util.RayTraceResult;
 import java.util.HashSet;
 import java.util.Set;
 
-public class TrailOfFlames extends XRPGSkill implements IIgnoreVillager, IRepeatingTrigger {
+public class TrailOfFlames extends XRPGSkill {
 
     private boolean areVillagersIgnored = true;
     private int interval = 10;
     private byte maxProcs = 10;
 
-    public TrailOfFlames(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
-        super(xrpgPlayer, skillName, cooldown, plugin);
+    public TrailOfFlames(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
+        super(xrpgPlayer, skillVariables, plugin);
 
-        xrpgPlayer.getRightClickEventHandler().addSkill(this);
+        xrpgPlayer.getEventHandler("RIGHT_CLICK").addSkill(this);
     }
 
     @Override
@@ -114,33 +113,4 @@ public class TrailOfFlames extends XRPGSkill implements IIgnoreVillager, IRepeat
 
     }
 
-    @Override
-    public void setVillagersIgnored(boolean setIgnored) {
-        this.areVillagersIgnored = setIgnored;
-    }
-
-    @Override
-    public boolean areVillagersIgnored() {
-        return areVillagersIgnored;
-    }
-
-    @Override
-    public int getInterval() {
-        return interval;
-    }
-
-    @Override
-    public void setInterval(int delay) {
-        this.interval = delay;
-    }
-
-    @Override
-    public byte getMaxProcs() {
-        return maxProcs;
-    }
-
-    @Override
-    public void setMaxProcs(byte maxProcs) {
-        this.maxProcs = maxProcs;
-    }
 }

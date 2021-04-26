@@ -5,6 +5,7 @@ import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.classes.skills.XRPGSkill;
 import me.xepos.rpg.tasks.RavagerLandTask;
 import me.xepos.rpg.utils.Utils;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.scheduler.BukkitTask;
@@ -13,8 +14,8 @@ import org.bukkit.util.Vector;
 public class SoaringSlash extends XRPGSkill {
     BukkitTask landTask = null;
 
-    public SoaringSlash(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
-        super(xrpgPlayer, skillName, cooldown, plugin);
+    public SoaringSlash(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
+        super(xrpgPlayer, skillVariables, plugin);
 
         xrpgPlayer.getEventHandler("SNEAK_LEFT_CLICK").addSkill(this);
     }

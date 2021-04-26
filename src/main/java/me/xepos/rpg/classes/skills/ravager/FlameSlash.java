@@ -5,14 +5,15 @@ import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.classes.skills.XRPGSkill;
 import me.xepos.rpg.datatypes.fireballData;
 import me.xepos.rpg.utils.Utils;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.SmallFireball;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 public class FlameSlash extends XRPGSkill {
-    public FlameSlash(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
-        super(xrpgPlayer, skillName, cooldown, plugin);
+    public FlameSlash(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
+        super(xrpgPlayer, skillVariables, plugin);
 
         xrpgPlayer.getEventHandler("LEFT_CLICK").addSkill(this);
     }

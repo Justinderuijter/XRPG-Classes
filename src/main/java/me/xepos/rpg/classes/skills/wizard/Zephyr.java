@@ -2,11 +2,11 @@ package me.xepos.rpg.classes.skills.wizard;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.classes.skills.IEffectDuration;
 import me.xepos.rpg.classes.skills.XRPGSkill;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -16,19 +16,19 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.List;
 
-public class Zephyr extends XRPGSkill implements IEffectDuration {
+public class Zephyr extends XRPGSkill {
     private FireballStackData fireballStackData;
     private int duration = 3;
 
-    public Zephyr(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin, FireballStackData fireballStackData) {
-        super(xrpgPlayer, skillName, cooldown, plugin);
+    public Zephyr(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, FireballStackData fireballStackData) {
+        super(xrpgPlayer, skillVariables, plugin);
 
         this.fireballStackData = fireballStackData;
         xrpgPlayer.getEventHandler("RIGHT_CLICK").addSkill(this);
     }
 
-    public Zephyr(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
-        super(xrpgPlayer, skillName, cooldown, plugin);
+    public Zephyr(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
+        super(xrpgPlayer, skillVariables, plugin);
 
         xrpgPlayer.getEventHandler("RIGHT_CLICK").addSkill(this);
     }
@@ -81,15 +81,5 @@ public class Zephyr extends XRPGSkill implements IEffectDuration {
             }
         }
         setRemainingCooldown(getCooldown() - fireBallStacks);
-    }
-
-    @Override
-    public int getEffectDuration() {
-        return duration;
-    }
-
-    @Override
-    public void setEffectDuration(int duration) {
-        this.duration = duration;
     }
 }

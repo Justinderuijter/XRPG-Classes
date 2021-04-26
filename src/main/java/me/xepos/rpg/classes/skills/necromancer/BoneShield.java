@@ -6,6 +6,7 @@ import me.xepos.rpg.classes.skills.XRPGSkill;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.ChatColor;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.libs.jline.internal.Nullable;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -14,17 +15,17 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 public class BoneShield extends XRPGSkill {
     private ArmyOfTheUndead armyOfTheUndead;
 
-    public BoneShield(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin, @Nullable ArmyOfTheUndead armyOfTheUndead) {
-        super(xrpgPlayer, skillName, cooldown, plugin);
+    public BoneShield(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, @Nullable ArmyOfTheUndead armyOfTheUndead) {
+        super(xrpgPlayer, skillVariables, plugin);
 
         this.armyOfTheUndead = armyOfTheUndead;
-        xrpgPlayer.getDamageTakenEventHandler().addSkill(this);
+        xrpgPlayer.getEventHandler("DAMAGE_TAKEN").addSkill(this);
     }
 
-    public BoneShield(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
-        super(xrpgPlayer, skillName, cooldown, plugin);
+    public BoneShield(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
+        super(xrpgPlayer, skillVariables, plugin);
 
-        xrpgPlayer.getDamageTakenEventHandler().addSkill(this);
+        xrpgPlayer.getEventHandler("DAMAGE_TAKEN").addSkill(this);
     }
 
     @Override

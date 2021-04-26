@@ -2,27 +2,27 @@ package me.xepos.rpg.classes.skills.sorcerer;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.classes.skills.IEffectDuration;
 import me.xepos.rpg.classes.skills.XRPGSkill;
 import me.xepos.rpg.tasks.ShowPlayerTask;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.RayTraceResult;
 
-public class VoidParadox extends XRPGSkill implements IEffectDuration {
+public class VoidParadox extends XRPGSkill {
 
     private int duration = 5;
 
-    public VoidParadox(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
-        super(xrpgPlayer, skillName, cooldown, plugin);
+    public VoidParadox(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
+        super(xrpgPlayer, skillVariables, plugin);
 
-        xrpgPlayer.getLeftClickEventHandler().addSkill(this);
+        xrpgPlayer.getEventHandler("LEFT_CLICK").addSkill(this);
     }
 
     @Override
@@ -65,15 +65,5 @@ public class VoidParadox extends XRPGSkill implements IEffectDuration {
 
             setRemainingCooldown(getCooldown());
         }
-    }
-
-    @Override
-    public int getEffectDuration() {
-        return duration;
-    }
-
-    @Override
-    public void setEffectDuration(int duration) {
-        this.duration = duration;
     }
 }

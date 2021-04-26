@@ -2,12 +2,12 @@ package me.xepos.rpg.classes.skills.brawler;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.classes.skills.IEffectDuration;
 import me.xepos.rpg.classes.skills.XRPGSkill;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -19,9 +19,9 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.*;
 
-public class LotusStrike extends XRPGSkill implements IEffectDuration {
-    public LotusStrike(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
-        super(xrpgPlayer, skillName, cooldown, plugin);
+public class LotusStrike extends XRPGSkill {
+    public LotusStrike(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
+        super(xrpgPlayer, skillVariables, plugin);
 
         xrpgPlayer.getEventHandler("DAMAGE_DEALT").addSkill(this);
     }
@@ -149,15 +149,5 @@ public class LotusStrike extends XRPGSkill implements IEffectDuration {
 
         player.addPotionEffect(dmgEffects.get(rand.nextInt(dmgEffects.size())));
         hitCount = 0;
-    }
-
-    @Override
-    public int getEffectDuration() {
-        return potionDuration;
-    }
-
-    @Override
-    public void setEffectDuration(int duration) {
-        this.potionDuration = duration;
     }
 }

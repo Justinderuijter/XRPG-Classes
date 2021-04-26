@@ -4,6 +4,7 @@ import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.classes.skills.XRPGSkill;
 import me.xepos.rpg.utils.Utils;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.potion.PotionEffect;
@@ -15,15 +16,15 @@ import java.util.List;
 public class GoldenAppleAoE extends XRPGSkill {
     private EnchantedGoldenAppleAoE GAppleAoE;
 
-    public GoldenAppleAoE(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin, EnchantedGoldenAppleAoE GAppleAoE) {
-        super(xrpgPlayer, skillName, cooldown, plugin);
+    public GoldenAppleAoE(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, EnchantedGoldenAppleAoE GAppleAoE) {
+        super(xrpgPlayer, skillVariables, plugin);
 
         this.GAppleAoE = GAppleAoE;
         xrpgPlayer.getEventHandler("CONSUME_ITEM").addSkill(this);
     }
 
-    public GoldenAppleAoE(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
-        super(xrpgPlayer, skillName, cooldown, plugin);
+    public GoldenAppleAoE(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
+        super(xrpgPlayer, skillVariables, plugin);
 
         xrpgPlayer.getEventHandler("CONSUME_ITEM").addSkill(this);
     }

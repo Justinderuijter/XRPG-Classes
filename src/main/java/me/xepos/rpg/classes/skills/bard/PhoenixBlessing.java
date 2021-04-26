@@ -2,11 +2,11 @@ package me.xepos.rpg.classes.skills.bard;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.classes.skills.IEffectDuration;
 import me.xepos.rpg.classes.skills.XRPGSkill;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.ChatColor;
 import org.bukkit.FluidCollisionMode;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -17,14 +17,14 @@ import org.bukkit.util.RayTraceResult;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PhoenixBlessing extends XRPGSkill implements IEffectDuration {
+public class PhoenixBlessing extends XRPGSkill {
 
     private byte duration = 5;
 
-    public PhoenixBlessing(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
-        super(xrpgPlayer, skillName, cooldown, plugin);
+    public PhoenixBlessing(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
+        super(xrpgPlayer, skillVariables, plugin);
 
-        xrpgPlayer.getSneakRightClickEventHandler().addSkill(this);
+        xrpgPlayer.getEventHandler("SNEAK_RIGHT_CLICK").addSkill(this);
     }
 
     @Override
@@ -68,15 +68,5 @@ public class PhoenixBlessing extends XRPGSkill implements IEffectDuration {
     @Override
     public void initialize() {
 
-    }
-
-    @Override
-    public int getEffectDuration() {
-        return duration;
-    }
-
-    @Override
-    public void setEffectDuration(int duration) {
-        this.duration = (byte) duration;
     }
 }

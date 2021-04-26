@@ -2,12 +2,11 @@ package me.xepos.rpg.classes.skills.necromancer;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.classes.skills.IEffectDuration;
-import me.xepos.rpg.classes.skills.IRepeatingTrigger;
 import me.xepos.rpg.classes.skills.XRPGSkill;
 import me.xepos.rpg.tasks.PurgatoryBatTask;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.FluidCollisionMode;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Bat;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -16,14 +15,14 @@ import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.RayTraceResult;
 
-public class PurgatoryBat extends XRPGSkill implements IRepeatingTrigger, IEffectDuration {
+public class PurgatoryBat extends XRPGSkill {
 
     private int interval = 20;
     private byte maxCount = 5;
     private int duration = 6;
 
-    public PurgatoryBat(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
-        super(xrpgPlayer, skillName, cooldown, plugin);
+    public PurgatoryBat(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
+        super(xrpgPlayer, skillVariables, plugin);
 
         xrpgPlayer.getEventHandler("RIGHT_CLICK").addSkill(this);
     }
@@ -65,35 +64,5 @@ public class PurgatoryBat extends XRPGSkill implements IRepeatingTrigger, IEffec
 
             setRemainingCooldown(getCooldown());
         }
-    }
-
-    @Override
-    public int getInterval() {
-        return interval;
-    }
-
-    @Override
-    public void setInterval(int delay) {
-        this.interval = delay;
-    }
-
-    @Override
-    public byte getMaxProcs() {
-        return maxCount;
-    }
-
-    @Override
-    public void setMaxProcs(byte maxProcs) {
-        this.maxCount = maxProcs;
-    }
-
-    @Override
-    public int getEffectDuration() {
-        return duration;
-    }
-
-    @Override
-    public void setEffectDuration(int duration) {
-        this.duration = duration;
     }
 }

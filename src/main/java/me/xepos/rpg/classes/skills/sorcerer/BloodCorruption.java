@@ -2,24 +2,24 @@ package me.xepos.rpg.classes.skills.sorcerer;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.classes.skills.IEffectDuration;
 import me.xepos.rpg.classes.skills.XRPGSkill;
 import me.xepos.rpg.tasks.BloodCorruptionTask;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.RayTraceResult;
 
-public class BloodCorruption extends XRPGSkill implements IEffectDuration {
+public class BloodCorruption extends XRPGSkill {
 
     private int duration = 4;
 
-    public BloodCorruption(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
-        super(xrpgPlayer, skillName, cooldown, plugin);
+    public BloodCorruption(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
+        super(xrpgPlayer, skillVariables, plugin);
 
         xrpgPlayer.getEventHandler("LEFT_CLICK").addSkill(this);
     }
@@ -56,13 +56,4 @@ public class BloodCorruption extends XRPGSkill implements IEffectDuration {
         }
     }
 
-    @Override
-    public int getEffectDuration() {
-        return duration;
-    }
-
-    @Override
-    public void setEffectDuration(int duration) {
-        this.duration = duration;
-    }
 }

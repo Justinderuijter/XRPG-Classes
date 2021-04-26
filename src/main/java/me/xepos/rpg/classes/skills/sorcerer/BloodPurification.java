@@ -3,12 +3,12 @@ package me.xepos.rpg.classes.skills.sorcerer;
 import me.xepos.rpg.AttributeModifierManager;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.classes.skills.ICleanse;
 import me.xepos.rpg.classes.skills.XRPGSkill;
 import me.xepos.rpg.enums.ModifierType;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Material;
 import org.bukkit.attribute.AttributeModifier;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -18,7 +18,7 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BloodPurification extends XRPGSkill implements ICleanse {
+public class BloodPurification extends XRPGSkill {
 
     private List<PotionEffectType> potionEffectTypes = new ArrayList<PotionEffectType>() {{
         add(PotionEffectType.CONFUSION);
@@ -32,8 +32,8 @@ public class BloodPurification extends XRPGSkill implements ICleanse {
         add(PotionEffectType.BLINDNESS);
     }};
 
-    public BloodPurification(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
-        super(xrpgPlayer, skillName, cooldown, plugin);
+    public BloodPurification(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
+        super(xrpgPlayer, skillVariables, plugin);
 
         xrpgPlayer.getEventHandler("RIGHT_CLICK").addSkill(this);
     }
@@ -88,8 +88,4 @@ public class BloodPurification extends XRPGSkill implements ICleanse {
         }
     }
 
-    @Override
-    public void setCleansableEffects(List<PotionEffectType> potionEffects) {
-        this.potionEffectTypes = potionEffects;
-    }
 }

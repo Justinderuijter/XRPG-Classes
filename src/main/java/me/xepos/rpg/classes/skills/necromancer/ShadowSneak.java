@@ -2,12 +2,11 @@ package me.xepos.rpg.classes.skills.necromancer;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.classes.skills.IDelayedTrigger;
-import me.xepos.rpg.classes.skills.IRepeatingTrigger;
 import me.xepos.rpg.classes.skills.XRPGSkill;
 import me.xepos.rpg.tasks.BleedTask;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.FluidCollisionMode;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Bat;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -22,15 +21,15 @@ import org.bukkit.util.Vector;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShadowSneak extends XRPGSkill implements IDelayedTrigger, IRepeatingTrigger {
+public class ShadowSneak extends XRPGSkill {
 
     private int batDespawnDelay = 3;
     private byte maxProcs = 5;
     private int interval = 1;
 
 
-    public ShadowSneak(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
-        super(xrpgPlayer, skillName, cooldown, plugin);
+    public ShadowSneak(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
+        super(xrpgPlayer, skillVariables, plugin);
 
         xrpgPlayer.getEventHandler("SNEAK_RIGHT_CLICK").addSkill(this);
     }
@@ -95,35 +94,5 @@ public class ShadowSneak extends XRPGSkill implements IDelayedTrigger, IRepeatin
                 }
             }
         }.runTaskLater(plugin, delay);
-    }
-
-    @Override
-    public int getTriggerDelay() {
-        return batDespawnDelay;
-    }
-
-    @Override
-    public void setTriggerDelay(int delay) {
-        this.batDespawnDelay = delay;
-    }
-
-    @Override
-    public int getInterval() {
-        return interval;
-    }
-
-    @Override
-    public void setInterval(int delay) {
-        this.interval = delay;
-    }
-
-    @Override
-    public byte getMaxProcs() {
-        return maxProcs;
-    }
-
-    @Override
-    public void setMaxProcs(byte maxProcs) {
-        this.maxProcs = maxProcs;
     }
 }

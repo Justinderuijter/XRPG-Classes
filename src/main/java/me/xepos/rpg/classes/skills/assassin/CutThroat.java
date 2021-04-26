@@ -2,22 +2,22 @@ package me.xepos.rpg.classes.skills.assassin;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.classes.skills.IThresholdTrigger;
 import me.xepos.rpg.classes.skills.XRPGSkill;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.util.Vector;
 
-public class CutThroat extends XRPGSkill implements IThresholdTrigger {
+public class CutThroat extends XRPGSkill {
 
     private double executeThreshold = 25.0;
 
-    public CutThroat(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
-        super(xrpgPlayer, skillName, cooldown, plugin);
+    public CutThroat(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
+        super(xrpgPlayer, skillVariables, plugin);
 
         xrpgPlayer.getEventHandler("DAMAGE_DEALT").addSkill(this);
     }
@@ -54,15 +54,5 @@ public class CutThroat extends XRPGSkill implements IThresholdTrigger {
     @Override
     public void initialize() {
 
-    }
-
-    @Override
-    public double getThreshold() {
-        return executeThreshold;
-    }
-
-    @Override
-    public void setThreshold(double threshold) {
-        this.executeThreshold = threshold;
     }
 }

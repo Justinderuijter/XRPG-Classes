@@ -3,7 +3,6 @@ package me.xepos.rpg.classes.skills.assassin;
 import com.mojang.datafixers.util.Pair;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.classes.skills.IEffectDuration;
 import me.xepos.rpg.classes.skills.XRPGSkill;
 import me.xepos.rpg.tasks.EndInvisibilityTask;
 import me.xepos.rpg.utils.Utils;
@@ -11,6 +10,7 @@ import net.minecraft.server.v1_16_R3.EnumItemSlot;
 import net.minecraft.server.v1_16_R3.ItemStack;
 import net.minecraft.server.v1_16_R3.PacketPlayOutEntityEquipment;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
@@ -25,12 +25,12 @@ import org.bukkit.inventory.EquipmentSlot;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Smokebomb extends XRPGSkill implements IEffectDuration {
+public class Smokebomb extends XRPGSkill {
 
     private int smokebombDuration = 10;
 
-    public Smokebomb(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
-        super(xrpgPlayer, skillName, cooldown, plugin);
+    public Smokebomb(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
+        super(xrpgPlayer, skillVariables, plugin);
 
         xrpgPlayer.getEventHandler("RIGHT_CLICK").addSkill(this);
     }
@@ -100,15 +100,5 @@ public class Smokebomb extends XRPGSkill implements IEffectDuration {
                 }
             }
         }
-    }
-
-    @Override
-    public int getEffectDuration() {
-        return smokebombDuration;
-    }
-
-    @Override
-    public void setEffectDuration(int duration) {
-        this.smokebombDuration = duration;
     }
 }
