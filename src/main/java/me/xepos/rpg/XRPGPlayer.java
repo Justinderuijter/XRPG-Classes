@@ -1,17 +1,11 @@
 package me.xepos.rpg;
 
-import me.xepos.rpg.classes.Ranger;
-import me.xepos.rpg.classes.XRPGClass;
 import me.xepos.rpg.classes.skills.IFollowerContainer;
 import me.xepos.rpg.classes.skills.XRPGSkill;
 import me.xepos.rpg.enums.DamageTakenSource;
 import me.xepos.rpg.handlers.EventHandler;
 import me.xepos.rpg.handlers.ShootBowEventHandler;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityShootBowEvent;
-import org.bukkit.event.entity.ProjectileLaunchEvent;
-import org.bukkit.event.player.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,8 +16,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class XRPGPlayer {
     private transient UUID playerId;
     private transient Player player;
-    private transient XRPGClass playerClass;
     private String classId;
+    private String classDisplay;
     private int freeChangeTickets = 2;
 
     //For convenience
@@ -57,77 +51,28 @@ public class XRPGPlayer {
     private transient long lastStunTime = 0;
 
     //Constructor for loading profiles
-    public XRPGPlayer(UUID playerId, XRPGClass XRPGClass) {
+    public XRPGPlayer(UUID playerId, String classId) {
         this.player = null;
         this.playerId = playerId;
-        this.playerClass = XRPGClass;
-        this.classId = XRPGClass.toString();
+        this.classId = classId;
     }
 
 
-    public XRPGPlayer(Player player, XRPGClass XRPGClass)
-    {
+    public XRPGPlayer(Player player, String classId) {
         this.player = player;
         this.playerId = player.getUniqueId();
-        this.playerClass = XRPGClass;
-        this.classId = XRPGClass.toString();
+        this.classId = classId;
     }
 
     //Constructor for new profiles
-    public XRPGPlayer(UUID playerId, XRPG plugin)
-    {
+    public XRPGPlayer(UUID playerId, XRPG plugin) {
         this.player = null;
         this.playerId = playerId;
-        this.playerClass = new Ranger(plugin);
-        this.classId = playerClass.toString();
+        this.classId = "assassin";
     }
 
-
-    public void onHit(EntityDamageByEntityEvent e)
-    {
-        playerClass.onHit(e); // call class HitModifier/Effect
-    }
-
-    public void onHurt(EntityDamageByEntityEvent e)
-    {
-        playerClass.onHurt(e); // call class dmgTaken Modifier
-    }
-
-    public void onJoin(PlayerJoinEvent e)
-    {
-        playerClass.onJoin(e); //Calls class effect when player joins
-    }
-
-    public void onRespawn(PlayerRespawnEvent e)
-    {
-        playerClass.onRespawn(e); //Calls class effect when player joins
-    }
-
-    public void onPlayerConsumeItem(PlayerItemConsumeEvent e)
-    {
-        playerClass.onPlayerConsumeItem(e);
-    }
-    public void onUseItem(PlayerInteractEvent e)
-    {
-        playerClass.onUseItem(e);
-    }
-    public void onInteractWithEntity(PlayerInteractEntityEvent e)
-    {
-        playerClass.onInteractWithEntity(e);
-    }
-    public void onProjectileLaunch(ProjectileLaunchEvent e)
-    {
-        playerClass.onProjectileLaunch(e);
-    }
-    public void onShootBow(EntityShootBowEvent e){ playerClass.onShootBow(e);}
-
-    public XRPGClass getPlayerClass() {
-        return playerClass;
-    }
-
-    public void setPlayerClass(XRPGClass playerClass) {
-        this.playerClass = playerClass;
-        this.classId = playerClass.toString();
+    public void setPlayerClass(String classId) {
+        this.classId = classId;
     }
 
     public int getFreeChangeTickets() {
@@ -180,6 +125,27 @@ public class XRPGPlayer {
         this.playerId = playerId;
     }
 
+    public List<IFollowerContainer> getFollowerSkills() {
+        return followerSkills;
+    }
+
+    public void setFollowerSkills(List<XRPGSkill> skills) {
+        followerSkills.clear();
+        for (XRPGSkill skill : skills) {
+            if (skill instanceof IFollowerContainer) {
+                followerSkills.add((IFollowerContainer) skill);
+            }
+        }
+    }
+
+    public String getClassDisplayName() {
+        return classDisplay;
+    }
+
+    public void setClassDisplayName(String classDisplay) {
+        this.classDisplay = classDisplay;
+    }
+
     //////////////////////////////////
     //                              //
     //  Handlers getters & setters  //
@@ -192,18 +158,5 @@ public class XRPGPlayer {
 
     public void addEventHandler(String handlerName, EventHandler handler) {
         this.handlerList.put(handlerName.toUpperCase(), handler);
-    }
-
-    public List<IFollowerContainer> getFollowerSkills() {
-        return followerSkills;
-    }
-
-    public void setFollowerSkills(List<XRPGSkill> skills) {
-        followerSkills.clear();
-        for (XRPGSkill skill : skills) {
-            if (skill instanceof IFollowerContainer) {
-                followerSkills.add((IFollowerContainer) skill);
-            }
-        }
     }
 }

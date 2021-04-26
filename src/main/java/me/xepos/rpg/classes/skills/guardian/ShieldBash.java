@@ -5,7 +5,6 @@ import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.classes.skills.IDelayedTrigger;
 import me.xepos.rpg.classes.skills.IEffectDuration;
 import me.xepos.rpg.classes.skills.XRPGSkill;
-import me.xepos.rpg.configuration.GuardianConfig;
 import me.xepos.rpg.tasks.ApplyStunTask;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.ChatColor;
@@ -22,15 +21,17 @@ public class ShieldBash extends XRPGSkill implements IDelayedTrigger, IEffectDur
     public ShieldBash(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
         super(xrpgPlayer, skillName, cooldown, plugin);
 
-        xrpgPlayer.getSneakLeftClickEventHandler().addSkill(this);
+        xrpgPlayer.getEventHandler("DAMAGE_DEALT").addSkill(this);
     }
 
     @Override
     public void activate(Event event) {
         if (!(event instanceof EntityDamageByEntityEvent)) return;
-
         EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
-        doShieldBash(e, (Player) e.getDamager());
+
+        if (e.getDamager() instanceof Player) {
+            doShieldBash(e, (Player) e.getDamager());
+        }
 
     }
 
@@ -42,7 +43,6 @@ public class ShieldBash extends XRPGSkill implements IDelayedTrigger, IEffectDur
     private void doShieldBash(EntityDamageByEntityEvent e, Player player) {
         if (e.getEntity() instanceof Player && player.getInventory().getItemInOffHand().getType() == Material.SHIELD) {
             Player target = (Player) e.getEntity();
-            GuardianConfig guardianConfig = GuardianConfig.getInstance();
             //Check if the location is valid and player isn't allied before casting shield Bash
             if (getProtectionSet().isLocationValid(player.getLocation(), target.getLocation()) && !getPartyManager().isPlayerAllied(player, target)) {
                 if (!isSkillReady()) {

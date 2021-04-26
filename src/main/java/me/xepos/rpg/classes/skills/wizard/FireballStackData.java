@@ -3,12 +3,11 @@ package me.xepos.rpg.classes.skills.wizard;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.classes.skills.XRPGSkill;
-import me.xepos.rpg.configuration.WizardConfig;
 import org.bukkit.event.Event;
 
 public class FireballStackData extends XRPGSkill {
     private byte fireBallStacks = 0;
-    private final byte maxFireballStacks = WizardConfig.getInstance().maxFireballStacks;
+    private final byte maxFireballStacks = 2;
     private long lastStackGained = System.currentTimeMillis();
 
 
@@ -16,8 +15,8 @@ public class FireballStackData extends XRPGSkill {
         super(xrpgPlayer, skillName, cooldown, plugin);
 
         setRemainingCooldown(-1);
-        xrpgPlayer.getRightClickEventHandler().addSkill(this);
-        xrpgPlayer.getSneakRightClickEventHandler().addSkill(this);
+        xrpgPlayer.getEventHandler("RIGHT_CLICK").addSkill(this);
+        xrpgPlayer.getEventHandler("SNEAK_RIGHT_CLICK").addSkill(this);
     }
 
     @Override

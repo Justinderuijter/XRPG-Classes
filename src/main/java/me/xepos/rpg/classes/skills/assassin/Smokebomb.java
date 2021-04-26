@@ -32,7 +32,7 @@ public class Smokebomb extends XRPGSkill implements IEffectDuration {
     public Smokebomb(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
         super(xrpgPlayer, skillName, cooldown, plugin);
 
-        xrpgPlayer.getRightClickEventHandler().addSkill(this);
+        xrpgPlayer.getEventHandler("RIGHT_CLICK").addSkill(this);
     }
 
 

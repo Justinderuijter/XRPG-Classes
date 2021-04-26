@@ -3,7 +3,6 @@ package me.xepos.rpg.classes.skills.guardian;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.classes.skills.XRPGSkill;
-import me.xepos.rpg.configuration.GuardianConfig;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
@@ -17,7 +16,7 @@ public class Fortified extends XRPGSkill {
     public Fortified(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
         super(xrpgPlayer, skillName, cooldown, plugin);
 
-        xrpgPlayer.getDamageTakenEventHandler().addSkill(this);
+        xrpgPlayer.getEventHandler("DAMAGE_TAKEN").addSkill(this);
     }
 
     @Override
@@ -25,7 +24,7 @@ public class Fortified extends XRPGSkill {
         if (!(event instanceof EntityDamageByEntityEvent)) return;
         EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
 
-        double dmg = e.getDamage() * GuardianConfig.getInstance().dmgTakenMultiplier;
+        double dmg = e.getDamage() * getDamageMultiplier();
         e.setDamage(dmg);
 
         TextComponent text = new TextComponent("Damage taken reduced by " + String.format(

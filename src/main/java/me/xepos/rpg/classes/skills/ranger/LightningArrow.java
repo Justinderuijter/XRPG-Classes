@@ -11,7 +11,7 @@ public class LightningArrow extends XRPGBowSkill {
     public LightningArrow(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
         super(xrpgPlayer, skillName, cooldown, plugin);
 
-        xrpgPlayer.getShootBowEventHandler().addSkill(this);
+        xrpgPlayer.getEventHandler("SHOOT_BOW").addSkill(this);
     }
 
     @Override

@@ -76,8 +76,8 @@ public class ClassListener implements Listener {
         }
 
         if (xrpgPlayer != null && xrpgPlayer.getPlayer() != null) {
-            player.sendMessage("You are now " + XRPG.RPGPlayers.get(player.getUniqueId()).getPlayerClass().toString());
-            Utils.GetRPG(player).onJoin(e);
+            player.sendMessage("You are now " + xrpgPlayer.getClassDisplayName());
+            Utils.onJoinEffect(player);
         } else {
             player.kickPlayer("Something went wrong while loading XRPG data.");
         }
@@ -95,7 +95,7 @@ public class ClassListener implements Listener {
     @EventHandler
     public void onPlayerConsumeItem(PlayerItemConsumeEvent e) {
         Player player = e.getPlayer();
-        Utils.GetRPG(player).onPlayerConsumeItem(e);
+        Utils.GetRPG(player).getEventHandler("CONSUME_ITEM");
     }
 
     @EventHandler
@@ -136,10 +136,10 @@ public class ClassListener implements Listener {
 
     @EventHandler
     public void onProjectileLaunch(ProjectileLaunchEvent e) {
-        if (e.getEntity().getShooter() instanceof Player) {
-            Player player = (Player) e.getEntity().getShooter();
-            Utils.GetRPG(player).onProjectileLaunch(e);
-        }
+//        if (e.getEntity().getShooter() instanceof Player) {
+//            Player player = (Player) e.getEntity().getShooter();
+//            Utils.GetRPG(player).onProjectileLaunch(e);
+//        }
     }
 
     @EventHandler

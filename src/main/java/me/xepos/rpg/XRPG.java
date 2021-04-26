@@ -5,7 +5,6 @@ import me.xepos.rpg.commands.ChangeClassCommand;
 import me.xepos.rpg.commands.SmokeBombCommand;
 import me.xepos.rpg.commands.XRPGDebug;
 import me.xepos.rpg.commands.XRPGReload;
-import me.xepos.rpg.configuration.*;
 import me.xepos.rpg.database.DatabaseManagerFactory;
 import me.xepos.rpg.database.IDatabaseManager;
 import me.xepos.rpg.datatypes.fireballData;
@@ -187,7 +186,7 @@ public final class XRPG extends JavaPlugin {
         this.saveDefaultConfig();
 
         //Force class configuration to load
-        AssassinConfig.getInstance();
+        /*AssassinConfig.getInstance();
         BardConfig.getInstance();
         BrawlerConfig.getInstance();
         GuardianConfig.getInstance();
@@ -195,7 +194,7 @@ public final class XRPG extends JavaPlugin {
         RangerConfig.getInstance();
         RavagerConfig.getInstance();
         SorcererConfig.getInstance();
-        WizardConfig.getInstance();
+        WizardConfig.getInstance();*/
     }
 
     public ProtectionSet getProtectionSet() {

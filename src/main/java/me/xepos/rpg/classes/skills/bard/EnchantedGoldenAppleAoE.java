@@ -3,7 +3,6 @@ package me.xepos.rpg.classes.skills.bard;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.classes.skills.XRPGSkill;
-import me.xepos.rpg.configuration.BardConfig;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
@@ -17,7 +16,7 @@ public class EnchantedGoldenAppleAoE extends XRPGSkill {
     public EnchantedGoldenAppleAoE(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
         super(xrpgPlayer, skillName, cooldown, plugin);
 
-        xrpgPlayer.getConsumeItemEventHandler().addSkill(this);
+        xrpgPlayer.getEventHandler("CONSUME_ITEM").addSkill(this);
     }
 
     @Override
@@ -40,7 +39,7 @@ public class EnchantedGoldenAppleAoE extends XRPGSkill {
 
         Utils.addPotionEffects(getNearbyAlliedPlayers(e.getPlayer(), 10, 5, 10), potionEffects);
 
-        setRemainingCooldown(BardConfig.getInstance().eGoldenAppleCooldown);
+        setRemainingCooldown(getCooldown());
 
     }
 

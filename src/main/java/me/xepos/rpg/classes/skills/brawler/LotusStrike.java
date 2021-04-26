@@ -4,7 +4,6 @@ import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.classes.skills.IEffectDuration;
 import me.xepos.rpg.classes.skills.XRPGSkill;
-import me.xepos.rpg.configuration.BrawlerConfig;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -24,10 +23,9 @@ public class LotusStrike extends XRPGSkill implements IEffectDuration {
     public LotusStrike(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
         super(xrpgPlayer, skillName, cooldown, plugin);
 
-        xrpgPlayer.getDamageDealtEventHandler().addSkill(this);
+        xrpgPlayer.getEventHandler("DAMAGE_DEALT").addSkill(this);
     }
 
-    BrawlerConfig brawlerConfig = BrawlerConfig.getInstance();
     private int potionDuration = 6;
     private int hitCount = 0;
     private final List<PotionEffect> dmgEffects = new ArrayList<PotionEffect>() {{
@@ -51,20 +49,20 @@ public class LotusStrike extends XRPGSkill implements IEffectDuration {
         int explosionProtectionLevel = enchantValues.get(Enchantment.PROTECTION_EXPLOSIONS);
         int projectileProtectionLevel = enchantValues.get(Enchantment.PROTECTION_EXPLOSIONS);
 
-        double fistDamage = brawlerConfig.fistBaseDamage + (armor * brawlerConfig.armorToDamageRatio) + (toughness * brawlerConfig.toughnessToDamageRatio) + (protectionLevel * brawlerConfig.protectionToDamageRatio);
+        double fistDamage = 2 + (armor * 0.3) + (toughness * 0.25) + (protectionLevel * 0.25);
 
         if (player.getInventory().getItemInMainHand().getType() == Material.AIR) {
             e.setDamage(fistDamage);
             if (isCrit(explosionProtectionLevel)) {
                 player.sendMessage(ChatColor.GREEN + "You hit a weak spot and dealt bonus damage!");
-                e.setDamage(fistDamage * brawlerConfig.vitalModifier);
+                e.setDamage(fistDamage * getDamageMultiplier());
             }
             doLotusHaste(projectileProtectionLevel);
             setFire(e, fireProtectionLevel);
             if (canUseLotus(player)) {
                 //Lotus Strike logic
                 double originalDamage = e.getDamage();
-                double lotusDamage = originalDamage * brawlerConfig.lotusModifier;
+                double lotusDamage = originalDamage * getDamageMultiplier();
                 e.setDamage(lotusDamage);
                 player.sendMessage(ChatColor.GREEN + getSkillName() + " dealt " + String.format("%,.2f", lotusDamage - originalDamage) + " bonus damage!");
                 player.playSound(player.getLocation(), Sound.ITEM_FLINTANDSTEEL_USE, 1F, 0.5F);
@@ -73,8 +71,6 @@ public class LotusStrike extends XRPGSkill implements IEffectDuration {
                 //If !canUseLotus
                 incrementHitCount();
             }
-        } else {
-            e.setDamage(brawlerConfig.nonFistDamage); //item isn't hand
         }
     }
 
@@ -111,7 +107,7 @@ public class LotusStrike extends XRPGSkill implements IEffectDuration {
     @SuppressWarnings("all")
     private boolean isCrit(int enchantLevel) {
         Random rand = new Random();
-        if (rand.nextInt(100) + 1 <= enchantLevel * brawlerConfig.enchantToCritRatio) //0-100
+        if (rand.nextInt(100) + 1 <= enchantLevel * 3.125) //0-100
         {
             return true;
         }
@@ -122,30 +118,30 @@ public class LotusStrike extends XRPGSkill implements IEffectDuration {
         if (enchantLevel > 0 && e.getEntity() instanceof LivingEntity) {
             LivingEntity entity = (LivingEntity) e.getEntity();
             if (entity.getFireTicks() <= -1) {
-                entity.setFireTicks(enchantLevel * brawlerConfig.fireTicksPerEnchantLevel);
+                entity.setFireTicks(enchantLevel * 15);
             }
         }
     }
 
     private void doLotusHaste(int enchantLevel) {
         Random rand = new Random();
-        if (rand.nextInt(100) + 1 <= enchantLevel * brawlerConfig.enchantToLotusHasteRatio) {
+        if (rand.nextInt(100) + 1 <= enchantLevel * 2.0) {
             incrementHitCount();
         }
     }
 
     public void incrementHitCount() {
-        if (hitCount < brawlerConfig.triggerAmount) {
+        if (hitCount < 7) {
             hitCount++;
         }
     }
 
     public boolean canUseLotus(Player player) {
-        if (hitCount == brawlerConfig.triggerAmount - 1) {
+        if (hitCount == 6) {
             player.sendMessage(ChatColor.DARK_GREEN + "Lotus techniques are ready to be used!");
             return false;
         }
-        return hitCount >= brawlerConfig.triggerAmount;
+        return hitCount >= 6;
     }
 
     private void applyTriggerEffect(Player player) {

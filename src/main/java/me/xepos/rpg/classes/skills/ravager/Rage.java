@@ -3,7 +3,6 @@ package me.xepos.rpg.classes.skills.ravager;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.classes.skills.XRPGSkill;
-import me.xepos.rpg.configuration.RavagerConfig;
 import me.xepos.rpg.tasks.RavagerRageTask;
 import me.xepos.rpg.utils.Utils;
 import net.md_5.bungee.api.ChatMessageType;
@@ -36,7 +35,7 @@ public class Rage extends XRPGSkill {
         super(xrpgPlayer, skillName, cooldown, plugin);
 
         setRemainingCooldown(-1);
-        xrpgPlayer.getDamageDealtEventHandler().addSkill(this);
+        xrpgPlayer.getEventHandler("DAMAGE_DEALT").addSkill(this);
     }
 
     @Override
@@ -46,7 +45,6 @@ public class Rage extends XRPGSkill {
 
         Player player = (Player) e.getDamager();
         rageLevel = getRageLevel(currentRage);
-        RavagerConfig ravagerConfig = RavagerConfig.getInstance();
 
         if (!isLocked) //Prevent infinite looping
             applyDamageRageEffect(e);
@@ -56,13 +54,13 @@ public class Rage extends XRPGSkill {
 
             //increase rage count
             if (((LivingEntity) e.getEntity()).getHealth() <= e.getFinalDamage()) {
-                incrementRage(ravagerConfig.bonusRageOnKill);
+                incrementRage((byte) 5);
             }
 
-            incrementRage(ravagerConfig.rageOnHit);
+            incrementRage((byte) 5);
             player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("Current Rage: " + currentRage + " (+)", ChatColor.RED.asBungee()));
             if (rageTask == null || rageTask.isCancelled())
-                rageTask = new RavagerRageTask(player, ravagerConfig.rageReductionPer5s).runTaskTimerAsynchronously(getPlugin(), 100L, 100L);
+                rageTask = new RavagerRageTask(player, (byte) 5).runTaskTimerAsynchronously(getPlugin(), 100L, 100L);
 
 
         } else

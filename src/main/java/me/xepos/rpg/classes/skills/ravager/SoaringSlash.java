@@ -16,7 +16,7 @@ public class SoaringSlash extends XRPGSkill {
     public SoaringSlash(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
         super(xrpgPlayer, skillName, cooldown, plugin);
 
-        xrpgPlayer.getSneakLeftClickEventHandler().addSkill(this);
+        xrpgPlayer.getEventHandler("SNEAK_LEFT_CLICK").addSkill(this);
     }
 
     @Override

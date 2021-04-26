@@ -25,7 +25,7 @@ public class PurgatoryBat extends XRPGSkill implements IRepeatingTrigger, IEffec
     public PurgatoryBat(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
         super(xrpgPlayer, skillName, cooldown, plugin);
 
-        xrpgPlayer.getRightClickEventHandler().addSkill(this);
+        xrpgPlayer.getEventHandler("RIGHT_CLICK").addSkill(this);
     }
 
     @Override

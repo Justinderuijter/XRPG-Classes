@@ -3,8 +3,8 @@ package me.xepos.rpg.classes.skills.sorcerer;
 import me.xepos.rpg.AttributeModifierManager;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.classes.skills.ICleanse;
 import me.xepos.rpg.classes.skills.XRPGSkill;
-import me.xepos.rpg.configuration.SorcererConfig;
 import me.xepos.rpg.enums.ModifierType;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Material;
@@ -18,11 +18,24 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BloodPurification extends XRPGSkill {
+public class BloodPurification extends XRPGSkill implements ICleanse {
+
+    private List<PotionEffectType> potionEffectTypes = new ArrayList<PotionEffectType>() {{
+        add(PotionEffectType.CONFUSION);
+        add(PotionEffectType.WITHER);
+        add(PotionEffectType.WEAKNESS);
+        add(PotionEffectType.SLOW_DIGGING);
+        add(PotionEffectType.POISON);
+        add(PotionEffectType.SLOW);
+        add(PotionEffectType.HUNGER);
+        add(PotionEffectType.HARM);
+        add(PotionEffectType.BLINDNESS);
+    }};
+
     public BloodPurification(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
         super(xrpgPlayer, skillName, cooldown, plugin);
 
-        xrpgPlayer.getRightClickEventHandler().addSkill(this);
+        xrpgPlayer.getEventHandler("RIGHT_CLICK").addSkill(this);
     }
 
     @Override
@@ -68,10 +81,15 @@ public class BloodPurification extends XRPGSkill {
 
     private void cleanseBadPotionEffects(LivingEntity livingTarget) {
 
-        for (PotionEffectType potionEffectType : SorcererConfig.getInstance().negativeEffects) {
+        for (PotionEffectType potionEffectType : potionEffectTypes) {
             if (livingTarget.hasPotionEffect(potionEffectType)) {
                 livingTarget.removePotionEffect(potionEffectType);
             }
         }
+    }
+
+    @Override
+    public void setCleansableEffects(List<PotionEffectType> potionEffects) {
+        this.potionEffectTypes = potionEffects;
     }
 }

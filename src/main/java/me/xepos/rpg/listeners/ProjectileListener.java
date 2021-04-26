@@ -1,11 +1,9 @@
 package me.xepos.rpg.listeners;
 
-import me.xepos.rpg.datatypes.fireballData;
-import me.xepos.rpg.utils.Utils;
 import me.xepos.rpg.XRPG;
-import me.xepos.rpg.configuration.RavagerConfig;
-import me.xepos.rpg.configuration.WizardConfig;
+import me.xepos.rpg.datatypes.fireballData;
 import me.xepos.rpg.dependencies.protection.ProtectionSet;
+import me.xepos.rpg.utils.Utils;
 import org.bukkit.Location;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;

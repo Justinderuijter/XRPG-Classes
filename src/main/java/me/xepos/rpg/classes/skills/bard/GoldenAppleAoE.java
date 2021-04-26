@@ -3,7 +3,6 @@ package me.xepos.rpg.classes.skills.bard;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.classes.skills.XRPGSkill;
-import me.xepos.rpg.configuration.BardConfig;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
@@ -20,13 +19,13 @@ public class GoldenAppleAoE extends XRPGSkill {
         super(xrpgPlayer, skillName, cooldown, plugin);
 
         this.GAppleAoE = GAppleAoE;
-        xrpgPlayer.getConsumeItemEventHandler().addSkill(this);
+        xrpgPlayer.getEventHandler("CONSUME_ITEM").addSkill(this);
     }
 
     public GoldenAppleAoE(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
         super(xrpgPlayer, skillName, cooldown, plugin);
 
-        xrpgPlayer.getConsumeItemEventHandler().addSkill(this);
+        xrpgPlayer.getEventHandler("CONSUME_ITEM").addSkill(this);
     }
 
     @Override
@@ -53,13 +52,13 @@ public class GoldenAppleAoE extends XRPGSkill {
 
         Utils.addPotionEffects(getNearbyAlliedPlayers(e.getPlayer(), 10, 5, 10), potionEffects);
 
-        setRemainingCooldown(BardConfig.getInstance().goldenAppleCooldown);
+        setRemainingCooldown(getCooldown());
 
     }
 
     @Override
     public void initialize() {
-        for (XRPGSkill skill : getXRPGPlayer().getConsumeItemEventHandler().getSkills()) {
+        for (XRPGSkill skill : getXRPGPlayer().getEventHandler("CONSUME_ITEM").getSkills()) {
             if (skill instanceof EnchantedGoldenAppleAoE) {
                 this.GAppleAoE = (EnchantedGoldenAppleAoE) skill;
                 return;

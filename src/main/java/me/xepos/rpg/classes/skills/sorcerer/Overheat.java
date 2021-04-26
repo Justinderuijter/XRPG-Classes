@@ -21,7 +21,7 @@ public class Overheat extends XRPGSkill implements IDelayedTrigger {
     public Overheat(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
         super(xrpgPlayer, skillName, cooldown, plugin);
 
-        xrpgPlayer.getLeftClickEventHandler().addSkill(this);
+        xrpgPlayer.getEventHandler("LEFT_CLICK").addSkill(this);
     }
 
     @Override

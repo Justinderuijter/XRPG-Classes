@@ -34,13 +34,14 @@ public class InnerStrength extends XRPGSkill implements IEffectDuration {
         super(xrpgPlayer, skillName, cooldown, plugin);
 
         this.lotusStrike = lotusStrike;
-        xrpgPlayer.getRightClickEventHandler().addSkill(this);
+
+        xrpgPlayer.getEventHandler("RIGHT_CLICK").addSkill(this);
     }
 
     public InnerStrength(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
         super(xrpgPlayer, skillName, cooldown, plugin);
 
-        xrpgPlayer.getRightClickEventHandler().addSkill(this);
+        xrpgPlayer.getEventHandler("RIGHT_CLICK").addSkill(this);
     }
 
     @Override
@@ -68,7 +69,7 @@ public class InnerStrength extends XRPGSkill implements IEffectDuration {
 
     @Override
     public void initialize() {
-        for (XRPGSkill skill : getXRPGPlayer().getDamageDealtEventHandler().getSkills()) {
+        for (XRPGSkill skill : getXRPGPlayer().getEventHandler("DAMAGE_DEALT").getSkills()) {
             if (skill instanceof LotusStrike) {
                 this.lotusStrike = (LotusStrike) skill;
                 return;

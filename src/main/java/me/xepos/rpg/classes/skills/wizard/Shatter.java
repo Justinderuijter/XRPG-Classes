@@ -33,13 +33,13 @@ public class Shatter extends XRPGSkill implements IEffectDuration, IDamageTakenE
         super(xrpgPlayer, skillName, cooldown, plugin);
 
         this.fireballStackData = fireballStackData;
-        xrpgPlayer.getLeftClickEventHandler().addSkill(this);
+        xrpgPlayer.getEventHandler("LEFT_CLICK").addSkill(this);
     }
 
     public Shatter(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
         super(xrpgPlayer, skillName, cooldown, plugin);
 
-        xrpgPlayer.getLeftClickEventHandler().addSkill(this);
+        xrpgPlayer.getEventHandler("LEFT_CLICK").addSkill(this);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class Shatter extends XRPGSkill implements IEffectDuration, IDamageTakenE
 
     @Override
     public void initialize() {
-        for (XRPGSkill skill : getXRPGPlayer().getRightClickEventHandler().getSkills()) {
+        for (XRPGSkill skill : getXRPGPlayer().getEventHandler("LEFT_CLICK").getSkills()) {
             if (skill instanceof me.xepos.rpg.classes.skills.wizard.Fireball) {
                 this.fireballStackData = ((me.xepos.rpg.classes.skills.wizard.Fireball) skill).getFireballStackData();
                 return;

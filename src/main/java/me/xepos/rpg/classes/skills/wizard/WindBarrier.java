@@ -3,7 +3,6 @@ package me.xepos.rpg.classes.skills.wizard;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.classes.skills.XRPGSkill;
-import me.xepos.rpg.configuration.WizardConfig;
 import org.bukkit.ChatColor;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Explosive;
@@ -28,7 +27,7 @@ public class WindBarrier extends XRPGSkill {
             if (e.getDamager() instanceof Projectile || e.getDamager() instanceof Explosive) {
                 if (isSkillReady()) {
                     e.setCancelled(true);
-                    setRemainingCooldown(WizardConfig.getInstance().forcefieldCooldown);
+                    setRemainingCooldown(getCooldown());
                     player.sendMessage(ChatColor.RED + getSkillName() + " is now on cooldown for " + getRemainingCooldown() + " seconds!");
                 }
             }

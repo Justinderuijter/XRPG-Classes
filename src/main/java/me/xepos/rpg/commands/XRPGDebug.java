@@ -3,8 +3,6 @@ package me.xepos.rpg.commands;
 import me.xepos.rpg.AttributeModifierManager;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.classes.Necromancer;
-import me.xepos.rpg.classes.XRPGClass;
 import me.xepos.rpg.enums.DamageTakenSource;
 import me.xepos.rpg.enums.ModifierType;
 import me.xepos.rpg.utils.Utils;
@@ -19,7 +17,7 @@ import java.util.UUID;
 
 public class XRPGDebug implements CommandExecutor {
 
-    private XRPG plugin;
+    private final XRPG plugin;
     public XRPGDebug(XRPG plugin)
     {
         this.plugin = plugin;
@@ -31,21 +29,12 @@ public class XRPGDebug implements CommandExecutor {
             if(commandSender instanceof Player)
             {
                 Player player = (Player) commandSender;
-                XRPGClass clazz = Utils.GetRPG(player).getPlayerClass();
                 if(strings.length == 1)
                 {
                     switch (strings[0])
                     {
                         case "fireballs":
                             player.sendMessage("Fireballs: " + plugin.fireBalls.size());
-                            return true;
-                        case "followers":
-
-                            if (clazz instanceof Necromancer)
-                                player.sendMessage("Followers: " + ((Necromancer)clazz).followers);
-                            else
-                                player.sendMessage("Not a Necromancer");
-
                             return true;
                         case "damagetaken":
                             for (DamageTakenSource d : Utils.GetRPG(player).dmgTakenMultipliers.keySet()) {

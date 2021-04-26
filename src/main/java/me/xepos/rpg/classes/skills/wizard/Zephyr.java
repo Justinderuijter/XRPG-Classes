@@ -24,13 +24,13 @@ public class Zephyr extends XRPGSkill implements IEffectDuration {
         super(xrpgPlayer, skillName, cooldown, plugin);
 
         this.fireballStackData = fireballStackData;
-        xrpgPlayer.getRightClickEventHandler().addSkill(this);
+        xrpgPlayer.getEventHandler("RIGHT_CLICK").addSkill(this);
     }
 
     public Zephyr(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
         super(xrpgPlayer, skillName, cooldown, plugin);
 
-        xrpgPlayer.getRightClickEventHandler().addSkill(this);
+        xrpgPlayer.getEventHandler("RIGHT_CLICK").addSkill(this);
     }
 
     @Override
@@ -44,7 +44,7 @@ public class Zephyr extends XRPGSkill implements IEffectDuration {
 
     @Override
     public void initialize() {
-        for (XRPGSkill skill : getXRPGPlayer().getRightClickEventHandler().getSkills()) {
+        for (XRPGSkill skill : getXRPGPlayer().getEventHandler("RIGHT_CLICK").getSkills()) {
             if (skill instanceof me.xepos.rpg.classes.skills.wizard.Fireball) {
                 this.fireballStackData = ((me.xepos.rpg.classes.skills.wizard.Fireball) skill).getFireballStackData();
                 return;

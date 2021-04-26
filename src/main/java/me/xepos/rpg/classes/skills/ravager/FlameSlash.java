@@ -14,7 +14,7 @@ public class FlameSlash extends XRPGSkill {
     public FlameSlash(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
         super(xrpgPlayer, skillName, cooldown, plugin);
 
-        xrpgPlayer.getLeftClickEventHandler().addSkill(this);
+        xrpgPlayer.getEventHandler("LEFT_CLICK").addSkill(this);
     }
 
     @Override

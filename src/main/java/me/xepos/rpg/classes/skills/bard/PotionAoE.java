@@ -3,7 +3,6 @@ package me.xepos.rpg.classes.skills.bard;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.classes.skills.XRPGSkill;
-import me.xepos.rpg.configuration.BardConfig;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -19,7 +18,7 @@ public class PotionAoE extends XRPGSkill {
     public PotionAoE(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
         super(xrpgPlayer, skillName, cooldown, plugin);
 
-        xrpgPlayer.getConsumeItemEventHandler().addSkill(this);
+        xrpgPlayer.getEventHandler("CONSUME_ITEM").addSkill(this);
     }
 
     @Override
@@ -38,7 +37,7 @@ public class PotionAoE extends XRPGSkill {
 
         Utils.addPotionEffects(getNearbyAlliedPlayers(player, 10, 5, 10), potionEffects);
 
-        setRemainingCooldown(BardConfig.getInstance().potionCooldown);
+        setRemainingCooldown(getCooldown());
 
     }
 

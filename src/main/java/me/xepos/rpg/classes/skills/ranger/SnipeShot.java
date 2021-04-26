@@ -2,7 +2,6 @@ package me.xepos.rpg.classes.skills.ranger;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.configuration.RangerConfig;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.Arrow;
@@ -14,7 +13,7 @@ public class SnipeShot extends XRPGBowSkill {
     public SnipeShot(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
         super(xrpgPlayer, skillName, cooldown, plugin);
 
-        xrpgPlayer.getShootBowEventHandler().addSkill(this);
+        xrpgPlayer.getEventHandler("SHOOT_BOW").addSkill(this);
     }
 
     @Override
@@ -41,7 +40,7 @@ public class SnipeShot extends XRPGBowSkill {
         arrow.setGravity(false);
         arrow.setPickupStatus(AbstractArrow.PickupStatus.CREATIVE_ONLY);
         arrow.setPierceLevel(Math.round(force) + 1);
-        arrow.setDamage(arrow.getDamage() * RangerConfig.getInstance().snipeShotDamageMultiplier * force);
+        arrow.setDamage(arrow.getDamage() * getDamageMultiplier() * force);
 
         new BukkitRunnable() {
             @Override

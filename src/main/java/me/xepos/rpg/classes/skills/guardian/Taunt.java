@@ -3,7 +3,6 @@ package me.xepos.rpg.classes.skills.guardian;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.classes.skills.XRPGSkill;
-import me.xepos.rpg.configuration.GuardianConfig;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
@@ -16,7 +15,7 @@ public class Taunt extends XRPGSkill {
     public Taunt(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
         super(xrpgPlayer, skillName, cooldown, plugin);
 
-        xrpgPlayer.getDamageDealtEventHandler().addSkill(this);
+        xrpgPlayer.getEventHandler("DAMAGE_DEALT").addSkill(this);
     }
 
     @Override
@@ -25,7 +24,7 @@ public class Taunt extends XRPGSkill {
         EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
         Player player = (Player) e.getDamager();
 
-        double range = GuardianConfig.getInstance().mobAggroRangeOnHit;
+        double range = 16;
         List<Entity> entities = e.getEntity().getNearbyEntities(range, range, range);
         for (Entity entity : entities) {
             if (entity instanceof Monster) {

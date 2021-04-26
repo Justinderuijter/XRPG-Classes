@@ -2,7 +2,6 @@ package me.xepos.rpg.tasks;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.configuration.NecromancerConfig;
 import me.xepos.rpg.dependencies.parties.IPartyManager;
 import me.xepos.rpg.dependencies.protection.ProtectionSet;
 import me.xepos.rpg.entities.Follower;

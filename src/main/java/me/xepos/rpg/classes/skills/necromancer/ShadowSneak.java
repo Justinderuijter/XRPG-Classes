@@ -5,7 +5,6 @@ import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.classes.skills.IDelayedTrigger;
 import me.xepos.rpg.classes.skills.IRepeatingTrigger;
 import me.xepos.rpg.classes.skills.XRPGSkill;
-import me.xepos.rpg.configuration.NecromancerConfig;
 import me.xepos.rpg.tasks.BleedTask;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.FluidCollisionMode;
@@ -33,7 +32,7 @@ public class ShadowSneak extends XRPGSkill implements IDelayedTrigger, IRepeatin
     public ShadowSneak(XRPGPlayer xrpgPlayer, String skillName, int cooldown, XRPG plugin) {
         super(xrpgPlayer, skillName, cooldown, plugin);
 
-        xrpgPlayer.getSneakRightClickEventHandler().addSkill(this);
+        xrpgPlayer.getEventHandler("SNEAK_RIGHT_CLICK").addSkill(this);
     }
 
     @Override
@@ -76,7 +75,7 @@ public class ShadowSneak extends XRPGSkill implements IDelayedTrigger, IRepeatin
     private List<Bat> summonBats(Player player) {
         List<Bat> bats = new ArrayList<>();
         Vector velocity = new Vector(0, 1, 0);
-        for (int i = 0; i < NecromancerConfig.getInstance().shadowSneakBatCount; i++) {
+        for (int i = 0; i < 8; i++) {
             Bat bat = (Bat) player.getWorld().spawnEntity(player.getLocation(), EntityType.BAT);
             bat.setInvulnerable(true);
             bat.setCollidable(false);
