@@ -8,7 +8,7 @@ import org.bukkit.event.Event;
 
 public class FireballStackData extends XRPGSkill {
     private byte fireBallStacks = 0;
-    private final byte maxFireballStacks = 2;
+    private final byte maxFireballStacks = (byte) getSkillVariables().getInt("max-stacks", 2);
     private long lastStackGained = System.currentTimeMillis();
 
 

@@ -45,8 +45,8 @@ public abstract class XRPGSkill {
         return remainingCooldown;
     }
 
-    public void setRemainingCooldown(int cooldownInSeconds) {
-        this.remainingCooldown = System.currentTimeMillis() + (cooldownInSeconds * 1000L);
+    public void setRemainingCooldown(double cooldownInSeconds) {
+        this.remainingCooldown = System.currentTimeMillis() + ((long) cooldownInSeconds * 1000);
     }
 
     public String getSkillName() {
@@ -70,7 +70,7 @@ public abstract class XRPGSkill {
     }
 
     @SuppressWarnings("all")
-    public List<Player> getNearbyAlliedPlayers(Player caster, int x, int y, int z) {
+    public List<Player> getNearbyAlliedPlayers(Player caster, double x, double y, double z) {
         return (List<Player>) new ArrayList(caster.getWorld().getNearbyEntities(caster.getLocation(), x, y, z, p -> p instanceof Player && p != caster && partyManager.isPlayerAllied(caster, (Player) p)));
     }
 
@@ -92,5 +92,9 @@ public abstract class XRPGSkill {
 
     public double getDamageMultiplier() {
         return skillVariables.getDouble("damage-multiplier");
+    }
+
+    public ConfigurationSection getSkillVariables() {
+        return skillVariables;
     }
 }

@@ -25,8 +25,11 @@ public class Taunt extends XRPGSkill {
         EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
         Player player = (Player) e.getDamager();
 
-        double range = 16;
-        List<Entity> entities = e.getEntity().getNearbyEntities(range, range, range);
+        final double xRange = getSkillVariables().getDouble("x-range", 16.0);
+        final double yRange = getSkillVariables().getDouble("y-range", 5.0);
+        final double zRange = getSkillVariables().getDouble("z-range", xRange);
+
+        List<Entity> entities = e.getEntity().getNearbyEntities(xRange, yRange, zRange);
         for (Entity entity : entities) {
             if (entity instanceof Monster) {
                 player.sendMessage(entity.getName() + "is now targeting you!");

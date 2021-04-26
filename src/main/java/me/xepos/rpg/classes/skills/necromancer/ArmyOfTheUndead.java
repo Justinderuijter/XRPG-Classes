@@ -28,7 +28,6 @@ import java.util.List;
 
 public class ArmyOfTheUndead extends XRPGSkill implements IFollowerContainer {
     private final List<Follower> followers = new ArrayList<>();
-    private byte maxFollowers = 3;
 
     public ArmyOfTheUndead(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
@@ -44,10 +43,9 @@ public class ArmyOfTheUndead extends XRPGSkill implements IFollowerContainer {
         if (!(e.getEntity() instanceof LivingEntity)) return;
         LivingEntity livingEntity = (LivingEntity) e.getEntity();
 
-        if (livingEntity.getHealth() <= e.getFinalDamage() && followers.size() < maxFollowers) {
+        if (livingEntity.getHealth() <= e.getFinalDamage() && followers.size() < getSkillVariables().getInt("max-followers", 3)) {
             recruitFollower(e);
             return; //Code below doesn't need to get executed when the target dies.
-
         }
 
 
@@ -80,16 +78,6 @@ public class ArmyOfTheUndead extends XRPGSkill implements IFollowerContainer {
     @Override
     public int getFollowerCount() {
         return followers.size();
-    }
-
-    @Override
-    public byte getMaxFollowers() {
-        return this.maxFollowers;
-    }
-
-    @Override
-    public void setMaxFollowers(byte maxFollowers) {
-        this.maxFollowers = maxFollowers;
     }
 
     @SuppressWarnings("unchecked")

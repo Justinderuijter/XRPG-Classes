@@ -1,24 +1,31 @@
 package me.xepos.rpg.classes.skills.guardian;
 
+import me.xepos.rpg.AttributeModifierManager;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.classes.skills.XRPGSkill;
+import me.xepos.rpg.enums.ModifierType;
 import me.xepos.rpg.tasks.ApplyStunTask;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
-public class ShieldBash extends XRPGSkill {
+import java.util.UUID;
 
-    private int castDelay = 5;
-    private byte duration = 2;
+public class ShieldBash extends XRPGSkill {
 
     public ShieldBash(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
+
+        AttributeModifier mod = new AttributeModifier(UUID.fromString("076c8ed9-b6e2-4da1-a4c0-27c50c61725d"), "SHIELD_BASH", -1, AttributeModifier.Operation.MULTIPLY_SCALAR_1);
+
+        AttributeModifierManager.getInstance().put(ModifierType.NEGATIVE, mod.getName(), mod, Attribute.GENERIC_MOVEMENT_SPEED);
 
         xrpgPlayer.getEventHandler("DAMAGE_DEALT").addSkill(this);
     }
@@ -49,9 +56,13 @@ public class ShieldBash extends XRPGSkill {
                     return;
                 }
 
+                final double castDelay = getSkillVariables().getDouble("cast-delay", 0.25);
+                final double duration = getSkillVariables().getDouble("duration", 2.0);
+                ;
+
                 XRPGPlayer xrpgPlayer = Utils.GetRPG(target);
                 if (xrpgPlayer.canBeStunned())
-                    new ApplyStunTask(xrpgPlayer, guardianConfig.stunEffectModifier, duration * 20, getPlugin()).runTaskLater(getPlugin(), 5);
+                    new ApplyStunTask(xrpgPlayer, AttributeModifierManager.getInstance().get(ModifierType.NEGATIVE, "SHIELD_BASH").getAttributeModifier(), (long) duration * 20, getPlugin()).runTaskLater(getPlugin(), (long) castDelay * 20);
                 else
                     player.sendMessage(ChatColor.RED + target.getName() + " cannot be stunned for " + xrpgPlayer.getStunblockDuration() + " seconds!");
 

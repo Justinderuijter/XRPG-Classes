@@ -23,11 +23,6 @@ import java.util.List;
 
 public class ShadowSneak extends XRPGSkill {
 
-    private int batDespawnDelay = 3;
-    private byte maxProcs = 5;
-    private int interval = 1;
-
-
     public ShadowSneak(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 
@@ -57,15 +52,19 @@ public class ShadowSneak extends XRPGSkill {
         if (result != null && result.getHitEntity() != null) {
             LivingEntity livingEntity = (LivingEntity) result.getHitEntity();
 
+            final double batDespawnDelay = getSkillVariables().getDouble("despawn-delay", 3.0);
+            final byte maxProcs = (byte) getSkillVariables().getInt("max-procs", 3);
+            final double interval = getSkillVariables().getDouble("interval", 1.0);
+
             List<Bat> bats = summonBats(player);
-            removeBats(bats, getPlugin(), batDespawnDelay * 20L);
+            removeBats(bats, getPlugin(), (long) batDespawnDelay * 20);
 
             Vector direction = livingEntity.getLocation().getDirection().setY(0.).normalize().multiply(-2.);
             player.teleport(livingEntity.getLocation().add(direction), PlayerTeleportEvent.TeleportCause.PLUGIN);
             if (livingEntity instanceof Player && getProtectionSet().isLocationValid(player.getLocation(), livingEntity.getLocation()) && !getPartyManager().isPlayerAllied(player, (Player) livingEntity)) {
                 livingEntity.damage(getDamage(), player);
 
-                new BleedTask(livingEntity, player, maxProcs, getDamage()).runTaskTimer(getPlugin(), 11, interval * 20L);
+                new BleedTask(livingEntity, player, maxProcs, getDamage()).runTaskTimer(getPlugin(), 11, (long) interval * 20L);
             }
             setRemainingCooldown(getCooldown());
         }

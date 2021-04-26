@@ -17,10 +17,6 @@ import org.bukkit.util.RayTraceResult;
 
 public class PurgatoryBat extends XRPGSkill {
 
-    private int interval = 20;
-    private byte maxCount = 5;
-    private int duration = 6;
-
     public PurgatoryBat(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 
@@ -51,6 +47,11 @@ public class PurgatoryBat extends XRPGSkill {
         if (result != null && result.getHitEntity() != null) {
             LivingEntity livingEntity = (LivingEntity) result.getHitEntity();
 
+            final double interval = getSkillVariables().getDouble("interval", 1.0);
+            final byte maxCount = (byte) getSkillVariables().getInt("max-procs", 5);
+            final double duration = getSkillVariables().getDouble("dt-duration", 6);
+            final double dtAmount = getSkillVariables().getDouble("dt-amount", 1.2);
+
             Bat bat = (Bat) livingEntity.getWorld().spawnEntity(livingEntity.getEyeLocation(), EntityType.BAT);
             bat.setAI(false);
             bat.setInvulnerable(true);
@@ -59,8 +60,8 @@ public class PurgatoryBat extends XRPGSkill {
             bat.setCustomName("Purgatory bat");
             bat.setCustomNameVisible(false);
 
-            new PurgatoryBatTask(bat, player, getDamage(), maxCount, false, getPlugin(), duration * 20L)
-                    .runTaskTimer(getPlugin(), 10, interval);
+            new PurgatoryBatTask(bat, player, getDamage(), maxCount, false, dtAmount, getPlugin(), (long) duration * 20L)
+                    .runTaskTimer(getPlugin(), 10, (long) interval * 20L);
 
             setRemainingCooldown(getCooldown());
         }

@@ -18,7 +18,6 @@ import java.util.List;
 
 public class Zephyr extends XRPGSkill {
     private FireballStackData fireballStackData;
-    private int duration = 3;
 
     public Zephyr(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, FireballStackData fireballStackData) {
         super(xrpgPlayer, skillVariables, plugin);
@@ -67,6 +66,7 @@ public class Zephyr extends XRPGSkill {
             fireBallStacks = fireballStackData.getFireBallStacks();
         }
 
+        final long duration = (long) getSkillVariables().getDouble("duration", 3.0);
         for (LivingEntity entity : entities) {
             if (entity != e.getPlayer()) {
                 //Subtract 1 from the count to account for user
@@ -74,9 +74,9 @@ public class Zephyr extends XRPGSkill {
                     Player target = (Player) entity;
                     target.playSound(target.getLocation(), Sound.ENTITY_PUFFER_FISH_BLOW_UP, 0.5F, 1F);
                     if (getProtectionSet().isLocationValid(e.getPlayer().getLocation(), target.getLocation()))
-                        entity.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, duration + (entities.size() - 1) * 10, fireBallStacks, false, false, false));
+                        entity.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, (int) ((entities.size() - 1) * 20 + duration * 20), fireBallStacks, false, false, false));
                 } else
-                    entity.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, duration + (entities.size() - 1) * 10, fireBallStacks, false, false, false));
+                    entity.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, (int) ((entities.size() - 1) * 20 + duration * 20), fireBallStacks, false, false, false));
 
             }
         }

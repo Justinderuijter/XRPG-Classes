@@ -3,7 +3,7 @@ package me.xepos.rpg.classes.skills.ravager;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.classes.skills.XRPGSkill;
-import me.xepos.rpg.datatypes.fireballData;
+import me.xepos.rpg.datatypes.ProjectileData;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Fireball;
@@ -41,8 +41,8 @@ public class FlameSlash extends XRPGSkill {
         Fireball fireball = e.getPlayer().launchProjectile(SmallFireball.class);
         fireball.setCustomName(getSkillName());
         fireball.setCustomNameVisible(false);
-        if (!getPlugin().fireBalls.containsKey(fireball.getEntityId()))
-            getPlugin().fireBalls.put(fireball.getEntityId(), new fireballData(getDamage(), 10));
+        if (!getPlugin().fireBalls.containsKey(fireball.getUniqueId()))
+            getPlugin().fireBalls.put(fireball.getUniqueId(), new ProjectileData(fireball, 10, false, false, 10));
 
         setRemainingCooldown(getCooldown());
 

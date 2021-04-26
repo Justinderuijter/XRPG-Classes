@@ -3,7 +3,7 @@ package me.xepos.rpg.classes.skills.wizard;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.classes.skills.XRPGSkill;
-import me.xepos.rpg.datatypes.fireballData;
+import me.xepos.rpg.datatypes.ExplosiveProjectileData;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -53,10 +53,13 @@ public class Meteor extends XRPGSkill {
             e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
         }
-        //WizardConfig wizardConfig = WizardConfig.getInstance();
+        int range = getSkillVariables().getInt("range", 32);
+        final float explosionYield = (float) getSkillVariables().getDouble("explosion-yield", 2.0);
+        final boolean setFire = getSkillVariables().getBoolean("explosion-fire", false);
+        final boolean breakBlocks = getSkillVariables().getBoolean("explosion-break-block", false);
 
         //Meteor Skill logic
-        Location loc = Utils.getTargetBlock(e.getPlayer(), 32).getLocation();
+        Location loc = Utils.getTargetBlock(e.getPlayer(), range).getLocation();
         e.getPlayer().sendMessage("X: " + loc.getX() + " Y: " + loc.getY() + " Z: " + loc.getZ()); //debug message
 
         int stacks = 0;
@@ -69,8 +72,8 @@ public class Meteor extends XRPGSkill {
         fireball.setShooter(e.getPlayer());
         fireball.setDirection(new Vector(0, -1, 0));
 
-        if (!getPlugin().fireBalls.containsKey(fireball.getEntityId()))
-            getPlugin().fireBalls.put(fireball.getEntityId(), new fireballData(getDamage() * (stacks + 1), 10));
+        if (!getPlugin().fireBalls.containsKey(fireball.getUniqueId()))
+            getPlugin().fireBalls.put(fireball.getUniqueId(), new ExplosiveProjectileData(fireball, explosionYield * (stacks + 1), breakBlocks, setFire, 10));
 
         setRemainingCooldown(getCooldown());
     }

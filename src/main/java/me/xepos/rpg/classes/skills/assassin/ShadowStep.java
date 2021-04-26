@@ -25,8 +25,6 @@ import java.util.HashMap;
 public class ShadowStep extends XRPGSkill {
 
     private ArmorStand substitute = null;
-    private int shadowStepDuration = 5;
-
 
     public ShadowStep(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
@@ -104,7 +102,7 @@ public class ShadowStep extends XRPGSkill {
                         substitute = null;
                     }
                 }
-            }.runTaskLater(getPlugin(), shadowStepDuration * 20L);
+            }.runTaskLater(getPlugin(), (long) getSkillVariables().getDouble("duration", 5.0) * 20);
         } else {
             player.teleport(substitute.getLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
             substitute.remove();

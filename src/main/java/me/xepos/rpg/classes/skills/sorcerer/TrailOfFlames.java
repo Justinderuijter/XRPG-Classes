@@ -22,10 +22,6 @@ import java.util.Set;
 
 public class TrailOfFlames extends XRPGSkill {
 
-    private boolean areVillagersIgnored = true;
-    private int interval = 10;
-    private byte maxProcs = 10;
-
     public TrailOfFlames(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 
@@ -53,12 +49,17 @@ public class TrailOfFlames extends XRPGSkill {
             caster.sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
         }
+        double range = getSkillVariables().getDouble("range", 16.0);
 
-        RayTraceResult result = Utils.rayTrace(caster, 16, FluidCollisionMode.NEVER);
+        RayTraceResult result = Utils.rayTrace(caster, range, FluidCollisionMode.NEVER);
         final Set<Location> locations = new HashSet<>();
         if (result != null && result.getHitEntity() != null) {
             //Utils.rayTrace() only returns LivingEntity
             LivingEntity target = (LivingEntity) result.getHitEntity();
+
+            final boolean areVillagersIgnored = getSkillVariables().getBoolean("ignore-villagers", true);
+            final double interval = getSkillVariables().getDouble("interval", 0.5);
+            final byte maxProcs = (byte) getSkillVariables().getInt("max-procs", 10);
 
             new BukkitRunnable() {
                 int count = 0;
@@ -73,7 +74,7 @@ public class TrailOfFlames extends XRPGSkill {
 
                     count++;
                 }
-            }.runTaskTimer(getPlugin(), 10, interval);
+            }.runTaskTimer(getPlugin(), 10, (long) interval * 20);
 
             new BukkitRunnable() {
                 final Set<LivingEntity> livingEntities = new HashSet<>();
@@ -106,7 +107,7 @@ public class TrailOfFlames extends XRPGSkill {
 
                     count++;
                 }
-            }.runTaskTimer(getPlugin(), 20, interval);
+            }.runTaskTimer(getPlugin(), 20, (long) interval * 20);
 
             setRemainingCooldown(getCooldown());
         }

@@ -17,8 +17,6 @@ import org.bukkit.util.RayTraceResult;
 
 public class VoidParadox extends XRPGSkill {
 
-    private int duration = 5;
-
     public VoidParadox(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 
@@ -46,18 +44,21 @@ public class VoidParadox extends XRPGSkill {
             caster.sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
         }
+        double range = getSkillVariables().getDouble("range", 16);
 
-
-        RayTraceResult result = Utils.rayTrace(caster, 16, FluidCollisionMode.NEVER);
+        RayTraceResult result = Utils.rayTrace(caster, range, FluidCollisionMode.NEVER);
         if (result.getHitEntity() != null) {
             LivingEntity target = (LivingEntity) result.getHitEntity();
             if (target instanceof Player) {
                 Player targetPlayer = (Player) target;
                 if (!getPartyManager().isPlayerAllied(caster, targetPlayer) && getProtectionSet().isLocationValid(caster.getLocation(), targetPlayer.getLocation())) {
+
+                    final double duration = getSkillVariables().getDouble("duration", 5.0);
+
                     for (Player player : Bukkit.getServer().getOnlinePlayers()) {
                         targetPlayer.hidePlayer(getPlugin(), player);
                     }
-                    new ShowPlayerTask(getPlugin(), targetPlayer).runTaskLater(getPlugin(), duration * 20L);
+                    new ShowPlayerTask(getPlugin(), targetPlayer).runTaskLater(getPlugin(), (long) duration * 20L);
                 }
             } else {
                 target.damage(getDamage(), caster);

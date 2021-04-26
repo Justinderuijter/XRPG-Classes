@@ -19,7 +19,7 @@ import java.util.List;
 
 public class PhoenixBlessing extends XRPGSkill {
 
-    private byte duration = 5;
+
 
     public PhoenixBlessing(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
@@ -41,6 +41,9 @@ public class PhoenixBlessing extends XRPGSkill {
 
             RayTraceResult result = player.getLocation().getWorld().rayTrace(player.getEyeLocation(), player.getEyeLocation().getDirection(), 16, FluidCollisionMode.NEVER, true, 0.3, p -> p instanceof LivingEntity && p != player);
             if (result != null && result.getHitEntity() != null) {
+
+                final int duration = getSkillVariables().getInt("duration", 5);
+
                 LivingEntity entity = (LivingEntity) result.getHitEntity();
 
                 if (entity instanceof Player) {

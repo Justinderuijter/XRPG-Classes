@@ -1,0 +1,11 @@
+Display Name: "Ranger"
+Enabled: true
+
+Skills:
+  Focus:
+    ArrowOfDarkness:
+      cooldown: 25
+    SnipeShot:
+      damage: 2.0
+      pierce: 2
+      cooldown: 10

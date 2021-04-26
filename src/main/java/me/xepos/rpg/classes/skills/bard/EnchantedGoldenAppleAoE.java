@@ -31,14 +31,18 @@ public class EnchantedGoldenAppleAoE extends XRPGSkill {
             return;
         }
 
-        List<PotionEffect> potionEffects = new ArrayList<>();
+        final double xRange = getSkillVariables().getDouble("x-range", 10.0);
+        final double yRange = getSkillVariables().getDouble("y-range", 5.0);
+        final double zRange = getSkillVariables().getDouble("z-range", xRange);
 
-        potionEffects.add(new PotionEffect(PotionEffectType.ABSORPTION, 2400, 3));
-        potionEffects.add(new PotionEffect(PotionEffectType.REGENERATION, 600, 1));
-        potionEffects.add(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 6000, 0));
-        potionEffects.add(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 6000, 0));
+        List<PotionEffect> potionEffects = new ArrayList<PotionEffect>() {{
+            add(new PotionEffect(PotionEffectType.ABSORPTION, 2400, 3));
+            add(new PotionEffect(PotionEffectType.REGENERATION, 600, 1));
+            add(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 6000, 0));
+            add(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 6000, 0));
+        }};
 
-        Utils.addPotionEffects(getNearbyAlliedPlayers(e.getPlayer(), 10, 5, 10), potionEffects);
+        Utils.addPotionEffects(getNearbyAlliedPlayers(e.getPlayer(), xRange, yRange, zRange), potionEffects);
 
         setRemainingCooldown(getCooldown());
 

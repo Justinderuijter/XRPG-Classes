@@ -16,8 +16,6 @@ import org.bukkit.util.RayTraceResult;
 
 public class Overheat extends XRPGSkill {
 
-    private int delay = 5;
-
     public Overheat(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 
@@ -46,10 +44,15 @@ public class Overheat extends XRPGSkill {
             return;
         }
 
-        RayTraceResult result = Utils.rayTrace(caster, 16, FluidCollisionMode.NEVER);
+        double range = getSkillVariables().getDouble("range", 16.0);
+
+        RayTraceResult result = Utils.rayTrace(caster, range, FluidCollisionMode.NEVER);
         if (result != null && result.getHitEntity() != null) {
-            //doRayTrace only returns livingEntities so no need to check
-            new OverheatTask((LivingEntity) result.getHitEntity()).runTaskLater(getPlugin(), delay * 20L);
+
+            double delay = getSkillVariables().getDouble("delay", 5.0);
+
+            //Utils.rayTrace only returns livingEntities so no need to check
+            new OverheatTask((LivingEntity) result.getHitEntity()).runTaskLater(getPlugin(), (long) delay * 20L);
             setRemainingCooldown(getCooldown());
         }
     }

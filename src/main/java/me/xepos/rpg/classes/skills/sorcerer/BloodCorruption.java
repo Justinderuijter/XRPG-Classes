@@ -16,8 +16,6 @@ import org.bukkit.util.RayTraceResult;
 
 public class BloodCorruption extends XRPGSkill {
 
-    private int duration = 4;
-
     public BloodCorruption(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 
@@ -46,12 +44,15 @@ public class BloodCorruption extends XRPGSkill {
             return;
         }
 
-        RayTraceResult result = Utils.rayTrace(caster, 16, FluidCollisionMode.NEVER);
+        double range = getSkillVariables().getDouble("range", 16.0);
+
+        RayTraceResult result = Utils.rayTrace(caster, range, FluidCollisionMode.NEVER);
         if (result.getHitEntity() != null) {
+            double duration = getSkillVariables().getDouble("duration", 4.0);
 
             caster.sendMessage("Hit " + result.getHitEntity().getName());
             LivingEntity target = (LivingEntity) result.getHitEntity();
-            new BloodCorruptionTask(caster, target).runTaskLater(getPlugin(), duration * 20L);
+            new BloodCorruptionTask(caster, target).runTaskLater(getPlugin(), (long) duration * 20L);
             setRemainingCooldown(getCooldown());
         }
     }

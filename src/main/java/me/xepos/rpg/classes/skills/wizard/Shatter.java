@@ -24,9 +24,6 @@ import java.util.List;
 
 public class Shatter extends XRPGSkill {
     private FireballStackData fireballStackData;
-    private int duration = 4;
-    private double shatterDTAmount = 1.2;
-    private int shatterDTDuration = 4;
 
     public Shatter(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, FireballStackData fireballStackData) {
         super(xrpgPlayer, skillVariables, plugin);
@@ -84,12 +81,16 @@ public class Shatter extends XRPGSkill {
     public void shatterLogic(PlayerInteractEvent e, LivingEntity livingEntity) {
 
         DamageTakenSource damageTakenSource = DamageTakenSource.SHATTER;
-        PotionEffect potionEffect = new PotionEffect(PotionEffectType.SLOW, duration * 20, 1, false, false, false);
+        final double duration = getSkillVariables().getDouble("duration", 4);
+        PotionEffect potionEffect = new PotionEffect(PotionEffectType.SLOW, (int) (duration * 20), 1, false, false, false);
 
         if (livingEntity instanceof Player) {
             Player targetPlayer = (Player) livingEntity;
             //Check if the target is valid
             if (getProtectionSet().isLocationValid(e.getPlayer().getLocation(), targetPlayer.getLocation())) {
+
+                final double shatterDTAmount = getSkillVariables().getDouble("dt-amount", 1.2);
+                final double shatterDTDuration = getSkillVariables().getDouble("dt-duration", 4.0);
                 //Add potion effect and fire event
                 targetPlayer.addPotionEffect(potionEffect);
                 XRPGDamageTakenAddedEvent event = new XRPGDamageTakenAddedEvent(e.getPlayer(), targetPlayer, damageTakenSource, shatterDTAmount);
@@ -98,7 +99,7 @@ public class Shatter extends XRPGSkill {
                 //Apply DTModifier if the event isn't cancelled
                 if (!event.isCancelled()) {
                     Utils.addDTModifier(targetPlayer, damageTakenSource, shatterDTAmount);
-                    new RemoveDTModifierTask(e.getPlayer(), (Player) livingEntity, damageTakenSource).runTaskLater(getPlugin(), shatterDTDuration * 20L);
+                    new RemoveDTModifierTask(e.getPlayer(), (Player) livingEntity, damageTakenSource).runTaskLater(getPlugin(), (long) shatterDTDuration * 20L);
                 }
             }
         } else {

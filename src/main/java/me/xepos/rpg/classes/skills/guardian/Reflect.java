@@ -24,7 +24,7 @@ public class Reflect extends XRPGSkill {
 
 
         if (((Player) e.getEntity()).isBlocking() && e.getDamager() instanceof LivingEntity) {
-            Utils.decreaseHealth((LivingEntity) e.getDamager(), 1);
+            Utils.decreaseHealth((LivingEntity) e.getDamager(), getDamage());
         }
     }
 

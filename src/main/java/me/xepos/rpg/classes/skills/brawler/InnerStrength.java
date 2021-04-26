@@ -21,7 +21,7 @@ import java.util.Random;
 
 public class InnerStrength extends XRPGSkill {
     private LotusStrike lotusStrike;
-    private int potionDuration = 6;
+    private final int potionDuration = getSkillVariables().getInt("duration", 6);
 
     private final List<PotionEffect> defEffects = new ArrayList<PotionEffect>() {{
         add(new PotionEffect(PotionEffectType.REGENERATION, potionDuration * 20, 1, false, false, true));

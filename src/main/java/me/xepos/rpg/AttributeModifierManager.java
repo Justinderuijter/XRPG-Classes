@@ -1,5 +1,6 @@
 package me.xepos.rpg;
 
+import me.xepos.rpg.datatypes.AttributeModifierData;
 import me.xepos.rpg.enums.ModifierType;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
@@ -9,10 +10,10 @@ import java.util.HashMap;
 public class AttributeModifierManager {
     private static AttributeModifierManager instance;
 
-    private final HashMap<AttributeModifier, Attribute> positiveModifiers = new HashMap<>();
-    private final HashMap<AttributeModifier, Attribute> negativeModifiers = new HashMap<>();
+    private final HashMap<String, AttributeModifierData> positiveModifiers = new HashMap<>();
+    private final HashMap<String, AttributeModifierData> negativeModifiers = new HashMap<>();
 
-    public HashMap<AttributeModifier, Attribute> getModifiers(ModifierType modifierType) {
+    public HashMap<String, AttributeModifierData> getModifiers(ModifierType modifierType) {
         if (modifierType == ModifierType.NEGATIVE) {
             return negativeModifiers;
         } else {
@@ -20,13 +21,13 @@ public class AttributeModifierManager {
         }
     }
 
-    public void put(ModifierType modifierType, AttributeModifier modifier, Attribute attribute) {
+    public void put(ModifierType modifierType, String identifier, AttributeModifier modifier, Attribute attribute) {
         if (modifierType == ModifierType.NEGATIVE) {
-            if (!positiveModifiers.containsKey(modifier))
-                positiveModifiers.put(modifier, attribute);
+            if (!positiveModifiers.containsKey(identifier))
+                positiveModifiers.put(identifier, new AttributeModifierData(modifier, attribute));
         } else {
-            if (!negativeModifiers.containsKey(modifier))
-                negativeModifiers.put(modifier, attribute);
+            if (!negativeModifiers.containsKey(identifier))
+                negativeModifiers.put(identifier, new AttributeModifierData(modifier, attribute));
         }
     }
 
@@ -35,6 +36,14 @@ public class AttributeModifierManager {
             instance = new AttributeModifierManager();
 
         return instance;
+    }
+
+    public AttributeModifierData get(ModifierType modifierType, String identifier) {
+        if (modifierType == ModifierType.NEGATIVE) {
+            return negativeModifiers.get(identifier);
+        } else {
+            return positiveModifiers.get(identifier);
+        }
     }
 
 

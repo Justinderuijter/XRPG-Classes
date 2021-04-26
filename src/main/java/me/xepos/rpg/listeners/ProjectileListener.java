@@ -1,7 +1,9 @@
 package me.xepos.rpg.listeners;
 
 import me.xepos.rpg.XRPG;
-import me.xepos.rpg.datatypes.fireballData;
+import me.xepos.rpg.datatypes.BaseProjectileData;
+import me.xepos.rpg.datatypes.ExplosiveProjectileData;
+import me.xepos.rpg.datatypes.ProjectileData;
 import me.xepos.rpg.dependencies.protection.ProtectionSet;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Location;
@@ -10,26 +12,94 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-public class ProjectileListener implements Listener
-{
+public class ProjectileListener implements Listener {
     private final XRPG plugin;
     private final ProtectionSet ps;
 
-    public ProjectileListener(XRPG plugin)
-    {
+    public ProjectileListener(XRPG plugin) {
         this.plugin = plugin;
         this.ps = plugin.getProtectionSet();
     }
 
     @EventHandler
-    public void projectileHit(ProjectileHitEvent e)
-    {
-        int entityId = e.getEntity().getEntityId();
+    public void projectileHit(ProjectileHitEvent e) {
+        if (!plugin.fireBalls.containsKey(e.getEntity().getUniqueId())) return;
+        final Projectile projectile = e.getEntity();
+
+        BaseProjectileData pData = plugin.fireBalls.get(projectile.getUniqueId());
+        plugin.fireBalls.remove(e.getEntity().getUniqueId());
+
+        if (pData instanceof ProjectileData) {
+            ProjectileData projectileData = (ProjectileData) pData;
+
+
+            if (e.getHitEntity() != null) {
+                //Section for all projectiles
+                e.getHitEntity().setFireTicks(projectileData.getFireTicks());
+                if (projectileData.summonsLightning()) {
+                    e.getHitEntity().getWorld().strikeLightning(e.getEntity().getLocation());
+                }
+
+                projectileBounceLogic(e, projectileData);
+
+                //Section exclusively for projectiles that aren't arrows
+                if (!(e.getEntity() instanceof Arrow)) {
+                    if (e.getHitEntity() instanceof LivingEntity) {
+                        LivingEntity livingEntity = (LivingEntity) e.getHitEntity();
+                        livingEntity.damage(projectileData.getDamage() * projectileData.getDamageMultiplier(), (Player) projectileData.getProjectile().getShooter());
+                    }
+                    return;
+                }
+
+                //section exclusively for arrows.
+                if (projectileData.getDamageMultiplier() < 1.0) {
+                    if (e.getHitEntity() instanceof LivingEntity) {
+                        LivingEntity livingEntity = (LivingEntity) e.getHitEntity();
+
+                        livingEntity.setHealth(livingEntity.getHealth() * projectileData.getDamageMultiplier());
+                    }
+                }
+
+            } else if (e.getHitBlock() != null) {
+
+                if (projectileData.summonsLightning()) {
+                    e.getHitBlock().getWorld().strikeLightning(e.getHitEntity().getLocation());
+                }
+            }
+
+        } else if (pData instanceof ExplosiveProjectileData) {
+            ExplosiveProjectileData explosiveData = (ExplosiveProjectileData) pData;
+
+            //Determining location
+            Location location = null;
+            if (e.getHitBlock() != null) {
+                location = e.getHitBlock().getLocation();
+            } else if (e.getHitEntity() != null) {
+                location = e.getHitEntity().getLocation();
+            }
+
+            if (location == null || location.getWorld() == null) return;
+
+
+            //actual execution of skill
+            if (explosiveData.summonsLightning()) {
+                location.getWorld().strikeLightning(location);
+            }
+
+            if (explosiveData.shouldTeleport() && explosiveData.getProjectile().getShooter() instanceof Entity) {
+                explosiveData.getShooter().teleport(location);
+            }
+
+            location.getWorld().createExplosion(location, explosiveData.getYield(), explosiveData.setsFire(), explosiveData.destroysBlocks(), explosiveData.getShooter());
+
+            //Only triggers if potion effect is added to the data
+            explosiveData.summonCloud();
+
+        }
+
+       /* int entityId = e.getEntity().getEntityId();
         if(e.getEntity() instanceof SmallFireball)
         {
             if(plugin.fireBalls.containsKey(entityId))
@@ -82,60 +152,85 @@ public class ProjectileListener implements Listener
                 }
 
             }
-        }
+        }*/
     }
+
     @EventHandler
-    public void onExplosionPrime(ExplosionPrimeEvent e)
-    {
-        int entityId = e.getEntity().getEntityId();
-        if(plugin.fireBalls.containsKey(entityId))
-        {
-            if(e.getEntity() instanceof Fireball)
-            {
+    public void onExplosionPrime(ExplosionPrimeEvent e) {
+        if (!plugin.fireBalls.containsKey(e.getEntity().getUniqueId())) return;
+        ExplosiveProjectileData explosiveData = (ExplosiveProjectileData) plugin.fireBalls.get(e.getEntity().getUniqueId());
+
+        Location location = explosiveData.getProjectile().getLocation();
+        e.setCancelled(true);
+        location.getWorld().createExplosion(location, explosiveData.getYield(), explosiveData.setsFire(), explosiveData.destroysBlocks(), explosiveData.getShooter());
+
+        plugin.fireBalls.remove(explosiveData.getProjectile().getUniqueId());
+
+/*        int entityId = e.getEntity().getEntityId();
+        if (plugin.fireBalls.containsKey(entityId)) {
+            if (e.getEntity() instanceof Fireball) {
                 meteorLogic(e);
                 plugin.fireBalls.remove(entityId);
             }
-        }
+        }*/
     }
 
-    private void meteorLogic(ExplosionPrimeEvent e)
-    {
-        Fireball fireball = (Fireball)e.getEntity();
-        if (fireball.getShooter() instanceof Player)
-        {
-            double explosionStrength = plugin.fireBalls.get(fireball.getEntityId()).getDamage();
+/*    private void meteorLogic(ExplosionPrimeEvent e) {
+        Fireball fireball = (Fireball) e.getEntity();
+        if (fireball.getShooter() instanceof Player) {
+            double explosionStrength = plugin.fireBalls.get(fireball.getUniqueId()).;
             Player shooter = (Player) fireball.getShooter();
             Location loc = fireball.getLocation();
             e.setCancelled(true);
-            loc.getWorld().createExplosion(loc, (float)explosionStrength, WizardConfig.getInstance().meteorSetFire, WizardConfig.getInstance().meteorDamageBlocks, shooter);
+            loc.getWorld().createExplosion(loc, (float) explosionStrength, WizardConfig.getInstance().meteorSetFire, WizardConfig.getInstance().meteorDamageBlocks, shooter);
         }
 
-    }
+    }*/
 
 
-    private void smallFireballLogic(ProjectileHitEvent e, int entityId)
-    {
+/*    private void smallFireballLogic(ProjectileHitEvent e, int entityId) {
         //Getting projectile instance in first if would probably improve performance slightly
-        if (e.getHitEntity() != null && e.getHitEntity() instanceof LivingEntity)
-        {
+        if (e.getHitEntity() != null && e.getHitEntity() instanceof LivingEntity) {
             LivingEntity livingEntity = (LivingEntity) e.getHitEntity();
-            if (e.getEntity().getShooter() instanceof Player)
-            {
-                Player shooter = (Player)e.getEntity().getShooter();
+            if (e.getEntity().getShooter() instanceof Player) {
+                Player shooter = (Player) e.getEntity().getShooter();
                 livingEntity.damage(plugin.fireBalls.get(entityId).getDamage(), shooter);
-                if (livingEntity.getFireTicks() == -1)
-                {
+                if (livingEntity.getFireTicks() == -1) {
                     shooter.sendMessage("Max Fire Ticks: " + livingEntity.getMaxFireTicks() + ", Fire Ticks: " + WizardConfig.getInstance().smallFireballFireTicks);
                     livingEntity.setFireTicks(WizardConfig.getInstance().smallFireballFireTicks);
                 }
 
             }
         }
-    }
+    }*/
 
-    private void flameSlashLogic(ProjectileHitEvent e, int entityId)
-    {
-        if (e.getEntity().getShooter() instanceof Player) {
+    private void projectileBounceLogic(ProjectileHitEvent e, ProjectileData data) {
+        if (e.getHitBlock() != null) {
+            plugin.fireBalls.remove(data.getProjectile().getUniqueId());
+            return;
+        }
+
+        if (data.shouldBounce()) {
+            if (e.getHitEntity() != null && e.getHitEntity() instanceof LivingEntity) {
+                LivingEntity livingEntity = (LivingEntity) e.getHitEntity();
+
+                livingEntity.damage(data.getDamage(), data.getShooter());
+                LivingEntity newTarget = Utils.getRandomLivingEntity(livingEntity, 20.0, 4.0, data.getShooter(), true);
+                if (newTarget != null) {
+                    Vector vector = newTarget.getLocation().toVector().subtract(livingEntity.getLocation().toVector());
+                    Projectile newProjectile = livingEntity.launchProjectile(data.getProjectile().getClass(), vector);
+                    newProjectile.setShooter(data.getProjectile().getShooter());
+
+                    if (!plugin.fireBalls.containsKey(newProjectile.getUniqueId())) {
+                        ProjectileData projectileData = new ProjectileData(newProjectile, data.getDamage(), data.summonsLightning(), data.shouldTeleport(), 10000);
+                        projectileData.setShouldBounce(true);
+                        plugin.fireBalls.put(newProjectile.getUniqueId(), projectileData);
+                    }
+                }
+            }
+        }
+
+        /*if (e.getEntity().getShooter() instanceof Player) {
             Player shooter = (Player) e.getEntity().getShooter();
 
             //Remove fireball from list and do nothing, since we didn't hit an entity to 'bounce off of'.
@@ -154,21 +249,19 @@ public class ProjectileListener implements Listener
                 fireball.setCustomNameVisible(false);
 
                 //Pick an entity in range...
-                LivingEntity newTarget = Utils.getRandomLivingEntity(livingEntity, 20.0 , 4.0, shooter, RavagerConfig.getInstance().ignoreVillagers);
+                LivingEntity newTarget = Utils.getRandomLivingEntity(livingEntity, 20.0, 4.0, shooter, RavagerConfig.getInstance().ignoreVillagers);
                 if (newTarget != null) {
                     //Shoot fireball towards said entity
                     Vector vector = newTarget.getLocation().toVector().subtract(livingEntity.getLocation().toVector());
                     fireball.setDirection(vector);
                     if (!plugin.fireBalls.containsKey(fireball.getEntityId()))
-                        plugin.fireBalls.put(fireball.getEntityId(), new fireballData(6.0, 10));
-                }
-                else
-                {
-                     fireball.remove();
+                        plugin.fireBalls.put(fireball.getEntityId(), new FireballData(6.0, 10));
+                } else {
+                    fireball.remove();
                 }
 
             }
             plugin.fireBalls.remove(entityId);
-        }
+        }*/
     }
 }

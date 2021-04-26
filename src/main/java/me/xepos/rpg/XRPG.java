@@ -7,7 +7,7 @@ import me.xepos.rpg.commands.XRPGDebug;
 import me.xepos.rpg.commands.XRPGReload;
 import me.xepos.rpg.database.DatabaseManagerFactory;
 import me.xepos.rpg.database.IDatabaseManager;
-import me.xepos.rpg.datatypes.fireballData;
+import me.xepos.rpg.datatypes.BaseProjectileData;
 import me.xepos.rpg.dependencies.parties.IPartyManager;
 import me.xepos.rpg.dependencies.parties.PartyManagerFactory;
 import me.xepos.rpg.dependencies.protection.ProtectionSet;
@@ -40,7 +40,7 @@ public final class XRPG extends JavaPlugin {
     private ProtectionSet protectionSet;
 
     public static HashMap<UUID, XRPGPlayer> RPGPlayers = new HashMap<>();
-    public ConcurrentHashMap<Integer, fireballData> fireBalls = new ConcurrentHashMap<>();
+    public ConcurrentHashMap<UUID, BaseProjectileData> fireBalls = new ConcurrentHashMap<>();
     //Should this be concurrent
 
     @Override // Plugin startup logic

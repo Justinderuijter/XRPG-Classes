@@ -46,12 +46,17 @@ public class GoldenAppleAoE extends XRPGSkill {
                 return;
             }
         }
-        List<PotionEffect> potionEffects = new ArrayList<>();
 
-        potionEffects.add(new PotionEffect(PotionEffectType.ABSORPTION, 2400, 0));
-        potionEffects.add(new PotionEffect(PotionEffectType.REGENERATION, 100, 1));
+        final double xRange = getSkillVariables().getDouble("x-range", 10.0);
+        final double yRange = getSkillVariables().getDouble("y-range", 5.0);
+        final double zRange = getSkillVariables().getDouble("z-range", xRange);
 
-        Utils.addPotionEffects(getNearbyAlliedPlayers(e.getPlayer(), 10, 5, 10), potionEffects);
+        List<PotionEffect> potionEffects = new ArrayList<PotionEffect>() {{
+            add(new PotionEffect(PotionEffectType.ABSORPTION, 2400, 0));
+            add(new PotionEffect(PotionEffectType.REGENERATION, 100, 1));
+        }};
+
+        Utils.addPotionEffects(getNearbyAlliedPlayers(e.getPlayer(), xRange, yRange, zRange), potionEffects);
 
         setRemainingCooldown(getCooldown());
 

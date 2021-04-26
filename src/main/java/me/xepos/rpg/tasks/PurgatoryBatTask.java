@@ -28,6 +28,7 @@ public class PurgatoryBatTask extends BukkitRunnable {
     private final Player player;
     private final double damage;
     private final boolean isBatDmgSource;
+    private final double dtAmount;
     private final IPartyManager partyManager;
     private final ProtectionSet protectionSet;
     private final XRPG plugin;
@@ -35,11 +36,12 @@ public class PurgatoryBatTask extends BukkitRunnable {
 
     private final DamageTakenSource sourceAbility = DamageTakenSource.PURGATORY_BAT;
 
-    public PurgatoryBatTask(Bat bat, Player player, double damage, byte maxCount, boolean isBatDmgSource, XRPG plugin, long debuffDuration) {
+    public PurgatoryBatTask(Bat bat, Player player, double damage, byte maxCount, boolean isBatDmgSource, double dtAmount, XRPG plugin, long debuffDuration) {
         this.bat = bat;
         this.player = player;
         this.damage = damage;
         this.isBatDmgSource = isBatDmgSource;
+        this.dtAmount = dtAmount;
         this.maxCount = maxCount;
         this.partyManager = plugin.getPartyManager();
         this.protectionSet = plugin.getProtectionSet();
@@ -65,11 +67,10 @@ public class PurgatoryBatTask extends BukkitRunnable {
 
                     if (count == 0) {
                         XRPGPlayer xrgPlayer = Utils.GetRPG((Player) entity);
-                        double DTAmount = NecromancerConfig.getInstance().purgatoryBatDTAmount;
-                        XRPGDamageTakenAddedEvent event = new XRPGDamageTakenAddedEvent(player, target, sourceAbility, DTAmount);
+                        XRPGDamageTakenAddedEvent event = new XRPGDamageTakenAddedEvent(player, target, sourceAbility, dtAmount);
                         Bukkit.getServer().getPluginManager().callEvent(event);
                         if (!event.isCancelled()) {
-                            Utils.addDTModifier(target, sourceAbility, DTAmount);
+                            Utils.addDTModifier(target, sourceAbility, dtAmount);
 
                             new BukkitRunnable() {
                                 @Override

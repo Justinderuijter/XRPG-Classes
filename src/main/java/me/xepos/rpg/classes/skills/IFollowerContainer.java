@@ -11,7 +11,4 @@ public interface IFollowerContainer {
 
     int getFollowerCount();
 
-    byte getMaxFollowers();
-
-    void setMaxFollowers(byte maxFollowers);
 }

@@ -5,13 +5,14 @@ import me.xepos.rpg.datatypes.IClearable;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ClearHashMapTask extends BukkitRunnable {
     private final XRPG plugin;
-    private final ConcurrentHashMap<Integer, ? extends IClearable> clearableHashMap;
+    private final ConcurrentHashMap<UUID, ? extends IClearable> clearableHashMap;
 
-    public ClearHashMapTask(XRPG plugin, ConcurrentHashMap<Integer, ? extends IClearable> clearableHashMap) {
+    public ClearHashMapTask(XRPG plugin, ConcurrentHashMap<UUID, ? extends IClearable> clearableHashMap) {
         this.plugin = plugin;
         this.clearableHashMap = clearableHashMap;
     }
@@ -19,7 +20,7 @@ public class ClearHashMapTask extends BukkitRunnable {
     @Override
     public void run() {
         int count = 0;
-        for (int id : clearableHashMap.keySet()) {
+        for (UUID id : clearableHashMap.keySet()) {
             if (clearableHashMap.get(id).shouldRemove()) {
                 count++;
                 clearableHashMap.remove(id);

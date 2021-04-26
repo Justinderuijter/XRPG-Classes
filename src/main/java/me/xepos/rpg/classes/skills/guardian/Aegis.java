@@ -20,11 +20,6 @@ import java.util.List;
 
 public class Aegis extends XRPGSkill {
 
-    private byte duration = 4;
-    private double xRange = 8;
-    private double yRange = 5;
-    private double zRange = 8;
-
     public Aegis(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 
@@ -52,6 +47,11 @@ public class Aegis extends XRPGSkill {
                 return;
             }
 
+            final double duration = getSkillVariables().getDouble("duration", 4.0);
+            final double xRange = getSkillVariables().getDouble("x-range", 8);
+            final double yRange = getSkillVariables().getDouble("y-range", 5);
+            final double zRange = getSkillVariables().getDouble("z-range", xRange);
+
             List<Player> nearbyPlayers = new ArrayList(player.getWorld().getNearbyEntities(player.getLocation(), xRange, yRange, zRange, p -> p instanceof Player && getPartyManager().isPlayerAllied(player, (Player) p)));
             for (Player target : nearbyPlayers) {
                 //Applying the DTModifier if event is cancelled
@@ -61,7 +61,7 @@ public class Aegis extends XRPGSkill {
                     Utils.addDTModifier(target, DamageTakenSource.AEGIS, getDamageMultiplier());
                     target.sendMessage(player.getDisplayName() + " Granted you " + getSkillName() + "!");
 
-                    new RemoveDTModifierTask(player, target, DamageTakenSource.AEGIS).runTaskLater(getPlugin(), duration);
+                    new RemoveDTModifierTask(player, target, DamageTakenSource.AEGIS).runTaskLater(getPlugin(), (long) duration * 20);
                 }
             }
             if (nearbyPlayers.size() > 0) {

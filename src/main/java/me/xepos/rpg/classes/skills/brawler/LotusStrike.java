@@ -26,8 +26,12 @@ public class LotusStrike extends XRPGSkill {
         xrpgPlayer.getEventHandler("DAMAGE_DEALT").addSkill(this);
     }
 
-    private int potionDuration = 6;
+    private final int potionDuration = getSkillVariables().getInt("duration", 6);
+    private final double enchantToCritRatio = getSkillVariables().getDouble("enchant-to-crit-ratio", 3.125);
+    private final int enchantToFireTicks = getSkillVariables().getInt("enchant-to-fire-ticks", 15);
+    private final double enchantToLotusHaste = getSkillVariables().getDouble("enchant-to-lotus-haste-ratio", 2.0);
     private int hitCount = 0;
+
     private final List<PotionEffect> dmgEffects = new ArrayList<PotionEffect>() {{
         add(new PotionEffect(PotionEffectType.SATURATION, potionDuration * 20, 0, false, false, true));
         add(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, potionDuration * 20, 0, false, false, true));
@@ -107,7 +111,7 @@ public class LotusStrike extends XRPGSkill {
     @SuppressWarnings("all")
     private boolean isCrit(int enchantLevel) {
         Random rand = new Random();
-        if (rand.nextInt(100) + 1 <= enchantLevel * 3.125) //0-100
+        if (rand.nextInt(100) + 1 <= enchantLevel * enchantToCritRatio) //0-100
         {
             return true;
         }
@@ -118,14 +122,14 @@ public class LotusStrike extends XRPGSkill {
         if (enchantLevel > 0 && e.getEntity() instanceof LivingEntity) {
             LivingEntity entity = (LivingEntity) e.getEntity();
             if (entity.getFireTicks() <= -1) {
-                entity.setFireTicks(enchantLevel * 15);
+                entity.setFireTicks(enchantLevel * enchantToFireTicks);
             }
         }
     }
 
     private void doLotusHaste(int enchantLevel) {
         Random rand = new Random();
-        if (rand.nextInt(100) + 1 <= enchantLevel * 2.0) {
+        if (rand.nextInt(100) + 1 <= enchantLevel * enchantToLotusHaste) {
             incrementHitCount();
         }
     }

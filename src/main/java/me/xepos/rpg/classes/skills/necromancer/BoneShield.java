@@ -38,11 +38,12 @@ public class BoneShield extends XRPGSkill {
         if (isSkillReady()) {
             if (player.getHealth() <= maxHealth / 2) {
 
+                final double heartsPerFollower = getSkillVariables().getDouble("hearts-per-follower", 2.0);
                 double absorptionHearts;
                 if (armyOfTheUndead == null)
-                    absorptionHearts = getDamage();
+                    absorptionHearts = heartsPerFollower;
                 else
-                    absorptionHearts = this.armyOfTheUndead.getFollowerCount() * getDamage();
+                    absorptionHearts = this.armyOfTheUndead.getFollowerCount() * heartsPerFollower;
 
                 player.setAbsorptionAmount(player.getAbsorptionAmount() + absorptionHearts);
                 player.sendMessage(ChatColor.DARK_GREEN + getSkillName() + " will absorb " + absorptionHearts + " damage!");
@@ -54,7 +55,7 @@ public class BoneShield extends XRPGSkill {
 
     @Override
     public void initialize() {
-        for (XRPGSkill skill : getXRPGPlayer().getDamageDealtEventHandler().getSkills()) {
+        for (XRPGSkill skill : getXRPGPlayer().getEventHandler("DAMAGE DEALT").getSkills()) {
             if (skill instanceof ArmyOfTheUndead) {
                 this.armyOfTheUndead = (ArmyOfTheUndead) skill;
                 return;

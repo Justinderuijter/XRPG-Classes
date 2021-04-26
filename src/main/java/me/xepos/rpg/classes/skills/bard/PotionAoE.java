@@ -32,14 +32,17 @@ public class PotionAoE extends XRPGSkill {
             return;
         }
 
-        List<PotionEffect> potionEffects = new ArrayList<>();
+        final double xRange = getSkillVariables().getDouble("x-range", 10.0);
+        final double yRange = getSkillVariables().getDouble("y-range", 5.0);
+        final double zRange = getSkillVariables().getDouble("z-range", xRange);
 
-        potionEffects.add(new PotionEffect(PotionEffectType.HEAL, 1, 1));
+        List<PotionEffect> potionEffects = new ArrayList<PotionEffect>() {{
+            add(new PotionEffect(PotionEffectType.HEAL, 1, 1));
+        }};
 
-        Utils.addPotionEffects(getNearbyAlliedPlayers(player, 10, 5, 10), potionEffects);
+        Utils.addPotionEffects(getNearbyAlliedPlayers(player, xRange, yRange, zRange), potionEffects);
 
         setRemainingCooldown(getCooldown());
-
     }
 
     @Override

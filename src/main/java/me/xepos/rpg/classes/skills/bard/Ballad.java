@@ -14,8 +14,6 @@ import java.util.List;
 
 public class Ballad extends XRPGSkill {
 
-    private byte maxProcs = 10;
-    private int procInterval = 1;
 
     public Ballad(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
@@ -34,9 +32,9 @@ public class Ballad extends XRPGSkill {
             return;
         }
 
-        List<Player> nearbyPlayers = getNearbyAlliedPlayers(caster, 10, 5, 10);
+        List<Player> nearbyPlayers = getNearbyAlliedPlayers(caster, getSkillVariables().getInt("x-range", 10), getSkillVariables().getInt("y-range", 5), getSkillVariables().getInt("z-range", 10));
         for (Player nearbyPlayer : nearbyPlayers) {
-            new HealOverTimeTask(nearbyPlayer, getDamage(), getMaxProcs()).runTaskTimer(getPlugin(), 1L, procInterval * 20L);
+            new HealOverTimeTask(nearbyPlayer, getDamage(), getSkillVariables().getInt("max-procs", 10)).runTaskTimer(getPlugin(), 1L, (long) getSkillVariables().getDouble("interval", 1.0) * 20L);
         }
 
         setRemainingCooldown(getCooldown());
