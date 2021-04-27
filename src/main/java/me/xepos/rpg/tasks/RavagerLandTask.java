@@ -1,6 +1,5 @@
 package me.xepos.rpg.tasks;
 
-import me.xepos.rpg.configuration.RavagerConfig;
 import me.xepos.rpg.dependencies.parties.IPartyManager;
 import me.xepos.rpg.dependencies.protection.ProtectionSet;
 import org.bukkit.entity.Entity;
@@ -49,6 +48,7 @@ public class RavagerLandTask extends BukkitRunnable {
 
     private void damageAndSlowTarget(LivingEntity livingEntity) {
         livingEntity.damage(10, player);
-        livingEntity.addPotionEffect(RavagerConfig.getInstance().slowEffect);
+        //TODO: Fix this
+        //livingEntity.addPotionEffect(RavagerConfig.getInstance().slowEffect);
     }
 }

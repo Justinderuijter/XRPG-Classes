@@ -2,49 +2,73 @@ package me.xepos.rpg.listeners;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.classes.XRPGClass;
 import me.xepos.rpg.events.XRPGClassChangedEvent;
-import me.xepos.rpg.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 
-import java.lang.reflect.Constructor;
+import java.util.Set;
 
 public class InventoryListener implements Listener {
 
     private final XRPG plugin;
 
-    public InventoryListener(XRPG plugin)
-    {
+    public InventoryListener(XRPG plugin) {
         this.plugin = plugin;
     }
 
     @EventHandler
     public void onItemClick(InventoryClickEvent e)
     {
-        if(e.getView().getTitle().equalsIgnoreCase("Pick A Class"))
-        {
+        if(e.getView().getTitle().equalsIgnoreCase("Pick A Class")) {
             if (e.getCurrentItem() == null)
                 return;
 
-            String className = ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName());
-            Player player = (Player) e.getWhoClicked();
-            XRPGPlayer xrpgPlayer = Utils.GetRPG(player);
+            Set<NamespacedKey> keys = e.getCurrentItem().getItemMeta().getPersistentDataContainer().getKeys();
+            String classId = null;
+            String classDisplayName = e.getCurrentItem().getItemMeta().getDisplayName();
+            for (NamespacedKey key : keys) {
+                if (key.getNamespace().equals("classId")) {
+                    classId = key.getKey();
+                    break;
+                }
+            }
+            if (classId == null) return;
 
-            if (xrpgPlayer.getFreeChangeTickets() <= 0)
-            {
+            Player player = (Player) e.getWhoClicked();
+            XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(player);
+
+            if (xrpgPlayer.getFreeChangeTickets() <= 0) {
                 player.sendMessage(ChatColor.RED + "You don't have enough tickets!");
                 e.setCancelled(true);
                 return;
             }
 
+            if (xrpgPlayer.getClassId().equals(classId)) {
+                player.sendMessage(ChatColor.RED + "Can't change to this class, it's already your current class!");
+                e.setCancelled(true);
+                return;
+            }
 
-            XRPGClass oldClass = xrpgPlayer.getPlayerClass();
+            XRPGClassChangedEvent event = new XRPGClassChangedEvent(player, xrpgPlayer.getClassId(), xrpgPlayer.getClassDisplayName(), classId, classDisplayName);
+            Bukkit.getServer().getPluginManager().callEvent(event);
+
+            if (!event.isCancelled()) {
+                Bukkit.broadcastMessage(xrpgPlayer.getPlayer() + "changed their class from " + xrpgPlayer.getClassDisplayName() + " to " + classDisplayName + "!");
+                xrpgPlayer.changeClass(classId, classDisplayName);
+
+            }
+
+
+
+
+
+/*            XRPGClass oldClass = xrpgPlayer.getPlayerClass();
             try {
                 Class<?> clazz = Class.forName("me.xepos.rpg.classes." + className);
                 Constructor<?> constructor = clazz.getConstructor(XRPG.class);
@@ -68,7 +92,7 @@ public class InventoryListener implements Listener {
             {
                 ex.printStackTrace();
             }
-            e.setCancelled(true);
+            e.setCancelled(true);*/
         }
     }
 

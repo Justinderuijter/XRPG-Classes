@@ -1,6 +1,6 @@
 package me.xepos.rpg.entities.type;
 
-import me.xepos.rpg.entities.NecromancerFollower;
+import me.xepos.rpg.entities.Follower;
 import me.xepos.rpg.entities.pathfinders.PathfinderGoalBowShoot;
 import net.minecraft.server.v1_16_R3.*;
 import org.bukkit.Location;
@@ -11,7 +11,7 @@ import org.bukkit.event.entity.EntityTargetEvent;
 
 
 @SuppressWarnings("all")
-public class FollowerSkeleton extends NecromancerFollower implements IRangedEntity{
+public class FollowerSkeleton extends Follower implements IRangedEntity {
     private final PathfinderGoalBowShoot<FollowerSkeleton> b = new PathfinderGoalBowShoot<FollowerSkeleton>(this, 1.0D, 20, 15.0F);
     private final PathfinderGoalMeleeAttack c = new PathfinderGoalMeleeAttack(this, 1.2D, false);
 

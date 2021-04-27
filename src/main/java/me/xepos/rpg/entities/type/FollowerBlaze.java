@@ -1,12 +1,12 @@
 package me.xepos.rpg.entities.type;
 
-import me.xepos.rpg.entities.NecromancerFollower;
+import me.xepos.rpg.entities.Follower;
 import me.xepos.rpg.entities.pathfinders.PathfinderGoalBlazeFireball;
 import net.minecraft.server.v1_16_R3.*;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 
-public class FollowerBlaze extends NecromancerFollower {
+public class FollowerBlaze extends Follower {
     private static final DataWatcherObject<Byte> d;
 
     static {

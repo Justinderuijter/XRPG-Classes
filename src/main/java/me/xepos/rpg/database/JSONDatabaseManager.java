@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.configuration.ClassLoader;
 import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -18,8 +19,10 @@ public class JSONDatabaseManager implements IDatabaseManager {
 
     private static File playerDataFolder;
     public final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    private final ClassLoader classLoader;
 
-    protected JSONDatabaseManager() {
+    protected JSONDatabaseManager(ClassLoader classLoader) {
+        this.classLoader = classLoader;
         File baseFile = plugin.getDataFolder();
         if (!baseFile.exists()) {
             if (baseFile.mkdir()) {
@@ -42,9 +45,9 @@ public class JSONDatabaseManager implements IDatabaseManager {
                 //Extract the class from JsonObject
                 String playerClass = jsonData.get("classId").toString();
 
-                XRPGPlayer xrpgPlayer = XRPG.setupRPGPlayer(playerId, playerClass);
-                if (xrpgPlayer != null)
-                    XRPG.RPGPlayers.put(playerId, xrpgPlayer);
+                XRPGPlayer xrpgPlayer = new XRPGPlayer(playerId, playerClass, plugin.getFileConfiguration(playerClass).getString("display.name"));
+                classLoader.load(playerClass, xrpgPlayer);
+                plugin.addRPGPlayer(playerId, xrpgPlayer);
 
             } catch (IOException ex) {
                 System.out.println("Couldn't load player data for " + playerId.toString() + ".json");
@@ -53,8 +56,8 @@ public class JSONDatabaseManager implements IDatabaseManager {
             }
 
         } else {
-            XRPGPlayer rpgPlayer = new XRPGPlayer(playerId, plugin);
-            XRPG.RPGPlayers.put(playerId, rpgPlayer);
+            XRPGPlayer rpgPlayer = new XRPGPlayer(playerId, plugin.getDefaultClassId(), plugin.getFileConfiguration(plugin.getDefaultClassId()).getString("display.name"));
+            plugin.addRPGPlayer(playerId, rpgPlayer);
         }
     }
 

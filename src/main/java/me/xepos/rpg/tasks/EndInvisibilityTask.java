@@ -1,7 +1,6 @@
 package me.xepos.rpg.tasks;
 
 import com.mojang.datafixers.util.Pair;
-import me.xepos.rpg.classes.Assassin;
 import net.minecraft.server.v1_16_R3.EnumItemSlot;
 import net.minecraft.server.v1_16_R3.ItemStack;
 import net.minecraft.server.v1_16_R3.PacketPlayOutEntityEquipment;
@@ -16,15 +15,12 @@ import java.util.List;
 public class EndInvisibilityTask extends BukkitRunnable {
 
     Player player;
-    Assassin RPGAssassin;
     List<Player> otherPlayers;
 
-    public EndInvisibilityTask(Player player, List<Player> otherPlayers, Assassin RPGAssassin)
-    {
+    public EndInvisibilityTask(Player player, List<Player> otherPlayers) {
         //this.plugin = plugin;
         this.player = player;
         this.otherPlayers = otherPlayers;
-        this.RPGAssassin = RPGAssassin;
     }
 
 

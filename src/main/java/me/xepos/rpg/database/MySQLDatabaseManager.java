@@ -2,6 +2,7 @@ package me.xepos.rpg.database;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.configuration.ClassLoader;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -9,18 +10,18 @@ import java.sql.*;
 import java.util.UUID;
 
 
-public class MySQLDatabaseManager implements IDatabaseManager{
+public class MySQLDatabaseManager implements IDatabaseManager {
 
-    private final static FileConfiguration config = XRPG.getPlugin(XRPG.class).getConfig();
+    private final static XRPG plugin = XRPG.getPlugin(XRPG.class);
+    private final static FileConfiguration config = plugin.getConfig();
     private Connection connection;
+    private final ClassLoader classLoader;
 
-    public boolean isConnected()
-    {
+    public boolean isConnected() {
         return (connection != null);
     }
 
-    public void connect() throws ClassNotFoundException, SQLException
-    {
+    public void connect() throws ClassNotFoundException, SQLException {
         if (!isConnected()) {
             final String host = config.getString("MySQL.host", "localhost");
             final String port = config.getString("MySQL.port", "3306");
@@ -51,21 +52,21 @@ public class MySQLDatabaseManager implements IDatabaseManager{
         }
     }
 
-    public void disconnect()
-    {
-        if(isConnected()){
-            try{
+    public void disconnect() {
+        if (isConnected()) {
+            try {
                 connection.close();
-            }catch (SQLException e){
+            } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    protected MySQLDatabaseManager(){
-        try{
+    protected MySQLDatabaseManager(ClassLoader classLoader) {
+        this.classLoader = classLoader;
+        try {
             connect();
-        }catch(ClassNotFoundException | SQLException e){
+        } catch (ClassNotFoundException | SQLException e) {
             Bukkit.getLogger().info("Database connection failed.");
             Bukkit.getServer().getPluginManager().disablePlugin(XRPG.getPlugin(XRPG.class));
         }
@@ -76,7 +77,8 @@ public class MySQLDatabaseManager implements IDatabaseManager{
         if (!uuidExists(playerId)) {
             createPlayer(playerId);
         }
-        XRPG.RPGPlayers.put(playerId, getPlayerData(playerId));
+        XRPGPlayer xrpgPlayer = getPlayerData(playerId);
+        plugin.addRPGPlayer(playerId, xrpgPlayer);
     }
 
     @Override
@@ -100,8 +102,7 @@ public class MySQLDatabaseManager implements IDatabaseManager{
             if (!uuidExists(playerId)) {
                 PreparedStatement ps = connection.prepareStatement("INSERT IGNORE INTO xrpg_classes (uuid,classId,tickets) VALUES (?,?,2)");
                 ps.setString(1, playerId.toString());
-                //Might add option to customize default class
-                ps.setString(2, "Assassin");
+                ps.setString(2, plugin.getDefaultClassId());
 
                 ps.executeUpdate();
             }
@@ -117,14 +118,13 @@ public class MySQLDatabaseManager implements IDatabaseManager{
                 ps.setString(1, playerId.toString());
 
                 ResultSet results = ps.executeQuery();
-                if (results.next()){
-                    XRPGPlayer xrpgPlayer = XRPG.setupRPGPlayer(playerId, results.getString("classId"));
-                    if (xrpgPlayer != null)
-                    {
-                        xrpgPlayer.setFreeChangeTickets(results.getInt("tickets"));
-                        return xrpgPlayer;
-                    }
-
+                if (results.next()) {
+                    String classId = getClassId(playerId);
+                    plugin.getClassData().keySet().forEach(x -> Bukkit.getLogger().severe(x));
+                    XRPGPlayer xrpgPlayer = new XRPGPlayer(playerId, classId, plugin.getFileConfiguration(classId).getString("display.name"));
+                    classLoader.load(classId, xrpgPlayer);
+                    xrpgPlayer.setFreeChangeTickets(results.getInt("tickets"));
+                    return xrpgPlayer;
                 }
             }
         }catch (SQLException e){
@@ -160,7 +160,7 @@ public class MySQLDatabaseManager implements IDatabaseManager{
         }catch (SQLException e){
             e.printStackTrace();
         }
-        return "Assassin";
+        return plugin.getDefaultClassId();
     }
 
     private void setClassId(UUID playerId, String classId){

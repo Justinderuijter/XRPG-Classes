@@ -1,12 +1,12 @@
 package me.xepos.rpg.entities.type;
 
-import me.xepos.rpg.entities.NecromancerFollower;
+import me.xepos.rpg.entities.Follower;
 import net.minecraft.server.v1_16_R3.*;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 
 @SuppressWarnings("unused")
-public class FollowerIronGolem extends NecromancerFollower {
+public class FollowerIronGolem extends Follower {
     private int c;
     private int d;
 

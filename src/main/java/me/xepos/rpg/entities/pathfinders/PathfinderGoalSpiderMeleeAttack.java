@@ -1,11 +1,11 @@
 package me.xepos.rpg.entities.pathfinders;
 
-import me.xepos.rpg.entities.NecromancerFollower;
+import me.xepos.rpg.entities.Follower;
 import net.minecraft.server.v1_16_R3.EntityLiving;
 import net.minecraft.server.v1_16_R3.PathfinderGoalMeleeAttack;
 
 public class PathfinderGoalSpiderMeleeAttack extends PathfinderGoalMeleeAttack {
-    public PathfinderGoalSpiderMeleeAttack(NecromancerFollower spiderFollower) {
+    public PathfinderGoalSpiderMeleeAttack(Follower spiderFollower) {
         super(spiderFollower, 1.0D, true);
     }
 

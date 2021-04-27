@@ -1,11 +1,11 @@
 package me.xepos.rpg.entities.pathfinders;
 
-import me.xepos.rpg.entities.NecromancerFollower;
+import me.xepos.rpg.entities.Follower;
 import net.minecraft.server.v1_16_R3.*;
 
 import java.util.EnumSet;
 
-public class PathfinderGoalBowShoot<T extends NecromancerFollower> extends PathfinderGoal {
+public class PathfinderGoalBowShoot<T extends Follower> extends PathfinderGoal {
     private final T a;
     private final double b;
     private int c;

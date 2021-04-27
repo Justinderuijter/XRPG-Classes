@@ -2,10 +2,9 @@ package me.xepos.rpg.tasks;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.configuration.NecromancerConfig;
 import me.xepos.rpg.dependencies.parties.IPartyManager;
 import me.xepos.rpg.dependencies.protection.ProtectionSet;
-import me.xepos.rpg.entities.NecromancerFollower;
+import me.xepos.rpg.entities.Follower;
 import me.xepos.rpg.enums.DamageTakenSource;
 import me.xepos.rpg.events.XRPGDamageTakenAddedEvent;
 import me.xepos.rpg.events.XRPGDamageTakenRemovedEvent;
@@ -29,6 +28,7 @@ public class PurgatoryBatTask extends BukkitRunnable {
     private final Player player;
     private final double damage;
     private final boolean isBatDmgSource;
+    private final double dtAmount;
     private final IPartyManager partyManager;
     private final ProtectionSet protectionSet;
     private final XRPG plugin;
@@ -36,11 +36,12 @@ public class PurgatoryBatTask extends BukkitRunnable {
 
     private final DamageTakenSource sourceAbility = DamageTakenSource.PURGATORY_BAT;
 
-    public PurgatoryBatTask(Bat bat, Player player, double damage, byte maxCount, boolean isBatDmgSource, XRPG plugin, long debuffDuration) {
+    public PurgatoryBatTask(Bat bat, Player player, double damage, byte maxCount, boolean isBatDmgSource, double dtAmount, XRPG plugin, long debuffDuration) {
         this.bat = bat;
         this.player = player;
         this.damage = damage;
         this.isBatDmgSource = isBatDmgSource;
+        this.dtAmount = dtAmount;
         this.maxCount = maxCount;
         this.partyManager = plugin.getPartyManager();
         this.protectionSet = plugin.getProtectionSet();
@@ -50,31 +51,26 @@ public class PurgatoryBatTask extends BukkitRunnable {
 
     @Override
     public void run() {
-        if (count >= maxCount)
-        {
+        if (count >= maxCount) {
             bat.remove();
             this.cancel();
             return;
         }
 
 
-        List<LivingEntity> livingEntities = new ArrayList(bat.getWorld().getNearbyEntities(bat.getLocation(), 2, 2, 2, p -> p instanceof LivingEntity && p != player && p != bat && !(((CraftLivingEntity) p).getHandle() instanceof NecromancerFollower)));
+        List<LivingEntity> livingEntities = new ArrayList(bat.getWorld().getNearbyEntities(bat.getLocation(), 2, 2, 2, p -> p instanceof LivingEntity && p != player && p != bat && !(((CraftLivingEntity) p).getHandle() instanceof Follower)));
         for (LivingEntity entity : livingEntities) {
             if (entity instanceof Player) {
                 Player target = (Player) entity;
                 if (protectionSet.isLocationValid(player.getLocation(), entity.getLocation()) && partyManager.isPlayerAllied(player, target)) {
-                    if (isBatDmgSource)
-                        target.damage(damage, bat);
-                    else
-                        target.damage(damage, player);
+                    target.damage(damage, player);
 
                     if (count == 0) {
-                        XRPGPlayer xrgPlayer = Utils.GetRPG((Player) entity);
-                        double DTAmount = NecromancerConfig.getInstance().purgatoryBatDTAmount;
-                        XRPGDamageTakenAddedEvent event = new XRPGDamageTakenAddedEvent(player, target, sourceAbility, DTAmount);
+                        XRPGPlayer xrpgTarget = plugin.getXRPGPlayer(target);
+                        XRPGDamageTakenAddedEvent event = new XRPGDamageTakenAddedEvent(player, target, sourceAbility, dtAmount);
                         Bukkit.getServer().getPluginManager().callEvent(event);
                         if (!event.isCancelled()) {
-                            Utils.addDTModifier(target, sourceAbility, DTAmount);
+                            Utils.addDTModifier(xrpgTarget, sourceAbility, dtAmount);
 
                             new BukkitRunnable() {
                                 @Override
@@ -87,10 +83,7 @@ public class PurgatoryBatTask extends BukkitRunnable {
                     }
                 }
             } else {
-                if (isBatDmgSource)
-                    entity.damage(damage, bat);
-                else
-                    entity.damage(damage, player);
+                entity.damage(damage, player);
 
             }
         }

@@ -1,6 +1,5 @@
 package me.xepos.rpg.commands;
 
-import me.xepos.rpg.configuration.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

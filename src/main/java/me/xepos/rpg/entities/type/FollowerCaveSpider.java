@@ -1,6 +1,6 @@
 package me.xepos.rpg.entities.type;
 
-import me.xepos.rpg.entities.NecromancerFollower;
+import me.xepos.rpg.entities.Follower;
 import me.xepos.rpg.entities.pathfinders.PathfinderGoalLeapAtTarget;
 import me.xepos.rpg.entities.pathfinders.PathfinderGoalSpiderMeleeAttack;
 import me.xepos.rpg.entities.type.interfaces.IFollowerSpider;
@@ -10,7 +10,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityPotionEffectEvent;
 
 @SuppressWarnings("unused")
-public class FollowerCaveSpider extends NecromancerFollower implements IFollowerSpider {
+public class FollowerCaveSpider extends Follower implements IFollowerSpider {
     private static final DataWatcherObject<Byte> b;
 
     static {

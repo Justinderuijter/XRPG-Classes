@@ -1,8 +1,8 @@
 package me.xepos.rpg.utils;
 
 import me.xepos.rpg.AttributeModifierManager;
-import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.datatypes.AttributeModifierData;
 import me.xepos.rpg.enums.DamageTakenSource;
 import me.xepos.rpg.enums.ModifierType;
 import org.apache.commons.lang.StringUtils;
@@ -18,8 +18,11 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
@@ -31,10 +34,6 @@ import java.util.List;
 import java.util.Random;
 
 public final class Utils {
-
-    public static XRPGPlayer GetRPG(Player player) {
-        return XRPG.RPGPlayers.get(player.getUniqueId());
-    }
 
     public static boolean isItemNameMatching(ItemStack itemStack, String itemName) {
         ItemMeta metaData = itemStack.getItemMeta();
@@ -134,20 +133,20 @@ public final class Utils {
      * @param originalEntity  The entity that was hit originally, well be used as the center of the area from which to fetch entities
      * @param xz              The range for x and z box, based on location (horizontal axes)
      * @param y               The range for y, based on location (vertical axis)
-     * @param excludedPlayer  Player that is excluded from the possible return values, usually the attacker/shooter
+     * @param excludedEntity  Player that is excluded from the possible return values, usually the attacker/shooter
      * @param ignoreVillagers If true, villagers will be excluded from possible return values
      * @return a random LivingEntity in specified range, null if no entities were found
      */
-    public static LivingEntity getRandomLivingEntity(Entity originalEntity, double xz, double y, Player excludedPlayer, boolean ignoreVillagers) {
+    public static LivingEntity getRandomLivingEntity(Entity originalEntity, double xz, double y, Entity excludedEntity, boolean ignoreVillagers) {
 
         Location location = originalEntity.getLocation();
-        List<Entity> entities = new ArrayList<>(location.getWorld().getNearbyEntities(location, xz, y, xz, p -> p instanceof LivingEntity && p != originalEntity && p != excludedPlayer));
+        List<Entity> entities = new ArrayList<>(location.getWorld().getNearbyEntities(location, xz, y, xz, p -> p instanceof LivingEntity && p != originalEntity && p != excludedEntity));
 
         Iterator<Entity> e = entities.iterator();
         while (e.hasNext()) {
             Entity entity = e.next();
 
-            if ((entity instanceof Villager ? !ignoreVillagers : !(entity instanceof Player) || (location.getWorld().getPVP() && entity != excludedPlayer))) {
+            if ((entity instanceof Villager ? !ignoreVillagers : !(entity instanceof Player) || (location.getWorld().getPVP() && entity != excludedEntity))) {
                 Vector vector = entity.getLocation().toVector().subtract(location.toVector());
                 RayTraceResult result = location.getWorld().rayTrace(location, vector, 11.0, FluidCollisionMode.NEVER, true, 0.9, p -> p instanceof LivingEntity && p != originalEntity);
                 if (result != null && result.getHitEntity() == null)
@@ -189,7 +188,7 @@ public final class Utils {
         return lastUsage <= System.currentTimeMillis();
     }
 
-    public static String getPassiveCooldownMessage(String skillName, int cooldown) {
+    public static String getPassiveCooldownMessage(String skillName, double cooldown) {
         return ChatColor.RED + skillName + " is now on cooldown for " + cooldown + " seconds";
     }
 
@@ -216,6 +215,23 @@ public final class Utils {
     }
 
     /**
+     * Add a modifier to the entity.
+     * If the entity attribute already contains this modifier, this method will not do anything.
+     *
+     * @param entity:       The entity the modifier will be applied to.
+     * @param modifierData: The data for the modifier, contains the modifier itself but also the attribute it will be applied to.
+     * @return true if the modifier was applied, if not this returns false.
+     */
+    @SuppressWarnings("all")
+    public static boolean addUniqueModifier(LivingEntity entity, AttributeModifierData modifierData) {
+        if (!entity.getAttribute(modifierData.getAttribute()).getModifiers().contains(modifierData.getAttributeModifier())) {
+            entity.getAttribute(modifierData.getAttribute()).addModifier(modifierData.getAttributeModifier());
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Removes a modifier from a entity if they have it.
      *
      * @param entity:    The entity the modifier will be removed from.
@@ -228,6 +244,23 @@ public final class Utils {
         if (entity.getAttribute(attribute).getModifiers().contains(modifier)) {
             //entity.getAttribute(attribute).getModifiers().removeIf(p -> p.getUniqueId().equals("8325e13e-f638-4c8f-835f-0ee7d58c6513"));
             entity.getAttribute(attribute).removeModifier(modifier);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Removes a modifier from a entity if they have it.
+     *
+     * @param entity:    The entity the modifier will be removed from.
+     * @param attribute: The attribute from which the modifier will be removed.
+     * @param modifier:  AttributeModifier containing the data for the modification.
+     * @return true if the modifier found and removed, if not this returns false.
+     */
+    @SuppressWarnings("all")
+    public static boolean removeUniqueModifier(LivingEntity entity, AttributeModifierData modifierData) {
+        if (entity.getAttribute(modifierData.getAttribute()).getModifiers().contains(modifierData.getAttributeModifier())) {
+            entity.getAttribute(modifierData.getAttribute()).removeModifier(modifierData.getAttributeModifier());
             return true;
         }
         return false;
@@ -282,25 +315,53 @@ public final class Utils {
 
     public static void onJoinEffect(Player player) {
         AttributeModifierManager manager = AttributeModifierManager.getInstance();
-        for (AttributeModifier mod : manager.getModifiers(ModifierType.POSITIVE).keySet()) {
-            removeUniqueModifier(player, manager.getModifiers(ModifierType.POSITIVE).get(mod), mod);
+        for (String identifier : manager.getModifiers(ModifierType.POSITIVE).keySet()) {
+            removeUniqueModifier(player, manager.get(ModifierType.POSITIVE, identifier));
         }
-        for (AttributeModifier mod : manager.getModifiers(ModifierType.NEGATIVE).keySet()) {
-            removeUniqueModifier(player, manager.getModifiers(ModifierType.NEGATIVE).get(mod), mod);
+        for (String identifier : manager.getModifiers(ModifierType.NEGATIVE).keySet()) {
+            removeUniqueModifier(player, manager.get(ModifierType.NEGATIVE, identifier));
         }
     }
 
-    public static void addDTModifier(Player player, DamageTakenSource source, double amount) {
-        XRPGPlayer xrpgPlayer = GetRPG(player);
+    public static void addDTModifier(XRPGPlayer xrpgPlayer, DamageTakenSource source, double amount) {
         if (xrpgPlayer.dmgTakenMultipliers.containsKey(source))
             xrpgPlayer.dmgTakenMultipliers.put(source, amount);
     }
 
     @SuppressWarnings("all")
-    public static void removeDTModifier(Player player, DamageTakenSource source) {
-        XRPGPlayer xrpgPlayer = GetRPG(player);
+    public static void removeDTModifier(XRPGPlayer xrpgPlayer, DamageTakenSource source) {
         if (xrpgPlayer.dmgTakenMultipliers.containsKey(source))
             xrpgPlayer.dmgTakenMultipliers.remove(source);
+    }
+
+    public static RayTraceResult rayTrace(LivingEntity caster, double range, FluidCollisionMode collisionMode) {
+        return caster.getLocation().getWorld().rayTrace(caster.getEyeLocation(), caster.getEyeLocation().getDirection(), range, collisionMode, true, 0.3, p -> p instanceof LivingEntity && p != caster);
+
+    }
+
+    public static void addPotionEffects(List<Player> players, List<PotionEffect> effects) {
+
+    }
+
+    public static int getLastAvailableInventorySlot(Inventory inventory) {
+        for (int i = inventory.getSize() - 1; i > 2; i--) {
+            if (inventory.getItem(i) == null || inventory.getItem(i).getType() == Material.AIR) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public static ItemStack buildItemStack(Material material, String displayName, List<String> lore) {
+        ItemStack item = new ItemStack(material);
+        ItemMeta meta = item.getItemMeta();
+        if (meta != null) {
+            meta.setDisplayName(displayName);
+            meta.setLore(lore);
+            meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+            item.setItemMeta(meta);
+        }
+        return item;
     }
 
 }

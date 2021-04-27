@@ -1,17 +1,16 @@
 package me.xepos.rpg.entities.pathfinders;
 
-import java.util.EnumSet;
-
-import me.xepos.rpg.entities.NecromancerFollower;
+import me.xepos.rpg.entities.Follower;
 import net.minecraft.server.v1_16_R3.*;
-import net.minecraft.server.v1_16_R3.PathfinderGoal.Type;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftLivingEntity;
 import org.bukkit.event.entity.EntityTeleportEvent;
 
+import java.util.EnumSet;
+
 public class PathfinderGoalFollowOwner extends PathfinderGoal {
-    private final NecromancerFollower a; //pet
+    private final Follower a; //pet
     private EntityLiving b; //owner probably
     private final IWorldReader c; //world
     private final double d;
@@ -22,7 +21,7 @@ public class PathfinderGoalFollowOwner extends PathfinderGoal {
     private float i;
     private final boolean j;
 
-    public PathfinderGoalFollowOwner(NecromancerFollower follower, double d0, float f, float f1, boolean flag) {
+    public PathfinderGoalFollowOwner(Follower follower, double d0, float f, float f1, boolean flag) {
         this.a = follower;
         this.c = follower.world;
         this.d = d0;

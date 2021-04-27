@@ -8,10 +8,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class HealOverTimeTask extends BukkitRunnable {
     private byte count = 0;
     private final LivingEntity entity;
-    private final byte maxProcs;
+    private final int maxProcs;
     private final double healPerProc;
 
-    public HealOverTimeTask(LivingEntity entity, double healPerProc ,byte maxProcs) {
+    public HealOverTimeTask(LivingEntity entity, double healPerProc, int maxProcs) {
         this.entity = entity;
         this.maxProcs = maxProcs;
         this.healPerProc = healPerProc;

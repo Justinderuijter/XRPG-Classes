@@ -1,6 +1,6 @@
 package me.xepos.rpg.entities.type;
 
-import me.xepos.rpg.entities.NecromancerFollower;
+import me.xepos.rpg.entities.Follower;
 import me.xepos.rpg.entities.type.interfaces.IFollowerSpider;
 import net.minecraft.server.v1_16_R3.*;
 import org.bukkit.Location;
@@ -8,7 +8,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityPotionEffectEvent;
 
 @SuppressWarnings("unused")
-public class FollowerSpider extends NecromancerFollower implements IFollowerSpider {
+public class FollowerSpider extends Follower implements IFollowerSpider {
     private static final DataWatcherObject<Byte> b;
 
     static {

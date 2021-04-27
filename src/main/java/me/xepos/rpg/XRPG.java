@@ -1,32 +1,31 @@
 package me.xepos.rpg;
 
-import me.xepos.rpg.classes.XRPGClass;
 import me.xepos.rpg.commands.ChangeClassCommand;
 import me.xepos.rpg.commands.SmokeBombCommand;
 import me.xepos.rpg.commands.XRPGDebug;
 import me.xepos.rpg.commands.XRPGReload;
-import me.xepos.rpg.configuration.*;
+import me.xepos.rpg.configuration.ClassLoader;
 import me.xepos.rpg.database.DatabaseManagerFactory;
 import me.xepos.rpg.database.IDatabaseManager;
-import me.xepos.rpg.datatypes.fireballData;
+import me.xepos.rpg.datatypes.BaseProjectileData;
 import me.xepos.rpg.dependencies.parties.IPartyManager;
 import me.xepos.rpg.dependencies.parties.PartyManagerFactory;
 import me.xepos.rpg.dependencies.protection.ProtectionSet;
 import me.xepos.rpg.dependencies.protection.ProtectionSetFactory;
-import me.xepos.rpg.listeners.*;
+import me.xepos.rpg.listeners.ClassListener;
+import me.xepos.rpg.listeners.EntityListener;
+import me.xepos.rpg.listeners.InventoryListener;
+import me.xepos.rpg.listeners.ProjectileListener;
 import me.xepos.rpg.tasks.ClearHashMapTask;
+import me.xepos.rpg.utils.Utils;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.lang.reflect.Constructor;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -34,28 +33,41 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class XRPG extends JavaPlugin {
 
     private Inventory inventoryGUI;
+    private ClassLoader classLoader;
 
-    private static IPartyManager partyManager;
-    private static IDatabaseManager databaseManager;
-
+    //Ability targetting managers
+    private IPartyManager partyManager;
     private ProtectionSet protectionSet;
 
-    public static HashMap<UUID, XRPGPlayer> RPGPlayers = new HashMap<>();
-    public ConcurrentHashMap<Integer, fireballData> fireBalls = new ConcurrentHashMap<>();
-    //Should this be concurrent
+    //Data manager
+    private IDatabaseManager databaseManager;
+
+    //Classes
+    private String defaultClassId = null;
+    private static HashMap<String, FileConfiguration> classData;
+
+    //Players
+    private static final HashMap<UUID, XRPGPlayer> RPGPlayers = new HashMap<>();
+
+    //Custom projectiles
+    public final ConcurrentHashMap<UUID, BaseProjectileData> fireBalls = new ConcurrentHashMap<>();
 
     @Override // Plugin startup logic
-    @SuppressWarnings("")
     public void onEnable() {
-        this.databaseManager = DatabaseManagerFactory.getDatabaseManager();
+        //Load classes
+        this.classLoader = new ClassLoader(this);
+        this.classData = this.classLoader.initializeClasses();
+
+        //Load database
+        this.databaseManager = DatabaseManagerFactory.getDatabaseManager(classLoader);
+
+        //Load ability targetting managers
         this.partyManager = PartyManagerFactory.getPartyManager();
         this.protectionSet = ProtectionSetFactory.getProtectionRules();
 
         //Prevents throwing error if databaseManager shuts down this plugin.
-        if(!this.isEnabled())
+        if (!this.isEnabled())
             return;
-        //Loading/Creating configs
-        loadConfigs();
 
         initClassChangeGUI();
         //registering listeners/commands
@@ -80,10 +92,17 @@ public final class XRPG extends JavaPlugin {
         this.databaseManager.disconnect();
     }
 
-    private void initClassChangeGUI()
-    {
+    private void initClassChangeGUI() {
         inventoryGUI = Bukkit.createInventory(null, 18, "Pick A Class");
-        inventoryGUI.setItem(17, buildItemStack(Material.BLAZE_ROD, "Wizard", new ArrayList<String>(){{
+
+        for (ItemStack item : classLoader.initializeMenu()) {
+            int slot = Utils.getLastAvailableInventorySlot(inventoryGUI);
+            if (slot != -1) {
+                inventoryGUI.setItem(slot, item);
+            }
+        }
+
+        /*inventoryGUI.setItem(17, buildItemStack(Material.BLAZE_ROD, "Wizard", new ArrayList<String>(){{
             add("A long range class with limited melee potential");
             add("Cast fire, wind and ice spells");
             add("Empower spells by maintaining fireball stacks");
@@ -137,32 +156,10 @@ public final class XRPG extends JavaPlugin {
             add("Execute low health targets");
             add("Grant yourself stealth and get backstrikes");
             add("medium damage, high mobilty, low crowd control");
-        }}));
+        }}));*/
     }
 
-    public static XRPGPlayer setupRPGPlayer(UUID playerId, String playerClass)
-    {
-        try
-        {
-            Class<?> clazz = Class.forName("me.xepos.rpg.classes." + playerClass.replace("\"", ""));
-            Constructor<?> constructor = clazz.getConstructor(XRPG.class);
-            Object classInstance = constructor.newInstance(XRPG.getPlugin(XRPG.class));
-            //Make the RPGPlayer
-            return new XRPGPlayer(playerId, (XRPGClass) classInstance);
-        }catch(ClassNotFoundException ex){
-            ex.printStackTrace();
-            System.out.println("Attempt to make an unknown class failed!");
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public static IDatabaseManager getDatabaseManager() {
-        return databaseManager;
-    }
-
-    public ItemStack buildItemStack(Material material, String displayName, List<String> lore)
+/*    public ItemStack buildItemStack(Material material, String displayName, List<String> lore)
     {
         ItemStack item = new ItemStack(material);
         ItemMeta meta = item.getItemMeta();
@@ -173,29 +170,17 @@ public final class XRPG extends JavaPlugin {
             item.setItemMeta(meta);
         }
         return item;
-    }
+    }*/
 
     private void initEventListeners() {
         getServer().getPluginManager().registerEvents(new ClassListener(this, databaseManager), this);
         getServer().getPluginManager().registerEvents(new InventoryListener(this), this);
         getServer().getPluginManager().registerEvents(new ProjectileListener(this), this);
-        getServer().getPluginManager().registerEvents(new EntityListener(), this);
-        getServer().getPluginManager().registerEvents(new XRPGListener(), this);
+        getServer().getPluginManager().registerEvents(new EntityListener(this), this);
     }
 
     private void loadConfigs() {
         this.saveDefaultConfig();
-
-        //Force class configuration to load
-        AssassinConfig.getInstance();
-        BardConfig.getInstance();
-        BrawlerConfig.getInstance();
-        GuardianConfig.getInstance();
-        NecromancerConfig.getInstance();
-        RangerConfig.getInstance();
-        RavagerConfig.getInstance();
-        SorcererConfig.getInstance();
-        WizardConfig.getInstance();
     }
 
     public ProtectionSet getProtectionSet() {
@@ -204,5 +189,55 @@ public final class XRPG extends JavaPlugin {
 
     public IPartyManager getPartyManager() {
         return partyManager;
+    }
+
+    public Inventory getInventoryGUI() {
+        return inventoryGUI;
+    }
+
+    public XRPGPlayer getXRPGPlayer(Player player) {
+        return RPGPlayers.get(player.getUniqueId());
+    }
+
+    public XRPGPlayer getXRPGPlayer(UUID playerUUID) {
+        return RPGPlayers.get(playerUUID);
+    }
+
+    public void removeXRPGPlayer(Player player) {
+        RPGPlayers.remove(player.getUniqueId());
+    }
+
+    public void removeXRPGPlayer(UUID playerUUID) {
+        RPGPlayers.remove(playerUUID);
+    }
+
+    public HashMap<UUID, XRPGPlayer> getRPGPlayers() {
+        return RPGPlayers;
+    }
+
+    public void addRPGPlayer(UUID playerUUID, XRPGPlayer xrpgPlayer) {
+        RPGPlayers.put(playerUUID, xrpgPlayer);
+    }
+
+    public String getDefaultClassId() {
+        return defaultClassId;
+    }
+
+    public void setDefaultClassId(String defaultClassId) {
+        this.defaultClassId = defaultClassId;
+    }
+
+    public void addClassData(String classId, FileConfiguration dataFile) {
+        if (!this.classData.containsKey(classId)) {
+            this.classData.put(classId, dataFile);
+        }
+    }
+
+    public FileConfiguration getFileConfiguration(String classId) {
+        return classData.get(classId);
+    }
+
+    public HashMap<String, FileConfiguration> getClassData() {
+        return classData;
     }
 }
