@@ -1,14 +1,13 @@
 package me.xepos.rpg.commands;
 
-import me.xepos.rpg.utils.Utils;
 import me.xepos.rpg.XRPG;
+import me.xepos.rpg.utils.Utils;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -30,7 +29,7 @@ public class ChangeClassCommand implements CommandExecutor {
             if (commandSender instanceof Player){
                 Player player = (Player)commandSender;
                 Inventory gui = inventory;
-                gui.setItem(0, plugin.buildItemStack(Material.PAPER, "Free Change Ticket", new ArrayList<String>(){{
+                gui.setItem(0, Utils.buildItemStack(Material.PAPER, "Free Change Ticket", new ArrayList<String>() {{
                     add("Owned amount: " + Utils.GetRPG((Player) commandSender).getFreeChangeTickets());
                 }}));
                 player.openInventory(gui);
