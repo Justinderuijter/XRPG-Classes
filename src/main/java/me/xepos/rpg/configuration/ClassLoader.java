@@ -2,7 +2,6 @@ package me.xepos.rpg.configuration;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.classes.skills.XRPGSkill;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -61,11 +60,11 @@ public class ClassLoader {
                 ConfigurationSection skillDataSection = classConfig.getConfigurationSection(skill);
                 if (skillDataSection != null) {
                     try {
-                        Class<?> clazz = Class.forName("me.xepos.rpg.classes.skills.assassin" + skillDataSection.getName());
+                        Class<?> clazz = Class.forName("me.xepos.rpg.skills." + skillDataSection.getName());
                         Constructor<?> constructor = clazz.getConstructor(XRPGPlayer.class, String.class, XRPG.class);
 
                         //The instance of the skill automatically assigns itself to the XRPGPlayer
-                        XRPGSkill xrpgSkill = (XRPGSkill) constructor.newInstance(xrpgPlayer, skillDataSection.getString("name", "--"), plugin);
+                        constructor.newInstance(xrpgPlayer, skillDataSection.getString("name", "--"), plugin);
 
                     } catch (Exception e) {
                         Bukkit.getLogger().info("Something went wrong for " + skillDataSection.getString("name", "some skill"));
@@ -80,15 +79,25 @@ public class ClassLoader {
     }
 
     @SuppressWarnings("ConstantConditions")
-    public List<ItemStack> getMenuItems() {
+    public List<ItemStack> initializeMenuItemsAndClasses() {
         List<ItemStack> menuItems = new ArrayList<>();
 
         for (File file : classFolder.listFiles()) {
             if (file.getName().contains(".yml")) {
 
+                FileConfiguration fileConfiguration = YamlConfiguration.loadConfiguration(file);
+                boolean isDefault = fileConfiguration.getBoolean("default", false);
+                boolean isEnabled = fileConfiguration.getBoolean("enabled", true);
+
+                if (!isEnabled) continue; //Skip is class is disabled
+
                 String fileName = file.getName().replace(".yml", "");
 
-                FileConfiguration fileConfiguration = YamlConfiguration.loadConfiguration(file);
+                if (plugin.getDefaultClassId() == null && isDefault) {
+                    plugin.setDefaultClassId(fileName);
+                }
+
+
                 ConfigurationSection displaySettings = fileConfiguration.getConfigurationSection("display");
                 if (!plugin.getDisplayMap().containsKey(fileName)) {
                     plugin.getDisplayMap().put(fileName, displaySettings.getString("name", "???"));

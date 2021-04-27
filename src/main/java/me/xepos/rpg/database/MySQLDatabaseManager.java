@@ -99,8 +99,7 @@ public class MySQLDatabaseManager implements IDatabaseManager {
             if (!uuidExists(playerId)) {
                 PreparedStatement ps = connection.prepareStatement("INSERT IGNORE INTO xrpg_classes (uuid,classId,tickets) VALUES (?,?,2)");
                 ps.setString(1, playerId.toString());
-                //Might add option to customize default class
-                ps.setString(2, "Assassin");
+                ps.setString(2, plugin.getDefaultClassId());
 
                 ps.executeUpdate();
             }
@@ -117,8 +116,8 @@ public class MySQLDatabaseManager implements IDatabaseManager {
 
                 ResultSet results = ps.executeQuery();
                 if (results.next()) {
-                    //TODO: correct constructor
-                    XRPGPlayer xrpgPlayer = new XRPGPlayer(playerId);
+                    String classId = getClassId(playerId);
+                    XRPGPlayer xrpgPlayer = new XRPGPlayer(playerId, classId, plugin.getClassDisplayName(classId));
                     xrpgPlayer.setFreeChangeTickets(results.getInt("tickets"));
                     return xrpgPlayer;
                 }
@@ -156,7 +155,7 @@ public class MySQLDatabaseManager implements IDatabaseManager {
         }catch (SQLException e){
             e.printStackTrace();
         }
-        return "Assassin";
+        return plugin.getDefaultClassId();
     }
 
     private void setClassId(UUID playerId, String classId){

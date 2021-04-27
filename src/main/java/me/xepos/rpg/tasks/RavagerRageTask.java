@@ -1,7 +1,7 @@
 package me.xepos.rpg.tasks;
 
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.classes.skills.ravager.Rage;
+import me.xepos.rpg.skills.Rage;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;

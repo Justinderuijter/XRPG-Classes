@@ -7,6 +7,7 @@ display:
     - "Grant yourself stealth and get backstrikes"
     - "medium damage, high mobilty, low crowd control"
 
+default: true
 enabled: true
 allow-bow: true
 allow-shield: true

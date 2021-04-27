@@ -1,10 +1,10 @@
 package me.xepos.rpg;
 
-import me.xepos.rpg.classes.skills.IFollowerContainer;
-import me.xepos.rpg.classes.skills.XRPGSkill;
 import me.xepos.rpg.enums.DamageTakenSource;
 import me.xepos.rpg.handlers.EventHandler;
 import me.xepos.rpg.handlers.ShootBowEventHandler;
+import me.xepos.rpg.skills.IFollowerContainer;
+import me.xepos.rpg.skills.XRPGSkill;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;

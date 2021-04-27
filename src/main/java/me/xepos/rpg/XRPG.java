@@ -39,6 +39,7 @@ public final class XRPG extends JavaPlugin {
 
     private ProtectionSet protectionSet;
 
+    private String defaultClassId = null;
     private static final HashMap<UUID, XRPGPlayer> RPGPlayers = new HashMap<>();
     private static final HashMap<String, String> displayMap = new HashMap<>();
     public ConcurrentHashMap<UUID, BaseProjectileData> fireBalls = new ConcurrentHashMap<>();
@@ -85,7 +86,7 @@ public final class XRPG extends JavaPlugin {
     private void initClassChangeGUI() {
         inventoryGUI = Bukkit.createInventory(null, 18, "Pick A Class");
 
-        for (ItemStack item : classLoader.getMenuItems()) {
+        for (ItemStack item : classLoader.initializeMenuItemsAndClasses()) {
             int slot = Utils.getLastAvailableInventorySlot(inventoryGUI);
             if (slot != -1) {
                 inventoryGUI.setItem(slot, item);
@@ -215,5 +216,13 @@ public final class XRPG extends JavaPlugin {
 
     public HashMap<String, String> getDisplayMap() {
         return displayMap;
+    }
+
+    public String getDefaultClassId() {
+        return defaultClassId;
+    }
+
+    public void setDefaultClassId(String defaultClassId) {
+        this.defaultClassId = defaultClassId;
     }
 }
