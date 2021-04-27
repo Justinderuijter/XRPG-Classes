@@ -6,7 +6,6 @@ import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.enums.DamageTakenSource;
 import me.xepos.rpg.enums.ModifierType;
 import me.xepos.rpg.utils.Utils;
-import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -43,12 +42,12 @@ public class XRPGDebug implements CommandExecutor {
                             player.sendMessage("dmgTakenMP" + Utils.GetRPG(player).dmgTakenMultipliers.size());
                             return true;
                         case "modifiers":
-                            for (AttributeModifier modifier : AttributeModifierManager.getInstance().getModifiers(ModifierType.POSITIVE).keySet()) {
-                                player.sendMessage(modifier.toString());
+                            for (String identifier : AttributeModifierManager.getInstance().getModifiers(ModifierType.POSITIVE).keySet()) {
+                                player.sendMessage(AttributeModifierManager.getInstance().get(ModifierType.POSITIVE, identifier).getAttributeModifier().toString());
                             }
 
-                            for (AttributeModifier modifier : AttributeModifierManager.getInstance().getModifiers(ModifierType.NEGATIVE).keySet()) {
-                                player.sendMessage(modifier.toString());
+                            for (String identifier : AttributeModifierManager.getInstance().getModifiers(ModifierType.NEGATIVE).keySet()) {
+                                player.sendMessage(AttributeModifierManager.getInstance().get(ModifierType.NEGATIVE, identifier).getAttributeModifier().toString());
                             }
                             return true;
                         case "players":

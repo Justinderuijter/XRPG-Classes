@@ -53,7 +53,7 @@ public class JSONDatabaseManager implements IDatabaseManager {
             }
 
         } else {
-            XRPGPlayer rpgPlayer = new XRPGPlayer(playerId, plugin);
+            XRPGPlayer rpgPlayer = new XRPGPlayer(playerId);
             XRPG.RPGPlayers.put(playerId, rpgPlayer);
         }
     }

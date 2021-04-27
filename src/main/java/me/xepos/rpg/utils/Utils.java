@@ -19,6 +19,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
@@ -346,6 +347,15 @@ public final class Utils {
 
     public static void addPotionEffects(List<Player> players, List<PotionEffect> effects) {
 
+    }
+
+    public static int getLastAvailableInventorySlot(Inventory inventory) {
+        for (int i = inventory.getSize() - 1; i > 2; i--) {
+            if (inventory.getItem(i) == null || inventory.getItem(i).getType() == Material.AIR) {
+                return i;
+            }
+        }
+        return -1;
     }
 
 }

@@ -65,7 +65,7 @@ public class XRPGPlayer {
     }
 
     //Constructor for new profiles
-    public XRPGPlayer(UUID playerId, XRPG plugin) {
+    public XRPGPlayer(UUID playerId) {
         this.player = null;
         this.playerId = playerId;
         this.classId = "assassin";

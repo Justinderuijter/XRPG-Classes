@@ -4,9 +4,15 @@ import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.classes.skills.XRPGSkill;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,11 +20,13 @@ import java.lang.reflect.Constructor;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ClassLoader {
     private final XRPG plugin;
-    private final File rpgFolder = Bukkit.getServer().getPluginManager().getPlugin("RPG").getDataFolder();
-    private final File classFolder = new File(rpgFolder, "Classes");
+    private static final File rpgFolder = Bukkit.getServer().getPluginManager().getPlugin("RPG").getDataFolder();
+    private static final File classFolder = new File(rpgFolder, "Classes");
 
     public ClassLoader(XRPG plugin) {
         this.plugin = plugin;
@@ -69,5 +77,40 @@ public class ClassLoader {
 
 
         xrpgPlayer.setClassId(classId);
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    public List<ItemStack> getMenuItems() {
+        List<ItemStack> menuItems = new ArrayList<>();
+
+        for (File file : classFolder.listFiles()) {
+            if (file.getName().contains(".yml")) {
+                ConfigurationSection displaySettings = YamlConfiguration.loadConfiguration(file).getConfigurationSection("display");
+
+                if (displaySettings != null) {
+
+                    String materialString = displaySettings.getString("icon", "BARRIER");
+                    //Not sure why it complains about this potentially being null but here we are
+                    if (materialString == null) {
+                        materialString = "BARRIER";
+                    }
+
+                    Material material = Material.getMaterial(materialString);
+                    List<String> description = displaySettings.getStringList("description");
+
+                    ItemStack icon = new ItemStack(material);
+                    ItemMeta meta = icon.getItemMeta();
+                    if (meta != null) {
+                        meta.setLore(description);
+                        meta.setDisplayName(displaySettings.getString("name", "???"));
+                        meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "classId"), PersistentDataType.STRING, file.getName().replace(".yml", ""));
+                        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+                        icon.setItemMeta(meta);
+                    }
+                    menuItems.add(icon);
+                }
+            }
+        }
+        return menuItems;
     }
 }

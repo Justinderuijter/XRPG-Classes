@@ -48,6 +48,7 @@ public class RavagerLandTask extends BukkitRunnable {
 
     private void damageAndSlowTarget(LivingEntity livingEntity) {
         livingEntity.damage(10, player);
-        livingEntity.addPotionEffect(RavagerConfig.getInstance().slowEffect);
+        //TODO: Fix this
+        //livingEntity.addPotionEffect(RavagerConfig.getInstance().slowEffect);
     }
 }

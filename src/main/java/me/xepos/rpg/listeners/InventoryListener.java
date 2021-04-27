@@ -2,18 +2,13 @@ package me.xepos.rpg.listeners;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.classes.XRPGClass;
-import me.xepos.rpg.events.XRPGClassChangedEvent;
 import me.xepos.rpg.utils.Utils;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
-
-import java.lang.reflect.Constructor;
 
 public class InventoryListener implements Listener {
 
@@ -36,15 +31,15 @@ public class InventoryListener implements Listener {
             Player player = (Player) e.getWhoClicked();
             XRPGPlayer xrpgPlayer = Utils.GetRPG(player);
 
-            if (xrpgPlayer.getFreeChangeTickets() <= 0)
-            {
+            if (xrpgPlayer.getFreeChangeTickets() <= 0) {
                 player.sendMessage(ChatColor.RED + "You don't have enough tickets!");
                 e.setCancelled(true);
                 return;
             }
 
 
-            XRPGClass oldClass = xrpgPlayer.getPlayerClass();
+
+/*            XRPGClass oldClass = xrpgPlayer.getPlayerClass();
             try {
                 Class<?> clazz = Class.forName("me.xepos.rpg.classes." + className);
                 Constructor<?> constructor = clazz.getConstructor(XRPG.class);
@@ -68,7 +63,7 @@ public class InventoryListener implements Listener {
             {
                 ex.printStackTrace();
             }
-            e.setCancelled(true);
+            e.setCancelled(true);*/
         }
     }
 

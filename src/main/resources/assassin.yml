@@ -1,4 +1,12 @@
-display-name: "Assassin"
+display:
+  name: "Assassin"
+  icon: DIAMOND_SWORD
+  description:
+    - "A melee class focused on striking its enemies from behind"
+    - "Execute low health targets"
+    - "Grant yourself stealth and get backstrikes"
+    - "medium damage, high mobilty, low crowd control"
+
 enabled: true
 allow-bow: true
 allow-shield: true

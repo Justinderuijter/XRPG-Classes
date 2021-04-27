@@ -3,6 +3,7 @@ package me.xepos.rpg.classes.skills.wizard;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.classes.skills.XRPGSkill;
+import me.xepos.rpg.datatypes.ProjectileData;
 import me.xepos.rpg.utils.Utils;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -50,9 +51,9 @@ public class Fireball extends XRPGSkill {
         org.bukkit.entity.Fireball fireball = e.getPlayer().launchProjectile(SmallFireball.class);
         fireball.setShooter(e.getPlayer());
 
-        if (!getPlugin().fireBalls.containsKey(fireball.getEntityId())) {
+        if (!getPlugin().fireBalls.containsKey(fireball.getUniqueId())) {
             //For some reason damage is halved so doubling it to get proper value
-            getPlugin().fireBalls.put(fireball.getEntityId(), new FireballData(getDamage() * 2, 10));
+            getPlugin().fireBalls.put(fireball.getUniqueId(), new ProjectileData(fireball, getDamage() * 2, false, false, 10));
         }
 
         this.incrementFireBallStacks(this.fireballStackData.getMaxFireballStacks());

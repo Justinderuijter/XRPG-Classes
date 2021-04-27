@@ -20,6 +20,6 @@ public class XRPGListener implements Listener {
         for (Player onlinePlayer : onlinePlayers) {
             onlinePlayer.sendMessage(e.getPlayer().getName() + " changed their class from " + e.getOldClass() + " to " + e.getNewClass());
         }
-        Utils.GetRPG(e.getPlayer()).getPlayerClass().applyEffects(e.getPlayer());
+        Utils.onJoinEffect(e.getPlayer());
     }
 }
