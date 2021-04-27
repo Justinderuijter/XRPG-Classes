@@ -66,11 +66,11 @@ public class PurgatoryBatTask extends BukkitRunnable {
                     target.damage(damage, player);
 
                     if (count == 0) {
-                        XRPGPlayer xrgPlayer = Utils.GetRPG((Player) entity);
+                        XRPGPlayer xrpgTarget = plugin.getXRPGPlayer(target);
                         XRPGDamageTakenAddedEvent event = new XRPGDamageTakenAddedEvent(player, target, sourceAbility, dtAmount);
                         Bukkit.getServer().getPluginManager().callEvent(event);
                         if (!event.isCancelled()) {
-                            Utils.addDTModifier(target, sourceAbility, dtAmount);
+                            Utils.addDTModifier(xrpgTarget, sourceAbility, dtAmount);
 
                             new BukkitRunnable() {
                                 @Override

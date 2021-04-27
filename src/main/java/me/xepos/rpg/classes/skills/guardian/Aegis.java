@@ -58,10 +58,11 @@ public class Aegis extends XRPGSkill {
                 XRPGDamageTakenAddedEvent event = new XRPGDamageTakenAddedEvent(player, target, DamageTakenSource.AEGIS, getDamageMultiplier());
                 Bukkit.getServer().getPluginManager().callEvent(event);
                 if (!event.isCancelled()) {
-                    Utils.addDTModifier(target, DamageTakenSource.AEGIS, getDamageMultiplier());
+                    XRPGPlayer xrpgTarget = getPlugin().getXRPGPlayer(target);
+                    Utils.addDTModifier(xrpgTarget, DamageTakenSource.AEGIS, getDamageMultiplier());
                     target.sendMessage(player.getDisplayName() + " Granted you " + getSkillName() + "!");
 
-                    new RemoveDTModifierTask(player, target, DamageTakenSource.AEGIS).runTaskLater(getPlugin(), (long) duration * 20);
+                    new RemoveDTModifierTask(player, xrpgTarget, DamageTakenSource.AEGIS).runTaskLater(getPlugin(), (long) duration * 20);
                 }
             }
             if (nearbyPlayers.size() > 0) {

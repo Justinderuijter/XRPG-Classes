@@ -5,7 +5,6 @@ import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.enums.DamageTakenSource;
 import me.xepos.rpg.enums.ModifierType;
-import me.xepos.rpg.utils.Utils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -36,10 +35,10 @@ public class XRPGDebug implements CommandExecutor {
                             player.sendMessage("Fireballs: " + plugin.fireBalls.size());
                             return true;
                         case "damagetaken":
-                            for (DamageTakenSource d : Utils.GetRPG(player).dmgTakenMultipliers.keySet()) {
-                                player.sendMessage(Utils.GetRPG(player).dmgTakenMultipliers.get(d).toString());
+                            for (DamageTakenSource d : plugin.getXRPGPlayer(player).dmgTakenMultipliers.keySet()) {
+                                player.sendMessage(plugin.getXRPGPlayer(player).dmgTakenMultipliers.get(d).toString());
                             }
-                            player.sendMessage("dmgTakenMP" + Utils.GetRPG(player).dmgTakenMultipliers.size());
+                            player.sendMessage("dmgTakenMP" + plugin.getXRPGPlayer(player).dmgTakenMultipliers.size());
                             return true;
                         case "modifiers":
                             for (String identifier : AttributeModifierManager.getInstance().getModifiers(ModifierType.POSITIVE).keySet()) {
@@ -51,8 +50,8 @@ public class XRPGDebug implements CommandExecutor {
                             }
                             return true;
                         case "players":
-                            for (UUID id : XRPG.RPGPlayers.keySet()) {
-                                XRPGPlayer xrpgPlayer = XRPG.RPGPlayers.get(id);
+                            for (UUID id : plugin.getRPGPlayers().keySet()) {
+                                XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(id);
                                 player.sendMessage(xrpgPlayer.getPlayer().getName() + ": " + xrpgPlayer.getClassId());
                             }
                             return true;

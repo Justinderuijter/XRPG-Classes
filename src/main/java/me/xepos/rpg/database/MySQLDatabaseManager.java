@@ -9,18 +9,17 @@ import java.sql.*;
 import java.util.UUID;
 
 
-public class MySQLDatabaseManager implements IDatabaseManager{
+public class MySQLDatabaseManager implements IDatabaseManager {
 
-    private final static FileConfiguration config = XRPG.getPlugin(XRPG.class).getConfig();
+    private final static XRPG plugin = XRPG.getPlugin(XRPG.class);
+    private final static FileConfiguration config = plugin.getConfig();
     private Connection connection;
 
-    public boolean isConnected()
-    {
+    public boolean isConnected() {
         return (connection != null);
     }
 
-    public void connect() throws ClassNotFoundException, SQLException
-    {
+    public void connect() throws ClassNotFoundException, SQLException {
         if (!isConnected()) {
             final String host = config.getString("MySQL.host", "localhost");
             final String port = config.getString("MySQL.port", "3306");
@@ -76,7 +75,7 @@ public class MySQLDatabaseManager implements IDatabaseManager{
         if (!uuidExists(playerId)) {
             createPlayer(playerId);
         }
-        XRPG.RPGPlayers.put(playerId, getPlayerData(playerId));
+        plugin.addRPGPlayer(playerId, getPlayerData(playerId));
     }
 
     @Override
@@ -117,14 +116,11 @@ public class MySQLDatabaseManager implements IDatabaseManager{
                 ps.setString(1, playerId.toString());
 
                 ResultSet results = ps.executeQuery();
-                if (results.next()){
-                    XRPGPlayer xrpgPlayer = XRPG.setupRPGPlayer(playerId, results.getString("classId"));
-                    if (xrpgPlayer != null)
-                    {
-                        xrpgPlayer.setFreeChangeTickets(results.getInt("tickets"));
-                        return xrpgPlayer;
-                    }
-
+                if (results.next()) {
+                    //TODO: correct constructor
+                    XRPGPlayer xrpgPlayer = new XRPGPlayer(playerId);
+                    xrpgPlayer.setFreeChangeTickets(results.getInt("tickets"));
+                    return xrpgPlayer;
                 }
             }
         }catch (SQLException e){

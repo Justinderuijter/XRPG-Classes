@@ -30,7 +30,7 @@ public class ChangeClassCommand implements CommandExecutor {
                 Player player = (Player)commandSender;
                 Inventory gui = inventory;
                 gui.setItem(0, Utils.buildItemStack(Material.PAPER, "Free Change Ticket", new ArrayList<String>() {{
-                    add("Owned amount: " + Utils.GetRPG((Player) commandSender).getFreeChangeTickets());
+                    add("Owned amount: " + plugin.getXRPGPlayer((Player) commandSender).getFreeChangeTickets());
                 }}));
                 player.openInventory(gui);
                 return true;

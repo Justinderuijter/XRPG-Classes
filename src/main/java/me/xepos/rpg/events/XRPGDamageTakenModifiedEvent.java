@@ -1,8 +1,8 @@
 package me.xepos.rpg.events;
 
+import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.enums.DamageTakenSource;
-import me.xepos.rpg.utils.Utils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -16,8 +16,9 @@ public class XRPGDamageTakenModifiedEvent extends Event {
     private final DamageTakenSource source;
 
     public XRPGDamageTakenModifiedEvent(Player sourcePlayer, Player targetPlayer, DamageTakenSource source) {
-        this.xrpgPlayer = Utils.GetRPG(sourcePlayer);
-        this.targetPlayer = Utils.GetRPG(targetPlayer);
+        final XRPG plugin = XRPG.getPlugin(XRPG.class);
+        this.xrpgPlayer = plugin.getXRPGPlayer(sourcePlayer);
+        this.targetPlayer = plugin.getXRPGPlayer(targetPlayer);
         this.source = source;
     }
 

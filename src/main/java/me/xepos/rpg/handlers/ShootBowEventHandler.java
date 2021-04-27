@@ -17,4 +17,10 @@ public class ShootBowEventHandler extends EventHandler {
     public XRPGSkill getCurrentSkill() {
         return getSkills().get(currentIndex);
     }
+
+    @Override
+    public void clear() {
+        super.clear();
+        currentIndex = 0;
+    }
 }

@@ -37,7 +37,7 @@ public class ClassListener implements Listener {
     public void onHit(EntityDamageByEntityEvent e) {
 
         if (e.getDamager() instanceof Player && e.getEntity() instanceof LivingEntity) {
-            XRPGPlayer xrpgPlayer = Utils.GetRPG((Player) e.getDamager());
+            XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer((Player) e.getDamager());
             if (xrpgPlayer.isStunned())
                 e.setCancelled(true);
             else
@@ -47,7 +47,7 @@ public class ClassListener implements Listener {
         if (e.getEntity() instanceof Player) {
             Player player = (Player) e.getEntity();
             player.sendMessage("You have been hurt!");
-            XRPGPlayer xrpgPlayer = Utils.GetRPG(player);
+            XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(player);
             if (xrpgPlayer.dmgTakenMultipliers.size() > 0) {
                 for (DamageTakenSource dtSource : xrpgPlayer.dmgTakenMultipliers.keySet()) {
                     e.setDamage(e.getDamage() * xrpgPlayer.dmgTakenMultipliers.get(dtSource));
@@ -70,8 +70,8 @@ public class ClassListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent e) {
         Player player = e.getPlayer();
         XRPGPlayer xrpgPlayer = null;
-        if (XRPG.RPGPlayers.containsKey(player.getUniqueId())) {
-            xrpgPlayer = Utils.GetRPG(player);
+        if (plugin.getRPGPlayers().containsKey(player.getUniqueId())) {
+            xrpgPlayer = plugin.getXRPGPlayer(player);
             xrpgPlayer.setPlayer(player);
         }
 
@@ -86,21 +86,21 @@ public class ClassListener implements Listener {
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent e) {
         UUID playerId = e.getPlayer().getUniqueId();
-        XRPGPlayer xrpgPlayer = XRPG.RPGPlayers.get(playerId);
+        XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(playerId);
         new savePlayerDataTask(databaseManager, xrpgPlayer).runTaskAsynchronously(plugin);
-        XRPG.RPGPlayers.remove(playerId);
+        plugin.removeXRPGPlayer(playerId);
     }
 
 
     @EventHandler
     public void onPlayerConsumeItem(PlayerItemConsumeEvent e) {
         Player player = e.getPlayer();
-        Utils.GetRPG(player).getEventHandler("CONSUME_ITEM");
+        plugin.getXRPGPlayer(player).getEventHandler("CONSUME_ITEM");
     }
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent e) {
-        XRPGPlayer xrpgPlayer = Utils.GetRPG(e.getPlayer());
+        XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getPlayer());
         //Utils.GetRPG(player).onUseItem(e);
 
 
@@ -126,7 +126,7 @@ public class ClassListener implements Listener {
 
     @EventHandler
     public void onPlayerInteractEntity(PlayerInteractEntityEvent e) {
-        XRPGPlayer xrpgPlayer = Utils.GetRPG(e.getPlayer());
+        XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getPlayer());
         if (e.getPlayer().isSneaking()) {
             xrpgPlayer.getEventHandler("SNEAK_RIGHT_CLICK_ENTITY").invoke(e);
         } else {
@@ -146,7 +146,7 @@ public class ClassListener implements Listener {
     public void onEntityShootBow(EntityShootBowEvent e) {
         if (e.getEntity() instanceof Player) {
             Player player = (Player) e.getEntity();
-            Utils.GetRPG(player).getEventHandler("SHOOT_BOW").invoke(e);
+            plugin.getXRPGPlayer(player).getEventHandler("SHOOT_BOW").invoke(e);
         }
     }
 

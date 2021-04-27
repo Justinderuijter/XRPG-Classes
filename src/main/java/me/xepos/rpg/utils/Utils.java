@@ -1,7 +1,6 @@
 package me.xepos.rpg.utils;
 
 import me.xepos.rpg.AttributeModifierManager;
-import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.AttributeModifierData;
 import me.xepos.rpg.enums.DamageTakenSource;
@@ -35,10 +34,6 @@ import java.util.List;
 import java.util.Random;
 
 public final class Utils {
-
-    public static XRPGPlayer GetRPG(Player player) {
-        return XRPG.RPGPlayers.get(player.getUniqueId());
-    }
 
     public static boolean isItemNameMatching(ItemStack itemStack, String itemName) {
         ItemMeta metaData = itemStack.getItemMeta();
@@ -328,15 +323,13 @@ public final class Utils {
         }
     }
 
-    public static void addDTModifier(Player player, DamageTakenSource source, double amount) {
-        XRPGPlayer xrpgPlayer = GetRPG(player);
+    public static void addDTModifier(XRPGPlayer xrpgPlayer, DamageTakenSource source, double amount) {
         if (xrpgPlayer.dmgTakenMultipliers.containsKey(source))
             xrpgPlayer.dmgTakenMultipliers.put(source, amount);
     }
 
     @SuppressWarnings("all")
-    public static void removeDTModifier(Player player, DamageTakenSource source) {
-        XRPGPlayer xrpgPlayer = GetRPG(player);
+    public static void removeDTModifier(XRPGPlayer xrpgPlayer, DamageTakenSource source) {
         if (xrpgPlayer.dmgTakenMultipliers.containsKey(source))
             xrpgPlayer.dmgTakenMultipliers.remove(source);
     }

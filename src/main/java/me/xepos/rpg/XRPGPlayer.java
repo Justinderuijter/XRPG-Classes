@@ -20,6 +20,35 @@ public class XRPGPlayer {
     private String classDisplay;
     private int freeChangeTickets = 2;
 
+    //Status Effects
+    public transient ConcurrentHashMap<DamageTakenSource, Double> dmgTakenMultipliers = new ConcurrentHashMap<>();
+    private transient boolean isStunned = false;
+    private transient long lastStunTime = 0;
+
+    //Constructor for loading profiles
+    public XRPGPlayer(UUID playerId, String classId, String classDisplayName) {
+        this.player = null;
+        this.playerId = playerId;
+        this.classId = classId;
+        this.classDisplay = classDisplayName;
+    }
+
+
+    public XRPGPlayer(Player player, String classId, String classDisplayName) {
+        this.player = player;
+        this.playerId = player.getUniqueId();
+        this.classId = classId;
+        this.classDisplay = classDisplayName;
+    }
+
+    //Constructor for new profiles
+    @Deprecated
+    public XRPGPlayer(UUID playerId) {
+        this.player = null;
+        this.playerId = playerId;
+        this.classId = "assassin";
+    }
+
     //For convenience
     private List<IFollowerContainer> followerSkills = new ArrayList<>();
 
@@ -44,32 +73,6 @@ public class XRPGPlayer {
         //Other Handlers
         put("CONSUME_ITEM", new EventHandler());
     }};
-
-    //Status Effects
-    public transient ConcurrentHashMap<DamageTakenSource, Double> dmgTakenMultipliers = new ConcurrentHashMap<>();
-    private transient boolean isStunned = false;
-    private transient long lastStunTime = 0;
-
-    //Constructor for loading profiles
-    public XRPGPlayer(UUID playerId, String classId) {
-        this.player = null;
-        this.playerId = playerId;
-        this.classId = classId;
-    }
-
-
-    public XRPGPlayer(Player player, String classId) {
-        this.player = player;
-        this.playerId = player.getUniqueId();
-        this.classId = classId;
-    }
-
-    //Constructor for new profiles
-    public XRPGPlayer(UUID playerId) {
-        this.player = null;
-        this.playerId = playerId;
-        this.classId = "assassin";
-    }
 
     public void setPlayerClass(String classId) {
         this.classId = classId;
@@ -142,8 +145,15 @@ public class XRPGPlayer {
         return classDisplay;
     }
 
-    public void setClassDisplayName(String classDisplay) {
-        this.classDisplay = classDisplay;
+    public void changeClass(String classId, String classDisplayName) {
+        if (classId == null || classId.equals("")) return;
+
+        this.classId = classId;
+        this.classDisplay = classDisplayName;
+
+        for (EventHandler handler : handlerList.values()) {
+            handler.clear();
+        }
     }
 
     //////////////////////////////////

@@ -12,10 +12,14 @@ import me.xepos.rpg.dependencies.parties.IPartyManager;
 import me.xepos.rpg.dependencies.parties.PartyManagerFactory;
 import me.xepos.rpg.dependencies.protection.ProtectionSet;
 import me.xepos.rpg.dependencies.protection.ProtectionSetFactory;
-import me.xepos.rpg.listeners.*;
+import me.xepos.rpg.listeners.ClassListener;
+import me.xepos.rpg.listeners.EntityListener;
+import me.xepos.rpg.listeners.InventoryListener;
+import me.xepos.rpg.listeners.ProjectileListener;
 import me.xepos.rpg.tasks.ClearHashMapTask;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -30,12 +34,13 @@ public final class XRPG extends JavaPlugin {
     private Inventory inventoryGUI;
     private ClassLoader classLoader;
 
-    private static IPartyManager partyManager;
-    private static IDatabaseManager databaseManager;
+    private IPartyManager partyManager;
+    private IDatabaseManager databaseManager;
 
     private ProtectionSet protectionSet;
 
-    public static HashMap<UUID, XRPGPlayer> RPGPlayers = new HashMap<>();
+    private static final HashMap<UUID, XRPGPlayer> RPGPlayers = new HashMap<>();
+    private static final HashMap<String, String> displayMap = new HashMap<>();
     public ConcurrentHashMap<UUID, BaseProjectileData> fireBalls = new ConcurrentHashMap<>();
     //Should this be concurrent
 
@@ -46,6 +51,7 @@ public final class XRPG extends JavaPlugin {
         this.partyManager = PartyManagerFactory.getPartyManager();
         this.protectionSet = ProtectionSetFactory.getProtectionRules();
         this.classLoader = new ClassLoader(this);
+
 
         //Prevents throwing error if databaseManager shuts down this plugin.
         if(!this.isEnabled())
@@ -143,14 +149,6 @@ public final class XRPG extends JavaPlugin {
         }}));*/
     }
 
-    public static XRPGPlayer setupRPGPlayer(UUID playerId, String classId) {
-        return new XRPGPlayer(playerId, classId);
-    }
-
-    public static IDatabaseManager getDatabaseManager() {
-        return databaseManager;
-    }
-
 /*    public ItemStack buildItemStack(Material material, String displayName, List<String> lore)
     {
         ItemStack item = new ItemStack(material);
@@ -168,23 +166,11 @@ public final class XRPG extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ClassListener(this, databaseManager), this);
         getServer().getPluginManager().registerEvents(new InventoryListener(this), this);
         getServer().getPluginManager().registerEvents(new ProjectileListener(this), this);
-        getServer().getPluginManager().registerEvents(new EntityListener(), this);
-        getServer().getPluginManager().registerEvents(new XRPGListener(), this);
+        getServer().getPluginManager().registerEvents(new EntityListener(this), this);
     }
 
     private void loadConfigs() {
         this.saveDefaultConfig();
-
-        //Force class configuration to load
-        /*AssassinConfig.getInstance();
-        BardConfig.getInstance();
-        BrawlerConfig.getInstance();
-        GuardianConfig.getInstance();
-        NecromancerConfig.getInstance();
-        RangerConfig.getInstance();
-        RavagerConfig.getInstance();
-        SorcererConfig.getInstance();
-        WizardConfig.getInstance();*/
     }
 
     public ProtectionSet getProtectionSet() {
@@ -197,5 +183,37 @@ public final class XRPG extends JavaPlugin {
 
     public Inventory getInventoryGUI() {
         return inventoryGUI;
+    }
+
+    public XRPGPlayer getXRPGPlayer(Player player) {
+        return RPGPlayers.get(player.getUniqueId());
+    }
+
+    public XRPGPlayer getXRPGPlayer(UUID playerUUID) {
+        return RPGPlayers.get(playerUUID);
+    }
+
+    public void removeXRPGPlayer(Player player) {
+        RPGPlayers.remove(player.getUniqueId());
+    }
+
+    public void removeXRPGPlayer(UUID playerUUID) {
+        RPGPlayers.remove(playerUUID);
+    }
+
+    public HashMap<UUID, XRPGPlayer> getRPGPlayers() {
+        return RPGPlayers;
+    }
+
+    public void addRPGPlayer(UUID playerUUID, XRPGPlayer xrpgPlayer) {
+        RPGPlayers.put(playerUUID, xrpgPlayer);
+    }
+
+    public String getClassDisplayName(String classId) {
+        return displayMap.get(classId);
+    }
+
+    public HashMap<String, String> getDisplayMap() {
+        return displayMap;
     }
 }

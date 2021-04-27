@@ -42,9 +42,8 @@ public class JSONDatabaseManager implements IDatabaseManager {
                 //Extract the class from JsonObject
                 String playerClass = jsonData.get("classId").toString();
 
-                XRPGPlayer xrpgPlayer = XRPG.setupRPGPlayer(playerId, playerClass);
-                if (xrpgPlayer != null)
-                    XRPG.RPGPlayers.put(playerId, xrpgPlayer);
+                XRPGPlayer xrpgPlayer = new XRPGPlayer(playerId, playerClass, plugin.getClassDisplayName(playerClass));
+                plugin.addRPGPlayer(playerId, xrpgPlayer);
 
             } catch (IOException ex) {
                 System.out.println("Couldn't load player data for " + playerId.toString() + ".json");
@@ -53,8 +52,9 @@ public class JSONDatabaseManager implements IDatabaseManager {
             }
 
         } else {
+            //TODO: Use correct constructor
             XRPGPlayer rpgPlayer = new XRPGPlayer(playerId);
-            XRPG.RPGPlayers.put(playerId, rpgPlayer);
+            plugin.addRPGPlayer(playerId, rpgPlayer);
         }
     }
 

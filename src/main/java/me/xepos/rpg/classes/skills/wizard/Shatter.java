@@ -98,8 +98,9 @@ public class Shatter extends XRPGSkill {
 
                 //Apply DTModifier if the event isn't cancelled
                 if (!event.isCancelled()) {
-                    Utils.addDTModifier(targetPlayer, damageTakenSource, shatterDTAmount);
-                    new RemoveDTModifierTask(e.getPlayer(), (Player) livingEntity, damageTakenSource).runTaskLater(getPlugin(), (long) shatterDTDuration * 20L);
+                    XRPGPlayer xrpgTarget = getPlugin().getXRPGPlayer(targetPlayer);
+                    Utils.addDTModifier(xrpgTarget, damageTakenSource, shatterDTAmount);
+                    new RemoveDTModifierTask(e.getPlayer(), xrpgTarget, damageTakenSource).runTaskLater(getPlugin(), (long) shatterDTDuration * 20L);
                 }
             }
         } else {

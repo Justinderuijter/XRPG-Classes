@@ -60,7 +60,7 @@ public class ShieldBash extends XRPGSkill {
                 final double duration = getSkillVariables().getDouble("duration", 2.0);
                 ;
 
-                XRPGPlayer xrpgPlayer = Utils.GetRPG(target);
+                XRPGPlayer xrpgPlayer = getPlugin().getXRPGPlayer(target);
                 if (xrpgPlayer.canBeStunned())
                     new ApplyStunTask(xrpgPlayer, AttributeModifierManager.getInstance().get(ModifierType.NEGATIVE, "SHIELD_BASH").getAttributeModifier(), (long) duration * 20, getPlugin()).runTaskLater(getPlugin(), (long) castDelay * 20);
                 else

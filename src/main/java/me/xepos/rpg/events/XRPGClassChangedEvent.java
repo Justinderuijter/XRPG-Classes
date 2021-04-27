@@ -1,6 +1,5 @@
 package me.xepos.rpg.events;
 
-import me.xepos.rpg.classes.XRPGClass;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -13,24 +12,21 @@ public class XRPGClassChangedEvent extends Event implements Cancellable {
 
     private final Player player;
     private final CommandSender commandSender;
-    private final XRPGClass oldClass;
-    private final XRPGClass newClass;
+    private final String oldClassId;
+    private final String oldClassDisplayName;
+    private final String newClassId;
+    private final String newClassDisplayName;
     private boolean isCancelled;
 
-    public XRPGClassChangedEvent(Player player, XRPGClass oldClass, XRPGClass newClass) {
+    public XRPGClassChangedEvent(Player player, String oldClassId, String oldClassDisplayName, String newClassId, String newClassDisplayName) {
         this.player = player;
         this.commandSender = null;
-        this.oldClass = oldClass;
-        this.newClass = newClass;
+        this.oldClassId = oldClassId;
+        this.oldClassDisplayName = oldClassDisplayName;
+        this.newClassId = newClassId;
+        this.newClassDisplayName = newClassDisplayName;
     }
 
-    public XRPGClassChangedEvent(CommandSender commandSender,Player player, XRPGClass oldClass, XRPGClass newClass)
-    {
-        this.player = player;
-        this.commandSender = commandSender;
-        this.oldClass = oldClass;
-        this.newClass = newClass;
-    }
 
     //Getters
 
@@ -42,14 +38,21 @@ public class XRPGClassChangedEvent extends Event implements Cancellable {
         return this.commandSender;
     }
 
-    public XRPGClass getOldClass() {
-        return this.oldClass;
+    public String getOldClassId() {
+        return oldClassId;
     }
 
-    public XRPGClass getNewClass() {
-        return this.newClass;
+    public String getOldClassDisplayName() {
+        return oldClassDisplayName;
     }
 
+    public String getNewClassId() {
+        return newClassId;
+    }
+
+    public String getNewClassDisplayName() {
+        return newClassDisplayName;
+    }
 
     @Override
     public @NotNull HandlerList getHandlers() {

@@ -85,7 +85,14 @@ public class ClassLoader {
 
         for (File file : classFolder.listFiles()) {
             if (file.getName().contains(".yml")) {
-                ConfigurationSection displaySettings = YamlConfiguration.loadConfiguration(file).getConfigurationSection("display");
+
+                String fileName = file.getName().replace(".yml", "");
+
+                FileConfiguration fileConfiguration = YamlConfiguration.loadConfiguration(file);
+                ConfigurationSection displaySettings = fileConfiguration.getConfigurationSection("display");
+                if (!plugin.getDisplayMap().containsKey(fileName)) {
+                    plugin.getDisplayMap().put(fileName, displaySettings.getString("name", "???"));
+                }
 
                 if (displaySettings != null) {
 
@@ -103,7 +110,7 @@ public class ClassLoader {
                     if (meta != null) {
                         meta.setLore(description);
                         meta.setDisplayName(displaySettings.getString("name", "???"));
-                        meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "classId"), PersistentDataType.STRING, file.getName().replace(".yml", ""));
+                        meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "classId"), PersistentDataType.STRING, fileName);
                         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
                         icon.setItemMeta(meta);
                     }

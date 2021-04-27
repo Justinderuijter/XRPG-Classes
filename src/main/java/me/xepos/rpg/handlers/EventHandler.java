@@ -36,4 +36,8 @@ public class EventHandler {
         return skills.stream().anyMatch(skill.getClass()::isInstance);
     }
 
+    public void clear() {
+        skills.clear();
+    }
+
 }
