@@ -48,14 +48,14 @@ public final class XRPG extends JavaPlugin {
     @Override // Plugin startup logic
     @SuppressWarnings("")
     public void onEnable() {
-        this.databaseManager = DatabaseManagerFactory.getDatabaseManager();
+        this.classLoader = new ClassLoader(this);
+        this.databaseManager = DatabaseManagerFactory.getDatabaseManager(classLoader);
         this.partyManager = PartyManagerFactory.getPartyManager();
         this.protectionSet = ProtectionSetFactory.getProtectionRules();
-        this.classLoader = new ClassLoader(this);
 
 
         //Prevents throwing error if databaseManager shuts down this plugin.
-        if(!this.isEnabled())
+        if (!this.isEnabled())
             return;
         //Loading/Creating configs
         loadConfigs();
