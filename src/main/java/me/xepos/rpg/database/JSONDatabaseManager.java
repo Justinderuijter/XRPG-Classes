@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.configuration.ClassLoader;
 import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -18,8 +19,10 @@ public class JSONDatabaseManager implements IDatabaseManager {
 
     private static File playerDataFolder;
     public final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    private final ClassLoader classLoader;
 
-    protected JSONDatabaseManager() {
+    protected JSONDatabaseManager(ClassLoader classLoader) {
+        this.classLoader = classLoader;
         File baseFile = plugin.getDataFolder();
         if (!baseFile.exists()) {
             if (baseFile.mkdir()) {
@@ -43,6 +46,7 @@ public class JSONDatabaseManager implements IDatabaseManager {
                 String playerClass = jsonData.get("classId").toString();
 
                 XRPGPlayer xrpgPlayer = new XRPGPlayer(playerId, playerClass, plugin.getClassDisplayName(playerClass));
+                classLoader.load(playerClass, xrpgPlayer);
                 plugin.addRPGPlayer(playerId, xrpgPlayer);
 
             } catch (IOException ex) {
@@ -52,8 +56,7 @@ public class JSONDatabaseManager implements IDatabaseManager {
             }
 
         } else {
-            //TODO: Use correct constructor
-            XRPGPlayer rpgPlayer = new XRPGPlayer(playerId);
+            XRPGPlayer rpgPlayer = new XRPGPlayer(playerId, plugin.getDefaultClassId(), plugin.getClassDisplayName(plugin.getDefaultClassId()));
             plugin.addRPGPlayer(playerId, rpgPlayer);
         }
     }

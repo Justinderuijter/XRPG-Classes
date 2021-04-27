@@ -2,6 +2,7 @@ package me.xepos.rpg.database;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.configuration.ClassLoader;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -14,6 +15,7 @@ public class MySQLDatabaseManager implements IDatabaseManager {
     private final static XRPG plugin = XRPG.getPlugin(XRPG.class);
     private final static FileConfiguration config = plugin.getConfig();
     private Connection connection;
+    private final ClassLoader classLoader;
 
     public boolean isConnected() {
         return (connection != null);
@@ -50,21 +52,21 @@ public class MySQLDatabaseManager implements IDatabaseManager {
         }
     }
 
-    public void disconnect()
-    {
-        if(isConnected()){
-            try{
+    public void disconnect() {
+        if (isConnected()) {
+            try {
                 connection.close();
-            }catch (SQLException e){
+            } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    protected MySQLDatabaseManager(){
-        try{
+    protected MySQLDatabaseManager(ClassLoader classLoader) {
+        this.classLoader = classLoader;
+        try {
             connect();
-        }catch(ClassNotFoundException | SQLException e){
+        } catch (ClassNotFoundException | SQLException e) {
             Bukkit.getLogger().info("Database connection failed.");
             Bukkit.getServer().getPluginManager().disablePlugin(XRPG.getPlugin(XRPG.class));
         }
@@ -75,7 +77,8 @@ public class MySQLDatabaseManager implements IDatabaseManager {
         if (!uuidExists(playerId)) {
             createPlayer(playerId);
         }
-        plugin.addRPGPlayer(playerId, getPlayerData(playerId));
+        XRPGPlayer xrpgPlayer = getPlayerData(playerId);
+        plugin.addRPGPlayer(playerId, xrpgPlayer);
     }
 
     @Override
@@ -118,6 +121,7 @@ public class MySQLDatabaseManager implements IDatabaseManager {
                 if (results.next()) {
                     String classId = getClassId(playerId);
                     XRPGPlayer xrpgPlayer = new XRPGPlayer(playerId, classId, plugin.getClassDisplayName(classId));
+                    classLoader.load(classId, xrpgPlayer);
                     xrpgPlayer.setFreeChangeTickets(results.getInt("tickets"));
                     return xrpgPlayer;
                 }
