@@ -20,6 +20,7 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ClassLoader {
@@ -50,37 +51,37 @@ public class ClassLoader {
     }
 
     public void load(String classId, XRPGPlayer xrpgPlayer) {
-        File classFile = new File(classFolder, classId.toLowerCase() + ".yml");
-        FileConfiguration classConfig = YamlConfiguration.loadConfiguration(classFile);
-        ConfigurationSection skillSection = classConfig.getConfigurationSection("Skills");
+        FileConfiguration classConfig = plugin.getFileConfiguration(classId);
+
+        classConfig.getKeys(true).forEach(x -> Bukkit.getLogger().info(x));
+
+        ConfigurationSection skillSection = classConfig.getConfigurationSection("skills");
         if (skillSection == null) {
-            Bukkit.getLogger().info("Could not find Skills section in " + classFile.getName());
+            Bukkit.getLogger().info("Could not find Skills section in " + classId);
         } else {
-            for (String skill : skillSection.getKeys(false)) {
-                ConfigurationSection skillDataSection = classConfig.getConfigurationSection(skill);
+            for (String skillId : skillSection.getKeys(false)) {
+                ConfigurationSection skillDataSection = skillSection.getConfigurationSection(skillId);
+
                 if (skillDataSection != null) {
                     try {
                         Class<?> clazz = Class.forName("me.xepos.rpg.skills." + skillDataSection.getName());
-                        Constructor<?> constructor = clazz.getConstructor(XRPGPlayer.class, String.class, XRPG.class);
+                        Constructor<?> constructor = clazz.getConstructor(XRPGPlayer.class, ConfigurationSection.class, XRPG.class);
 
                         //The instance of the skill automatically assigns itself to the XRPGPlayer
-                        constructor.newInstance(xrpgPlayer, skillDataSection.getString("name", "--"), plugin);
+                        constructor.newInstance(xrpgPlayer, skillDataSection, plugin);
 
                     } catch (Exception e) {
-                        Bukkit.getLogger().info("Something went wrong for " + skillDataSection.getString("name", "some skill"));
+                        e.printStackTrace();
+                        Bukkit.getLogger().info("Something went wrong for " + skillDataSection.getString("name", skillDataSection.getName()));
                     }
                 }
-
             }
         }
-
-
         xrpgPlayer.setClassId(classId);
     }
 
-    @SuppressWarnings("ConstantConditions")
-    public List<ItemStack> initializeMenuItemsAndClasses() {
-        List<ItemStack> menuItems = new ArrayList<>();
+    public HashMap<String, FileConfiguration> initializeClasses() {
+        HashMap<String, FileConfiguration> configurationHashMap = new HashMap<>();
 
         for (File file : classFolder.listFiles()) {
             if (file.getName().contains(".yml")) {
@@ -93,39 +94,48 @@ public class ClassLoader {
 
                 String fileName = file.getName().replace(".yml", "");
 
+                //First enabled class tagged with default is the default class
                 if (plugin.getDefaultClassId() == null && isDefault) {
                     plugin.setDefaultClassId(fileName);
                 }
 
-
-                ConfigurationSection displaySettings = fileConfiguration.getConfigurationSection("display");
-                if (!plugin.getDisplayMap().containsKey(fileName)) {
-                    plugin.getDisplayMap().put(fileName, displaySettings.getString("name", "???"));
-                }
-
-                if (displaySettings != null) {
-
-                    String materialString = displaySettings.getString("icon", "BARRIER");
-                    //Not sure why it complains about this potentially being null but here we are
-                    if (materialString == null) {
-                        materialString = "BARRIER";
-                    }
-
-                    Material material = Material.getMaterial(materialString);
-                    List<String> description = displaySettings.getStringList("description");
-
-                    ItemStack icon = new ItemStack(material);
-                    ItemMeta meta = icon.getItemMeta();
-                    if (meta != null) {
-                        meta.setLore(description);
-                        meta.setDisplayName(displaySettings.getString("name", "???"));
-                        meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "classId"), PersistentDataType.STRING, fileName);
-                        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-                        icon.setItemMeta(meta);
-                    }
-                    menuItems.add(icon);
-                }
+                configurationHashMap.put(fileName, fileConfiguration);
             }
+            Bukkit.getLogger().info("Loaded " + file.getName());
+        }
+        return configurationHashMap;
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    public List<ItemStack> initializeMenu() {
+        List<ItemStack> menuItems = new ArrayList<>();
+
+        for (String classId : plugin.getClassData().keySet()) {
+            ConfigurationSection displaySettings = plugin.getFileConfiguration(classId);
+
+            if (displaySettings != null) {
+
+                String materialString = displaySettings.getString("icon", "BARRIER");
+                //Not sure why it complains about this potentially being null but here we are
+                if (materialString == null) {
+                    materialString = "BARRIER";
+                }
+
+                Material material = Material.getMaterial(materialString);
+                List<String> description = displaySettings.getStringList("description");
+
+                ItemStack icon = new ItemStack(material);
+                ItemMeta meta = icon.getItemMeta();
+                if (meta != null) {
+                    meta.setLore(description);
+                    meta.setDisplayName(displaySettings.getString("name", "???"));
+                    meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "classId"), PersistentDataType.STRING, classId);
+                    meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+                    icon.setItemMeta(meta);
+                }
+                menuItems.add(icon);
+            }
+
         }
         return menuItems;
     }

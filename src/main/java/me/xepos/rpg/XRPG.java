@@ -19,6 +19,7 @@ import me.xepos.rpg.listeners.ProjectileListener;
 import me.xepos.rpg.tasks.ClearHashMapTask;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -34,31 +35,39 @@ public final class XRPG extends JavaPlugin {
     private Inventory inventoryGUI;
     private ClassLoader classLoader;
 
+    //Ability targetting managers
     private IPartyManager partyManager;
-    private IDatabaseManager databaseManager;
-
     private ProtectionSet protectionSet;
 
+    //Data manager
+    private IDatabaseManager databaseManager;
+
+    //Classes
     private String defaultClassId = null;
+    private static HashMap<String, FileConfiguration> classData;
+
+    //Players
     private static final HashMap<UUID, XRPGPlayer> RPGPlayers = new HashMap<>();
-    private static final HashMap<String, String> displayMap = new HashMap<>();
-    public ConcurrentHashMap<UUID, BaseProjectileData> fireBalls = new ConcurrentHashMap<>();
-    //Should this be concurrent
+
+    //Custom projectiles
+    public final ConcurrentHashMap<UUID, BaseProjectileData> fireBalls = new ConcurrentHashMap<>();
 
     @Override // Plugin startup logic
-    @SuppressWarnings("")
     public void onEnable() {
+        //Load classes
         this.classLoader = new ClassLoader(this);
+        this.classData = this.classLoader.initializeClasses();
+
+        //Load database
         this.databaseManager = DatabaseManagerFactory.getDatabaseManager(classLoader);
+
+        //Load ability targetting managers
         this.partyManager = PartyManagerFactory.getPartyManager();
         this.protectionSet = ProtectionSetFactory.getProtectionRules();
-
 
         //Prevents throwing error if databaseManager shuts down this plugin.
         if (!this.isEnabled())
             return;
-        //Loading/Creating configs
-        loadConfigs();
 
         initClassChangeGUI();
         //registering listeners/commands
@@ -86,7 +95,7 @@ public final class XRPG extends JavaPlugin {
     private void initClassChangeGUI() {
         inventoryGUI = Bukkit.createInventory(null, 18, "Pick A Class");
 
-        for (ItemStack item : classLoader.initializeMenuItemsAndClasses()) {
+        for (ItemStack item : classLoader.initializeMenu()) {
             int slot = Utils.getLastAvailableInventorySlot(inventoryGUI);
             if (slot != -1) {
                 inventoryGUI.setItem(slot, item);
@@ -210,19 +219,25 @@ public final class XRPG extends JavaPlugin {
         RPGPlayers.put(playerUUID, xrpgPlayer);
     }
 
-    public String getClassDisplayName(String classId) {
-        return displayMap.get(classId);
-    }
-
-    public HashMap<String, String> getDisplayMap() {
-        return displayMap;
-    }
-
     public String getDefaultClassId() {
         return defaultClassId;
     }
 
     public void setDefaultClassId(String defaultClassId) {
         this.defaultClassId = defaultClassId;
+    }
+
+    public void addClassData(String classId, FileConfiguration dataFile) {
+        if (!this.classData.containsKey(classId)) {
+            this.classData.put(classId, dataFile);
+        }
+    }
+
+    public FileConfiguration getFileConfiguration(String classId) {
+        return classData.get(classId);
+    }
+
+    public HashMap<String, FileConfiguration> getClassData() {
+        return classData;
     }
 }
