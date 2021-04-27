@@ -3,6 +3,8 @@ package me.xepos.rpg.skills;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.ExplosiveProjectileData;
+import me.xepos.rpg.skills.base.FireballStackData;
+import me.xepos.rpg.skills.base.XRPGSkill;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Location;
 import org.bukkit.Material;

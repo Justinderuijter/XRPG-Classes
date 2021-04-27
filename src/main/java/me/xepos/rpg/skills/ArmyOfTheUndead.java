@@ -5,6 +5,8 @@ import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.entities.Follower;
 import me.xepos.rpg.entities.type.FollowerZombie;
 import me.xepos.rpg.entities.type.FollowerZombieVillager;
+import me.xepos.rpg.skills.base.IFollowerContainer;
+import me.xepos.rpg.skills.base.XRPGSkill;
 import me.xepos.rpg.utils.Utils;
 import net.minecraft.server.v1_16_R3.EntityLiving;
 import net.minecraft.server.v1_16_R3.EntityTypes;

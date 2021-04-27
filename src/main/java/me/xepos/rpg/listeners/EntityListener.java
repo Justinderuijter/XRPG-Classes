@@ -3,7 +3,7 @@ package me.xepos.rpg.listeners;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.entities.Follower;
-import me.xepos.rpg.skills.IFollowerContainer;
+import me.xepos.rpg.skills.base.IFollowerContainer;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftLivingEntity;
 import org.bukkit.entity.Player;

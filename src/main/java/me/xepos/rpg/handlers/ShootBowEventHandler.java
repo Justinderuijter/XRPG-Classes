@@ -1,6 +1,6 @@
 package me.xepos.rpg.handlers;
 
-import me.xepos.rpg.skills.XRPGSkill;
+import me.xepos.rpg.skills.base.XRPGSkill;
 
 public class ShootBowEventHandler extends EventHandler {
     private byte currentIndex = 0;

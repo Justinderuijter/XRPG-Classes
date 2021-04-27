@@ -1,6 +1,6 @@
 package me.xepos.rpg.handlers;
 
-import me.xepos.rpg.skills.XRPGSkill;
+import me.xepos.rpg.skills.base.XRPGSkill;
 import org.bukkit.event.Event;
 
 import java.util.ArrayList;

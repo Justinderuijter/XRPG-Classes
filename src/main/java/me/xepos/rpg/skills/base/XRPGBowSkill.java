@@ -1,4 +1,4 @@
-package me.xepos.rpg.skills;
+package me.xepos.rpg.skills.base;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;

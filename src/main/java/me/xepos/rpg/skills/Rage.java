@@ -5,6 +5,7 @@ import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.AttributeModifierData;
 import me.xepos.rpg.enums.ModifierType;
+import me.xepos.rpg.skills.base.XRPGSkill;
 import me.xepos.rpg.tasks.RavagerRageTask;
 import me.xepos.rpg.utils.Utils;
 import net.md_5.bungee.api.ChatMessageType;

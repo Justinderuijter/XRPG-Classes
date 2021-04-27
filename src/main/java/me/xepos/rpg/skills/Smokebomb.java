@@ -3,6 +3,7 @@ package me.xepos.rpg.skills;
 import com.mojang.datafixers.util.Pair;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.skills.base.XRPGSkill;
 import me.xepos.rpg.tasks.EndInvisibilityTask;
 import me.xepos.rpg.utils.Utils;
 import net.minecraft.server.v1_16_R3.EnumItemSlot;
