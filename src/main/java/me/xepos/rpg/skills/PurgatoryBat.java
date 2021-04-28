@@ -43,13 +43,15 @@ public class PurgatoryBat extends XRPGSkill {
             return;
         }
 
-        RayTraceResult result = player.getLocation().getWorld().rayTrace(player.getEyeLocation(), player.getEyeLocation().getDirection(), 20, FluidCollisionMode.ALWAYS, true, 0.3, p -> p instanceof LivingEntity && p != player);
+        final double range = getSkillVariables().getDouble("range", 16.0);
+        RayTraceResult result = player.getLocation().getWorld().rayTrace(player.getEyeLocation(), player.getEyeLocation().getDirection(), range, FluidCollisionMode.ALWAYS, true, 0.3, p -> p instanceof LivingEntity && p != player);
+
         if (result != null && result.getHitEntity() != null) {
             LivingEntity livingEntity = (LivingEntity) result.getHitEntity();
 
             final double interval = getSkillVariables().getDouble("interval", 1.0);
             final byte maxCount = (byte) getSkillVariables().getInt("max-procs", 5);
-            final double duration = getSkillVariables().getDouble("dt-duration", 6);
+            final double duration = getSkillVariables().getDouble("dt-duration", 5);
             final double dtAmount = getSkillVariables().getDouble("dt-amount", 1.2);
 
             Bat bat = (Bat) livingEntity.getWorld().spawnEntity(livingEntity.getEyeLocation(), EntityType.BAT);

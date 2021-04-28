@@ -25,11 +25,11 @@ public class ProjectileListener implements Listener {
 
     @EventHandler
     public void projectileHit(ProjectileHitEvent e) {
-        if (!plugin.fireBalls.containsKey(e.getEntity().getUniqueId())) return;
+        if (!plugin.projectiles.containsKey(e.getEntity().getUniqueId())) return;
         final Projectile projectile = e.getEntity();
 
-        BaseProjectileData pData = plugin.fireBalls.get(projectile.getUniqueId());
-        plugin.fireBalls.remove(e.getEntity().getUniqueId());
+        BaseProjectileData pData = plugin.projectiles.get(projectile.getUniqueId());
+        plugin.projectiles.remove(e.getEntity().getUniqueId());
 
         if (pData instanceof ProjectileData) {
             ProjectileData projectileData = (ProjectileData) pData;
@@ -157,14 +157,14 @@ public class ProjectileListener implements Listener {
 
     @EventHandler
     public void onExplosionPrime(ExplosionPrimeEvent e) {
-        if (!plugin.fireBalls.containsKey(e.getEntity().getUniqueId())) return;
-        ExplosiveProjectileData explosiveData = (ExplosiveProjectileData) plugin.fireBalls.get(e.getEntity().getUniqueId());
+        if (!plugin.projectiles.containsKey(e.getEntity().getUniqueId())) return;
+        ExplosiveProjectileData explosiveData = (ExplosiveProjectileData) plugin.projectiles.get(e.getEntity().getUniqueId());
 
         Location location = explosiveData.getProjectile().getLocation();
         e.setCancelled(true);
         location.getWorld().createExplosion(location, explosiveData.getYield(), explosiveData.setsFire(), explosiveData.destroysBlocks(), explosiveData.getShooter());
 
-        plugin.fireBalls.remove(explosiveData.getProjectile().getUniqueId());
+        plugin.projectiles.remove(explosiveData.getProjectile().getUniqueId());
 
 /*        int entityId = e.getEntity().getEntityId();
         if (plugin.fireBalls.containsKey(entityId)) {
@@ -206,7 +206,7 @@ public class ProjectileListener implements Listener {
 
     private void projectileBounceLogic(ProjectileHitEvent e, ProjectileData data) {
         if (e.getHitBlock() != null) {
-            plugin.fireBalls.remove(data.getProjectile().getUniqueId());
+            plugin.projectiles.remove(data.getProjectile().getUniqueId());
             return;
         }
 
@@ -221,10 +221,10 @@ public class ProjectileListener implements Listener {
                     Projectile newProjectile = livingEntity.launchProjectile(data.getProjectile().getClass(), vector);
                     newProjectile.setShooter(data.getProjectile().getShooter());
 
-                    if (!plugin.fireBalls.containsKey(newProjectile.getUniqueId())) {
+                    if (!plugin.projectiles.containsKey(newProjectile.getUniqueId())) {
                         ProjectileData projectileData = new ProjectileData(newProjectile, data.getDamage(), data.summonsLightning(), data.shouldTeleport(), 10000);
                         projectileData.setShouldBounce(true);
-                        plugin.fireBalls.put(newProjectile.getUniqueId(), projectileData);
+                        plugin.projectiles.put(newProjectile.getUniqueId(), projectileData);
                     }
                 }
             }

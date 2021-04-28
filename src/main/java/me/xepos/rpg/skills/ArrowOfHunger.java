@@ -14,10 +14,7 @@ import org.bukkit.potion.PotionEffectType;
 
 public class ArrowOfHunger extends XRPGBowSkill {
 
-    private int amplifier = 3;
-    private int potionDuration = 400;
-
-    private final PotionEffect hungerEffect = new PotionEffect(PotionEffectType.HUNGER, potionDuration, amplifier, false, false, true);
+    private final PotionEffect hungerEffect = new PotionEffect(PotionEffectType.HUNGER, (int) (getSkillVariables().getDouble("duration", 20) * 20L), getSkillVariables().getInt("amplifier", 3), false, false, true);
 
     public ArrowOfHunger(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
@@ -36,7 +33,9 @@ public class ArrowOfHunger extends XRPGBowSkill {
         }
         Arrow arrow = (Arrow) e.getProjectile();
 
+        arrow.setDamage(arrow.getDamage() * getDamageMultiplier());
         arrow.addCustomEffect(hungerEffect, false);
+
         setRemainingCooldown(getCooldown());
     }
 

@@ -2,6 +2,7 @@ package me.xepos.rpg.skills;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.datatypes.ProjectileData;
 import me.xepos.rpg.handlers.ShootBowEventHandler;
 import me.xepos.rpg.skills.base.XRPGBowSkill;
 import me.xepos.rpg.utils.Utils;
@@ -10,6 +11,8 @@ import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.Arrow;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityShootBowEvent;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public class ArrowOfDarkness extends XRPGBowSkill {
     public ArrowOfDarkness(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
@@ -32,8 +35,12 @@ public class ArrowOfDarkness extends XRPGBowSkill {
         Arrow arrow = (Arrow) e.getProjectile();
 
         arrow.setPickupStatus(AbstractArrow.PickupStatus.CREATIVE_ONLY);
-        arrow.setCustomName("Darkness");
-        arrow.setCustomNameVisible(false);
+
+        final int duration = (int) (getSkillVariables().getDouble("duration", 20.0) * 20);
+        final int amplifier = getSkillVariables().getInt("amplifier", 1);
+
+        getPlugin().projectiles.put(arrow.getUniqueId(), new ProjectileData(arrow, false, false, 20, new PotionEffect(PotionEffectType.HARM, duration, amplifier, false, false, true)));
+
         setRemainingCooldown(getCooldown());
     }
 

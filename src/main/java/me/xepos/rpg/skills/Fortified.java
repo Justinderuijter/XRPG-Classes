@@ -28,6 +28,7 @@ public class Fortified extends XRPGSkill {
         double dmg = e.getDamage() * getDamageMultiplier();
         e.setDamage(dmg);
 
+        if (!getSkillVariables().getBoolean("show-reduction", false)) return;
         TextComponent text = new TextComponent("Damage taken reduced by " + String.format(
                 Locale.GERMAN, "%,.2f", dmg));
         text.setColor(ChatColor.GREEN.asBungee());

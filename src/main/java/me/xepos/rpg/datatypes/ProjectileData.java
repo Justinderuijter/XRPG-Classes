@@ -40,6 +40,30 @@ public class ProjectileData extends BaseProjectileData {
         this.fireTicks = -1;
     }
 
+    public ProjectileData(Projectile projectile, boolean summonLightning, boolean teleportShooter, int secondsToLive) {
+        super(projectile, summonLightning, teleportShooter, secondsToLive);
+
+        this.damage = 0;
+        this.damageMultiplier = 1.0;
+        this.fireTicks = -1;
+    }
+
+    public ProjectileData(Projectile projectile, boolean summonLightning, boolean teleportShooter, int secondsToLive, PotionEffect potionEffect) {
+        super(projectile, summonLightning, teleportShooter, secondsToLive, potionEffect);
+
+        this.damage = 0;
+        this.damageMultiplier = 1.0;
+        this.fireTicks = -1;
+    }
+
+    public ProjectileData(Projectile projectile, double damageMultiplier, int secondsToLive) {
+        super(projectile, false, false, secondsToLive);
+
+        this.damage = 0;
+        this.damageMultiplier = 1.0;
+        this.fireTicks = -1;
+    }
+
 
     public double getDamage() {
         return damage;

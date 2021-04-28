@@ -10,10 +10,10 @@ display:
 default: false
 enabled: true
 allow-bow: true
-allow-shield: true
+allow-shield: false
 
 health-multiplier: 1.0
-speed-multiplier: 1.25
+speed-multiplier: 1.0
 
 damage-multipliers:
   preferred:

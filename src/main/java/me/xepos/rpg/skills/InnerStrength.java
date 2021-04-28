@@ -21,13 +21,13 @@ import java.util.Random;
 
 public class InnerStrength extends XRPGSkill {
     private LotusStrike lotusStrike;
-    private final int potionDuration = getSkillVariables().getInt("duration", 6);
+    private final double potionDuration = getSkillVariables().getDouble("duration", 6.0);
 
     private final List<PotionEffect> defEffects = new ArrayList<PotionEffect>() {{
-        add(new PotionEffect(PotionEffectType.REGENERATION, potionDuration * 20, 1, false, false, true));
-        add(new PotionEffect(PotionEffectType.SLOW_FALLING, potionDuration * 20, 0, false, false, true));
-        add(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, potionDuration * 20, 0, false, false, true));
-        add(new PotionEffect(PotionEffectType.ABSORPTION, potionDuration * 20, 0, false, false, true));
+        add(new PotionEffect(PotionEffectType.REGENERATION, (int) (potionDuration * 20), 1, false, false, true));
+        add(new PotionEffect(PotionEffectType.SLOW_FALLING, (int) (potionDuration * 20), 0, false, false, true));
+        add(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, (int) (potionDuration * 20), 0, false, false, true));
+        add(new PotionEffect(PotionEffectType.ABSORPTION, (int) (potionDuration * 20), 0, false, false, true));
     }};
 
     public InnerStrength(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, LotusStrike lotusStrike) {
@@ -78,9 +78,11 @@ public class InnerStrength extends XRPGSkill {
     }
 
     private void useInnerStrength(Player player) {
+        final double healAmount = getSkillVariables().getDouble("heal", 3.0);
+
         applyTriggerEffect(player);
-        Utils.healLivingEntity(player, getDamage());
-        player.sendMessage("Inner Strength healed you for " + getDamage());
+        Utils.healLivingEntity(player, healAmount);
+        player.sendMessage("Inner Strength healed you for " + healAmount);
     }
 
     private void applyTriggerEffect(Player player) {

@@ -52,9 +52,9 @@ public class Fireball extends XRPGSkill {
         org.bukkit.entity.Fireball fireball = e.getPlayer().launchProjectile(SmallFireball.class);
         fireball.setShooter(e.getPlayer());
 
-        if (!getPlugin().fireBalls.containsKey(fireball.getUniqueId())) {
+        if (!getPlugin().projectiles.containsKey(fireball.getUniqueId())) {
             //For some reason damage is halved so doubling it to get proper value
-            getPlugin().fireBalls.put(fireball.getUniqueId(), new ProjectileData(fireball, getDamage() * 2, false, false, 10));
+            getPlugin().projectiles.put(fireball.getUniqueId(), new ProjectileData(fireball, getDamage() * 2, false, false, 10));
         }
 
         this.incrementFireBallStacks(this.fireballStackData.getMaxFireballStacks());

@@ -73,8 +73,8 @@ public class Meteor extends XRPGSkill {
         fireball.setShooter(e.getPlayer());
         fireball.setDirection(new Vector(0, -1, 0));
 
-        if (!getPlugin().fireBalls.containsKey(fireball.getUniqueId()))
-            getPlugin().fireBalls.put(fireball.getUniqueId(), new ExplosiveProjectileData(fireball, explosionYield * (stacks + 1), breakBlocks, setFire, 10));
+        if (!getPlugin().projectiles.containsKey(fireball.getUniqueId()))
+            getPlugin().projectiles.put(fireball.getUniqueId(), new ExplosiveProjectileData(fireball, explosionYield * (stacks + 1), breakBlocks, setFire, 10));
 
         setRemainingCooldown(getCooldown());
     }

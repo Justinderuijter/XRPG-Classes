@@ -2,6 +2,7 @@ package me.xepos.rpg.skills;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.datatypes.ProjectileData;
 import me.xepos.rpg.skills.base.XRPGBowSkill;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.configuration.ConfigurationSection;
@@ -27,10 +28,11 @@ public class SoulShot extends XRPGBowSkill {
             return;
         }
         Arrow arrow = (Arrow) e.getProjectile();
-
         arrow.setDamage(0);
-        arrow.setCustomName("Soul");
-        arrow.setCustomNameVisible(false);
+
+        double damageMultiplier = 1 - getSkillVariables().getDouble("percent-health-damage", 0.25);
+
+        getPlugin().projectiles.put(arrow.getUniqueId(), new ProjectileData(arrow, damageMultiplier, 20));
         setRemainingCooldown(getCooldown());
     }
 

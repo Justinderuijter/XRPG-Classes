@@ -2,6 +2,7 @@ package me.xepos.rpg.skills;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.datatypes.ExplosiveProjectileData;
 import me.xepos.rpg.handlers.ShootBowEventHandler;
 import me.xepos.rpg.skills.base.XRPGBowSkill;
 import me.xepos.rpg.utils.Utils;
@@ -27,9 +28,11 @@ public class ExplosiveShot extends XRPGBowSkill {
             return;
         }
         Arrow arrow = (Arrow) e.getProjectile();
+        final float yield = (float) getSkillVariables().getDouble("explosion-yield", 2.0);
+        final boolean setFire = getSkillVariables().getBoolean("explosion-fire", false);
+        final boolean breakBlocks = getSkillVariables().getBoolean("explosion-break-block", false);
 
-        arrow.setCustomName("Explosion");
-        arrow.setCustomNameVisible(false);
+        getPlugin().projectiles.put(arrow.getUniqueId(), new ExplosiveProjectileData(arrow, yield, breakBlocks, setFire, 20));
         setRemainingCooldown(getCooldown());
     }
 

@@ -34,11 +34,14 @@ public class BoneShield extends XRPGSkill {
         EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
         Player player = (Player) e.getEntity();
 
-        double maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
-        if (isSkillReady()) {
-            if (player.getHealth() <= maxHealth / 2) {
 
-                final double heartsPerFollower = getSkillVariables().getDouble("hearts-per-follower", 2.0);
+        if (isSkillReady()) {
+            double maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+            double threshold = getSkillVariables().getDouble("threshold", 50.0);
+
+            if (player.getHealth() <= maxHealth / (100 / threshold)) {
+
+                final double heartsPerFollower = getSkillVariables().getDouble("shield-per-follower", 2.0);
                 double absorptionHearts;
                 if (armyOfTheUndead == null)
                     absorptionHearts = heartsPerFollower;

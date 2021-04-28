@@ -50,7 +50,7 @@ public final class XRPG extends JavaPlugin {
     private static final HashMap<UUID, XRPGPlayer> RPGPlayers = new HashMap<>();
 
     //Custom projectiles
-    public final ConcurrentHashMap<UUID, BaseProjectileData> fireBalls = new ConcurrentHashMap<>();
+    public final ConcurrentHashMap<UUID, BaseProjectileData> projectiles = new ConcurrentHashMap<>();
 
     @Override // Plugin startup logic
     public void onEnable() {
@@ -81,7 +81,7 @@ public final class XRPG extends JavaPlugin {
 
         int timer = this.getConfig().getInt("Garbage Collection.Timer", 120);
         if (timer > 0)
-            new ClearHashMapTask(this, fireBalls).runTaskTimerAsynchronously(this, timer * 20L, timer * 20L);
+            new ClearHashMapTask(this, projectiles).runTaskTimerAsynchronously(this, timer * 20L, timer * 20L);
     }
 
 

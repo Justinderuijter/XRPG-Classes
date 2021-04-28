@@ -38,10 +38,11 @@ public class SnipeShot extends XRPGBowSkill {
     }
 
     private void doSnipeShot(EntityShootBowEvent e, Arrow arrow) {
-        float force = e.getForce();
+        final int pierce = getSkillVariables().getInt("pierce", 1);
+        final float force = e.getForce();
         arrow.setGravity(false);
         arrow.setPickupStatus(AbstractArrow.PickupStatus.CREATIVE_ONLY);
-        arrow.setPierceLevel(Math.round(force) + 1);
+        arrow.setPierceLevel(Math.round(force) + pierce);
         arrow.setDamage(arrow.getDamage() * getDamageMultiplier() * force);
 
         new BukkitRunnable() {

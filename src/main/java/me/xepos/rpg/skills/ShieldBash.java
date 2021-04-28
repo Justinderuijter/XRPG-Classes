@@ -58,7 +58,6 @@ public class ShieldBash extends XRPGSkill {
 
                 final double castDelay = getSkillVariables().getDouble("cast-delay", 0.25);
                 final double duration = getSkillVariables().getDouble("duration", 2.0);
-                ;
 
                 XRPGPlayer xrpgPlayer = getPlugin().getXRPGPlayer(target);
                 if (xrpgPlayer.canBeStunned())

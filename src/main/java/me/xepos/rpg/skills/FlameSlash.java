@@ -41,8 +41,8 @@ public class FlameSlash extends XRPGSkill {
         Fireball fireball = e.getPlayer().launchProjectile(SmallFireball.class);
         fireball.setCustomName(getSkillName());
         fireball.setCustomNameVisible(false);
-        if (!getPlugin().fireBalls.containsKey(fireball.getUniqueId()))
-            getPlugin().fireBalls.put(fireball.getUniqueId(), new ProjectileData(fireball, 10, false, false, 10));
+        if (!getPlugin().projectiles.containsKey(fireball.getUniqueId()))
+            getPlugin().projectiles.put(fireball.getUniqueId(), new ProjectileData(fireball, 10, false, false, 10));
 
         setRemainingCooldown(getCooldown());
 

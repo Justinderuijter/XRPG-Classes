@@ -32,7 +32,7 @@ public class XRPGDebug implements CommandExecutor {
                     switch (strings[0])
                     {
                         case "fireballs":
-                            player.sendMessage("Fireballs: " + plugin.fireBalls.size());
+                            player.sendMessage("Fireballs: " + plugin.projectiles.size());
                             return true;
                         case "damagetaken":
                             for (DamageTakenSource d : plugin.getXRPGPlayer(player).dmgTakenMultipliers.keySet()) {
