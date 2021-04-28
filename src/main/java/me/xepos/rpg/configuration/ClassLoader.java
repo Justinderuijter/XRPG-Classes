@@ -111,7 +111,7 @@ public class ClassLoader {
         List<ItemStack> menuItems = new ArrayList<>();
 
         for (String classId : plugin.getClassData().keySet()) {
-            ConfigurationSection displaySettings = plugin.getFileConfiguration(classId);
+            ConfigurationSection displaySettings = plugin.getFileConfiguration(classId).getConfigurationSection("display");
 
             if (displaySettings != null) {
 

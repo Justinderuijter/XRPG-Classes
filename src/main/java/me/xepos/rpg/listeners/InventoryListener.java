@@ -11,8 +11,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
-
-import java.util.Set;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 
 public class InventoryListener implements Listener {
 
@@ -29,70 +29,42 @@ public class InventoryListener implements Listener {
             if (e.getCurrentItem() == null)
                 return;
 
-            Set<NamespacedKey> keys = e.getCurrentItem().getItemMeta().getPersistentDataContainer().getKeys();
-            String classId = null;
-            String classDisplayName = e.getCurrentItem().getItemMeta().getDisplayName();
-            for (NamespacedKey key : keys) {
-                if (key.getNamespace().equals("classId")) {
-                    classId = key.getKey();
-                    break;
+            ItemMeta meta = e.getCurrentItem().getItemMeta();
+            if (meta != null) {
+                String classId = meta.getPersistentDataContainer().get(new NamespacedKey(plugin, "classId"), PersistentDataType.STRING);
+                String classDisplayName = e.getCurrentItem().getItemMeta().getDisplayName();
+
+                if (classId == null) {
+                    e.setCancelled(true);
+                    return;
                 }
-            }
-            if (classId == null) return;
 
-            Player player = (Player) e.getWhoClicked();
-            XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(player);
+                Player player = (Player) e.getWhoClicked();
+                XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(player);
 
-            if (xrpgPlayer.getFreeChangeTickets() <= 0) {
-                player.sendMessage(ChatColor.RED + "You don't have enough tickets!");
-                e.setCancelled(true);
-                return;
-            }
+                if (xrpgPlayer.getFreeChangeTickets() <= 0) {
+                    player.sendMessage(ChatColor.RED + "You don't have enough tickets!");
+                    e.setCancelled(true);
+                    return;
+                }
 
-            if (xrpgPlayer.getClassId().equals(classId)) {
-                player.sendMessage(ChatColor.RED + "Can't change to this class, it's already your current class!");
-                e.setCancelled(true);
-                return;
-            }
+                if (xrpgPlayer.getClassId().equals(classId)) {
+                    player.sendMessage(ChatColor.RED + "Can't change to this class, it's already your current class!");
+                    e.setCancelled(true);
+                    return;
+                }
 
-            XRPGClassChangedEvent event = new XRPGClassChangedEvent(player, xrpgPlayer.getClassId(), xrpgPlayer.getClassDisplayName(), classId, classDisplayName);
-            Bukkit.getServer().getPluginManager().callEvent(event);
-
-            if (!event.isCancelled()) {
-                Bukkit.broadcastMessage(xrpgPlayer.getPlayer() + "changed their class from " + xrpgPlayer.getClassDisplayName() + " to " + classDisplayName + "!");
-                xrpgPlayer.changeClass(classId, classDisplayName);
-
-            }
-
-
-
-
-
-/*            XRPGClass oldClass = xrpgPlayer.getPlayerClass();
-            try {
-                Class<?> clazz = Class.forName("me.xepos.rpg.classes." + className);
-                Constructor<?> constructor = clazz.getConstructor(XRPG.class);
-                Object instance = constructor.newInstance(plugin);
-                xrpgPlayer.setPlayerClass((XRPGClass) instance);
-
-                //Creating event
-                XRPGClassChangedEvent event = new XRPGClassChangedEvent(player, oldClass, xrpgPlayer.getPlayerClass());
+                XRPGClassChangedEvent event = new XRPGClassChangedEvent(player, xrpgPlayer.getClassId(), xrpgPlayer.getClassDisplayName(), classId, classDisplayName);
                 Bukkit.getServer().getPluginManager().callEvent(event);
-                //Checking if change ticket needs to be reduced
-                if (!oldClass.toString().equalsIgnoreCase(xrpgPlayer.getPlayerClass().toString()) && !event.isCancelled()) {
-                    //TODO: Save XRPGPlayer after changing class, rather than just saving it on logout.
-                    xrpgPlayer.setFreeChangeTickets(xrpgPlayer.getFreeChangeTickets() - 1);
-                    player.sendMessage("You are now " + xrpgPlayer.getPlayerClass().toString() + "!");
+
+                if (!event.isCancelled()) {
+                    Bukkit.broadcastMessage(xrpgPlayer.getPlayer() + "changed their class from " + xrpgPlayer.getClassDisplayName() + " to " + classDisplayName + "!");
+                    xrpgPlayer.changeClass(classId, classDisplayName);
+
                 }
-            }catch (ClassNotFoundException cnfException)
-            {
-                player.sendMessage("You have " + xrpgPlayer.getFreeChangeTickets() + " tickets.");
             }
-            catch (Exception ex)
-            {
-                ex.printStackTrace();
-            }
-            e.setCancelled(true);*/
+
+            e.setCancelled(true);
         }
     }
 

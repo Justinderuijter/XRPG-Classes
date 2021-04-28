@@ -25,7 +25,6 @@ public abstract class XRPGSkill {
     public XRPGSkill(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         this.xrpgPlayer = xrpgPlayer;
         this.plugin = plugin;
-        //this.skillName = skillName;
         this.skillVariables = skillVariables;
         this.protectionSet = plugin.getProtectionSet();
         this.partyManager = plugin.getPartyManager();
@@ -92,6 +91,10 @@ public abstract class XRPGSkill {
 
     public double getDamageMultiplier() {
         return skillVariables.getDouble("damage-multiplier");
+    }
+
+    public String getName() {
+        return skillVariables.getString("name", this.getClass().getSimpleName());
     }
 
     public ConfigurationSection getSkillVariables() {

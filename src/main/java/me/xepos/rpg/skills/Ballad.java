@@ -32,9 +32,13 @@ public class Ballad extends XRPGSkill {
             return;
         }
 
-        List<Player> nearbyPlayers = getNearbyAlliedPlayers(caster, getSkillVariables().getInt("x-range", 10), getSkillVariables().getInt("y-range", 5), getSkillVariables().getInt("z-range", 10));
+        final double xRange = getSkillVariables().getDouble("x-range", 10);
+        final double yRange = getSkillVariables().getDouble("y-range", 5);
+        final double zRange = getSkillVariables().getDouble("z-range", xRange);
+
+        List<Player> nearbyPlayers = getNearbyAlliedPlayers(caster, xRange, yRange, zRange);
         for (Player nearbyPlayer : nearbyPlayers) {
-            new HealOverTimeTask(nearbyPlayer, getDamage(), getSkillVariables().getInt("max-procs", 10)).runTaskTimer(getPlugin(), 1L, (long) getSkillVariables().getDouble("interval", 1.0) * 20L);
+            new HealOverTimeTask(nearbyPlayer, getSkillVariables().getDouble("heal-per-proc", 1.0), getSkillVariables().getInt("max-procs", 10)).runTaskTimer(getPlugin(), 1L, (long) getSkillVariables().getDouble("interval", 1.0) * 20L);
         }
 
         setRemainingCooldown(getCooldown());
