@@ -25,10 +25,14 @@ damage-multipliers:
 
 skills:
   CutThroat:
+    name: "Cut-throat"
     damage: 1.3
+    threshold: 25.0
   ShadowStep:
-    duration: 5
-    cooldown: 20
+    name: "Shadow Step"
+    duration: 5.0
+    cooldown: 20.0
   Smokebomb:
-    duration: 10
-    cooldown: 40
+    name: "Smoke Bomb"
+    duration: 10.0
+    cooldown: 40.0
