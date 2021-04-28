@@ -40,7 +40,7 @@ public class Rage extends XRPGSkill {
     public Rage(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 
-        double attackSpeedMultiplier = skillVariables.getDouble("rage-atk-spd-multiplier", 1.65) - 1;
+        double attackSpeedMultiplier = skillVariables.getDouble("atk-spd-multiplier", 1.65) - 1;
         AttributeModifier mod = new AttributeModifier(UUID.fromString("1d7a09c9-b6e2-4dc7-ab6f-8831dffcb111"), "RAGE_ATK_SPD", attackSpeedMultiplier, AttributeModifier.Operation.MULTIPLY_SCALAR_1);
 
         AttributeModifierManager.getInstance().put(ModifierType.POSITIVE, mod.getName(), mod, Attribute.GENERIC_ATTACK_SPEED);
@@ -112,9 +112,9 @@ public class Rage extends XRPGSkill {
                     player.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 100, 0, false, false, true));
                 }
 
-                e.setDamage(e.getDamage() * skillVariable.getDouble("rage-four-multiplier", 1.1));
+                e.setDamage(e.getDamage() * skillVariable.getDouble("rage-four-multiplier", 1.3));
 
-                double rageRange = skillVariable.getDouble("rage-aoe-range", 3);
+                double rageRange = skillVariable.getDouble("range", 3);
 
                 if (e.getEntity() instanceof LivingEntity) {
                     LivingEntity livingEntity = (LivingEntity) e.getEntity();

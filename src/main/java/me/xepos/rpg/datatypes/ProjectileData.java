@@ -60,7 +60,7 @@ public class ProjectileData extends BaseProjectileData {
         super(projectile, false, false, secondsToLive);
 
         this.damage = 0;
-        this.damageMultiplier = 1.0;
+        this.damageMultiplier = damageMultiplier;
         this.fireTicks = -1;
     }
 

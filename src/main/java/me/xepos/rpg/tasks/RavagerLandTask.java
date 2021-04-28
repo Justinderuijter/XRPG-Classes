@@ -13,11 +13,13 @@ import java.util.List;
 public class RavagerLandTask extends BukkitRunnable {
 
     private final Player player;
+    private final double damage;
     private final ProtectionSet protectionSet;
     private final IPartyManager partyManager;
 
-    public RavagerLandTask(Player player, ProtectionSet protectionSet, IPartyManager partyManager) {
+    public RavagerLandTask(Player player, double damage, ProtectionSet protectionSet, IPartyManager partyManager) {
         this.player = player;
+        this.damage = damage;
         this.protectionSet = protectionSet;
         this.partyManager = partyManager;
     }
@@ -47,7 +49,7 @@ public class RavagerLandTask extends BukkitRunnable {
     }
 
     private void damageAndSlowTarget(LivingEntity livingEntity) {
-        livingEntity.damage(10, player);
+        livingEntity.damage(damage, player);
         //TODO: Fix this
         //livingEntity.addPotionEffect(RavagerConfig.getInstance().slowEffect);
     }
