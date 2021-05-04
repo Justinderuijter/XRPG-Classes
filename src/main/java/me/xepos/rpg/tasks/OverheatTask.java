@@ -14,8 +14,9 @@ import java.util.ArrayList;
 public class OverheatTask extends BukkitRunnable {
 
     private final LivingEntity target;
+    private double damage;
 
-    public OverheatTask(LivingEntity target) {
+    public OverheatTask(LivingEntity target, double damage, double armorToDamage) {
         this.target = target;
     }
 
@@ -45,14 +46,13 @@ public class OverheatTask extends BukkitRunnable {
         target.sendMessage("Armor value: " + armorValue);
         target.sendMessage("Protection Level: " + enchantLevel);
 
-        double dmg = 5;
+        double damage = 5;
 
         if (!target.isInWater()) {
-            dmg = (5 + armorValue / 2) * 1 / (1 - enchantLevel * 0.04);
-            target.sendMessage("Final damage: " + dmg);
-            ((CraftLivingEntity) target).getHandle().damageEntity(DamageSource.FIRE, (float) dmg);
+            damage = (5 + armorValue / 2) * 1 / (1 - enchantLevel * 0.04);
+            ((CraftLivingEntity) target).getHandle().damageEntity(DamageSource.FIRE, (float) damage);
         } else {
-            ((CraftLivingEntity) target).getHandle().damageEntity(DamageSource.FIRE, (float) dmg);
+            ((CraftLivingEntity) target).getHandle().damageEntity(DamageSource.FIRE, (float) damage);
             target.sendMessage("Overheat damage was reduced by the water.");
         }
     }

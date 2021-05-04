@@ -9,11 +9,13 @@ public class BloodCorruptionTask extends BukkitRunnable {
     private final Location originalLocation;
     private final LivingEntity target;
     private final LivingEntity caster;
+    private final double damage;
 
-    public BloodCorruptionTask(LivingEntity caster, LivingEntity target) {
-        this.originalLocation = target.getLocation();
+    public BloodCorruptionTask(LivingEntity caster, LivingEntity target, double damage) {
+        this.originalLocation = target.getLocation().clone();
         this.target = target;
         this.caster = caster;
+        this.damage = damage;
     }
 
     @Override
@@ -22,6 +24,6 @@ public class BloodCorruptionTask extends BukkitRunnable {
         if (originalLocation.getWorld() == target.getWorld()) {
             distance = target.getLocation().distance(originalLocation);
         }
-        target.damage(distance, caster);
+        target.damage(distance * damage, caster);
     }
 }

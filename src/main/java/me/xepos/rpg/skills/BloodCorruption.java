@@ -49,10 +49,11 @@ public class BloodCorruption extends XRPGSkill {
         RayTraceResult result = Utils.rayTrace(caster, range, FluidCollisionMode.NEVER);
         if (result.getHitEntity() != null) {
             double duration = getSkillVariables().getDouble("duration", 4.0);
+            double damage = getSkillVariables().getDouble("damage-per-block", 1.0);
 
             caster.sendMessage("Hit " + result.getHitEntity().getName());
             LivingEntity target = (LivingEntity) result.getHitEntity();
-            new BloodCorruptionTask(caster, target).runTaskLater(getPlugin(), (long) duration * 20L);
+            new BloodCorruptionTask(caster, target, damage).runTaskLater(getPlugin(), (long) duration * 20L);
             setRemainingCooldown(getCooldown());
         }
     }

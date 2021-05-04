@@ -52,7 +52,7 @@ public class Overheat extends XRPGSkill {
             double delay = getSkillVariables().getDouble("delay", 5.0);
 
             //Utils.rayTrace only returns livingEntities so no need to check
-            new OverheatTask((LivingEntity) result.getHitEntity()).runTaskLater(getPlugin(), (long) delay * 20L);
+            new OverheatTask((LivingEntity) result.getHitEntity(), getDamage(), getSkillVariables().getDouble("damage-per-armor", 0.5)).runTaskLater(getPlugin(), (long) delay * 20L);
             setRemainingCooldown(getCooldown());
         }
     }

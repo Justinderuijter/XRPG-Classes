@@ -42,7 +42,7 @@ public class Souldraw extends XRPGSkill {
 
             RayTraceResult result = Utils.rayTrace(caster, range, FluidCollisionMode.NEVER);
             if (result.getHitEntity() != null) {
-                double healRatio = getSkillVariables().getDouble("damage-to-heal-ratio", 0.5);
+                double healRatio = getSkillVariables().getDouble("heal-per-damage", 0.5);
 
                 LivingEntity target = (LivingEntity) result.getHitEntity();
                 target.damage(getDamage(), caster);
