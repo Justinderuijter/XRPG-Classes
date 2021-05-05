@@ -1,6 +1,7 @@
 package me.xepos.rpg.handlers;
 
 import me.xepos.rpg.skills.base.XRPGSkill;
+import org.bukkit.event.Event;
 
 public class ShootBowEventHandler extends EventHandler {
     private byte currentIndex = 0;
@@ -22,5 +23,12 @@ public class ShootBowEventHandler extends EventHandler {
     public void clear() {
         super.clear();
         currentIndex = 0;
+    }
+
+    @Override
+    public void invoke(Event e) {
+        if (getSkills().size() > 0) {
+            getCurrentSkill().activate(e);
+        }
     }
 }
