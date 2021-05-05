@@ -41,18 +41,10 @@ public class XRPGPlayer {
         this.classDisplay = classDisplayName;
     }
 
-    //Constructor for new profiles
-    @Deprecated
-    public XRPGPlayer(UUID playerId) {
-        this.player = null;
-        this.playerId = playerId;
-        this.classId = "assassin";
-    }
-
     //For convenience
-    private List<IFollowerContainer> followerSkills = new ArrayList<>();
+    private transient List<IFollowerContainer> followerSkills = new ArrayList<>();
 
-    private final HashMap<String, EventHandler> handlerList = new HashMap<String, EventHandler>() {{
+    private final transient HashMap<String, EventHandler> handlerList = new HashMap<String, EventHandler>() {{
         //Interact Handlers
         put("RIGHT_CLICK", new EventHandler());
         put("LEFT_CLICK", new EventHandler());
@@ -164,6 +156,10 @@ public class XRPGPlayer {
 
     public EventHandler getEventHandler(String handlerName) {
         return handlerList.get(handlerName.toUpperCase());
+    }
+
+    public HashMap<String, EventHandler> getHandlerList() {
+        return handlerList;
     }
 
     public void addEventHandler(String handlerName, EventHandler handler) {

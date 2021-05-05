@@ -5,27 +5,32 @@ import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.enums.DamageTakenSource;
 import me.xepos.rpg.enums.ModifierType;
+import me.xepos.rpg.handlers.EventHandler;
+import me.xepos.rpg.skills.base.XRPGSkill;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
 import java.util.UUID;
 
 public class XRPGDebug implements CommandExecutor {
 
     private final XRPG plugin;
-    public XRPGDebug(XRPG plugin)
-    {
+    private final HashMap<String, FileConfiguration> classData;
+
+    public XRPGDebug(XRPG plugin, HashMap<String, FileConfiguration> classData) {
         this.plugin = plugin;
+        this.classData = classData;
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String[] strings) {
         if (command.getName().equals("xrpgdebug")) {
-            if(commandSender instanceof Player)
-            {
+            if (commandSender instanceof Player) {
                 Player player = (Player) commandSender;
                 if(strings.length == 1)
                 {
@@ -54,6 +59,20 @@ public class XRPGDebug implements CommandExecutor {
                                 XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(id);
                                 player.sendMessage(xrpgPlayer.getPlayer().getName() + ": " + xrpgPlayer.getClassId());
                             }
+                            return true;
+                        case "skills":
+                            HashMap<String, EventHandler> handlers = plugin.getXRPGPlayer(player).getHandlerList();
+                            for (String handlerName : handlers.keySet()) {
+                                for (XRPGSkill skill : handlers.get(handlerName).getSkills()) {
+                                    player.sendMessage(skill.getName());
+                                }
+                            }
+                            return true;
+                        case "classes":
+                            for (String classId : classData.keySet()) {
+                                player.sendMessage(classId);
+                            }
+
                             return true;
                         default:
                             return false;

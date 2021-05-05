@@ -45,6 +45,7 @@ public class JSONDatabaseManager implements IDatabaseManager {
                 //Extract the class from JsonObject
                 String playerClass = jsonData.get("classId").toString();
 
+                //TODO: Fix error here
                 XRPGPlayer xrpgPlayer = new XRPGPlayer(playerId, playerClass, plugin.getFileConfiguration(playerClass).getString("display.name"));
                 classLoader.load(playerClass, xrpgPlayer);
                 plugin.addRPGPlayer(playerId, xrpgPlayer);
@@ -56,8 +57,10 @@ public class JSONDatabaseManager implements IDatabaseManager {
             }
 
         } else {
-            XRPGPlayer rpgPlayer = new XRPGPlayer(playerId, plugin.getDefaultClassId(), plugin.getFileConfiguration(plugin.getDefaultClassId()).getString("display.name"));
-            plugin.addRPGPlayer(playerId, rpgPlayer);
+            String defaultClassId = plugin.getDefaultClassId();
+            XRPGPlayer xrpgPlayer = new XRPGPlayer(playerId, plugin.getDefaultClassId(), plugin.getFileConfiguration(defaultClassId).getString("display.name"));
+            classLoader.load(defaultClassId, xrpgPlayer);
+            plugin.addRPGPlayer(playerId, xrpgPlayer);
         }
     }
 

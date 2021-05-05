@@ -47,7 +47,7 @@ public final class XRPG extends JavaPlugin {
     private static HashMap<String, FileConfiguration> classData;
 
     //Players
-    private static final HashMap<UUID, XRPGPlayer> RPGPlayers = new HashMap<>();
+    private static final ConcurrentHashMap<UUID, XRPGPlayer> RPGPlayers = new ConcurrentHashMap<>();
 
     //Custom projectiles
     public final ConcurrentHashMap<UUID, BaseProjectileData> projectiles = new ConcurrentHashMap<>();
@@ -55,7 +55,10 @@ public final class XRPG extends JavaPlugin {
     @Override // Plugin startup logic
     public void onEnable() {
         //Load classes
+        this.saveDefaultConfig();
+
         this.classLoader = new ClassLoader(this);
+        this.classLoader.checkClassFolder();
         this.classData = this.classLoader.initializeClasses();
 
         //Load database
@@ -74,7 +77,7 @@ public final class XRPG extends JavaPlugin {
         initEventListeners();
 
         this.getCommand("smoke").setExecutor(new SmokeBombCommand());
-        this.getCommand("xrpgdebug").setExecutor(new XRPGDebug(this));
+        this.getCommand("xrpgdebug").setExecutor(new XRPGDebug(this, classData));
         this.getCommand("xrpgreload").setExecutor(new XRPGReload());
         this.getCommand("changeclass").setExecutor(new ChangeClassCommand(this, inventoryGUI));
         System.out.println("RPG classes loaded!");
@@ -211,7 +214,7 @@ public final class XRPG extends JavaPlugin {
         RPGPlayers.remove(playerUUID);
     }
 
-    public HashMap<UUID, XRPGPlayer> getRPGPlayers() {
+    public ConcurrentHashMap<UUID, XRPGPlayer> getRPGPlayers() {
         return RPGPlayers;
     }
 

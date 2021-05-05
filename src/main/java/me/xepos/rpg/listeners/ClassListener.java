@@ -7,6 +7,7 @@ import me.xepos.rpg.database.tasks.savePlayerDataTask;
 import me.xepos.rpg.enums.DamageTakenSource;
 import me.xepos.rpg.handlers.ShootBowEventHandler;
 import me.xepos.rpg.utils.Utils;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -71,6 +72,7 @@ public class ClassListener implements Listener {
         Player player = e.getPlayer();
         XRPGPlayer xrpgPlayer = null;
         if (plugin.getRPGPlayers().containsKey(player.getUniqueId())) {
+            Bukkit.getLogger().severe("Player found!");
             xrpgPlayer = plugin.getXRPGPlayer(player);
             xrpgPlayer.setPlayer(player);
         }

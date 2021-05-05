@@ -12,9 +12,9 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.Constructor;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -34,9 +34,29 @@ public class ClassLoader {
 
     public void checkClassFolder() {
 
+        if (!classFolder.exists()) {
+            if (classFolder.mkdir()) {
+                Bukkit.getLogger().info("Class folder created");
+            }
+        }
+
         try {
             if (isDirEmpty(classFolder)) {
-                //extract classes
+                ArrayList<String> files = new ArrayList<String>() {{
+                    add("assassin");
+                    add("bard");
+                    add("brawler");
+                    add("guardian");
+                    add("necromancer");
+                    add("ranger");
+                    add("ravager");
+                    add("sorcerer");
+                    add("wizard");
+                }};
+                for (String fileName : files) {
+                    Bukkit.getLogger().info(fileName + ".yml");
+                    saveResource(fileName + ".yml", false);
+                }
             }
         } catch (IOException exception) {
             Bukkit.getLogger().info("Failed to read class folder!");
@@ -53,7 +73,7 @@ public class ClassLoader {
     public void load(String classId, XRPGPlayer xrpgPlayer) {
         FileConfiguration classConfig = plugin.getFileConfiguration(classId);
 
-        classConfig.getKeys(true).forEach(x -> Bukkit.getLogger().info(x));
+        //classConfig.getKeys(true).forEach(x -> Bukkit.getLogger().info(x));
 
         ConfigurationSection skillSection = classConfig.getConfigurationSection("skills");
         if (skillSection == null) {
@@ -138,5 +158,44 @@ public class ClassLoader {
 
         }
         return menuItems;
+    }
+
+    private void saveResource(@NotNull String resourcePath, boolean replace) {
+        if (!resourcePath.equals("")) {
+            resourcePath = resourcePath.replace('\\', '/');
+            InputStream in = plugin.getResource(resourcePath);
+            if (in == null) {
+                throw new IllegalArgumentException("The embedded resource '" + resourcePath + "' cannot be found");
+            } else {
+                File outFile = new File(classFolder, resourcePath);
+                int lastIndex = resourcePath.lastIndexOf(47);
+                File outDir = new File(classFolder, resourcePath.substring(0, lastIndex >= 0 ? lastIndex : 0));
+                if (!outDir.exists()) {
+                    outDir.mkdirs();
+                }
+
+                try {
+                    if (outFile.exists() && !replace) {
+                        Bukkit.getLogger().severe("Could not save " + outFile.getName() + " to " + outFile + " because " + outFile.getName() + " already exists.");
+                    } else {
+                        OutputStream out = new FileOutputStream(outFile);
+                        byte[] buf = new byte[1024];
+
+                        int len;
+                        while ((len = in.read(buf)) > 0) {
+                            out.write(buf, 0, len);
+                        }
+
+                        out.close();
+                        in.close();
+                    }
+                } catch (IOException var10) {
+                    Bukkit.getLogger().severe("Could not save " + outFile.getName() + " to " + outFile);
+                }
+
+            }
+        } else {
+            throw new IllegalArgumentException("ResourcePath cannot be null or empty");
+        }
     }
 }
