@@ -94,6 +94,7 @@ public class Shatter extends XRPGSkill {
                 final double shatterDTDuration = getSkillVariables().getDouble("dt-duration", 4.0);
                 //Add potion effect and fire event
                 targetPlayer.addPotionEffect(potionEffect);
+                targetPlayer.damage(getDamage(), e.getPlayer());
                 XRPGDamageTakenAddedEvent event = new XRPGDamageTakenAddedEvent(e.getPlayer(), targetPlayer, damageTakenSource, shatterDTAmount);
                 Bukkit.getServer().getPluginManager().callEvent(event);
 
@@ -107,5 +108,7 @@ public class Shatter extends XRPGSkill {
         } else {
             livingEntity.addPotionEffect(potionEffect);
         }
+
+        setRemainingCooldown(getCooldown());
     }
 }

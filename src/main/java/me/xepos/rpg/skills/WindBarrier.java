@@ -24,7 +24,7 @@ public class WindBarrier extends XRPGSkill {
         EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
         Player player = (Player) e.getEntity();
 
-        if (player.getHealth() <= player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() / 2) {
+        if (player.getHealth() <= player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() / (100 / getSkillVariables().getDouble("threshold", 50.0))) {
             if (e.getDamager() instanceof Projectile || e.getDamager() instanceof Explosive) {
                 if (isSkillReady()) {
                     e.setCancelled(true);

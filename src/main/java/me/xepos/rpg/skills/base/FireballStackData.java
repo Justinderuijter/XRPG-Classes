@@ -2,8 +2,13 @@ package me.xepos.rpg.skills.base;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.Event;
+import org.bukkit.event.player.PlayerInteractEvent;
+
 
 public class FireballStackData extends XRPGSkill {
     private byte fireBallStacks = 0;
@@ -21,7 +26,15 @@ public class FireballStackData extends XRPGSkill {
 
     @Override
     public void activate(Event event) {
+        if (!(event instanceof PlayerInteractEvent)) return;
+        PlayerInteractEvent e = (PlayerInteractEvent) event;
 
+        if (lastStackGained + getCooldown() * 2000L < System.currentTimeMillis() && fireBallStacks != 0) {
+            fireBallStacks = 0;
+            TextComponent text = new TextComponent("Fireball stacks lost!");
+            text.setColor(ChatColor.RED.asBungee());
+            e.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, text);
+        }
     }
 
     @Override
