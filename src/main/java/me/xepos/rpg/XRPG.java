@@ -72,6 +72,7 @@ public final class XRPG extends JavaPlugin {
         if (!this.isEnabled())
             return;
 
+
         initClassChangeGUI();
         //registering listeners/commands
         initEventListeners();

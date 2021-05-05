@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.configuration.ClassLoader;
+import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -43,22 +44,22 @@ public class JSONDatabaseManager implements IDatabaseManager {
                 String data = FileUtils.readFileToString(playerFile, "UTF-8");
                 JsonObject jsonData = gson.fromJson(data, JsonObject.class);
                 //Extract the class from JsonObject
-                String playerClass = jsonData.get("classId").toString();
+                String classId = jsonData.get("classId").getAsString();
 
-                //TODO: Fix error here
-                XRPGPlayer xrpgPlayer = new XRPGPlayer(playerId, playerClass, plugin.getFileConfiguration(playerClass).getString("display.name"));
-                classLoader.load(playerClass, xrpgPlayer);
+                XRPGPlayer xrpgPlayer = new XRPGPlayer(playerId, classId, plugin.getFileConfiguration(classId).getString("display.name"));
+                classLoader.load(classId, xrpgPlayer);
                 plugin.addRPGPlayer(playerId, xrpgPlayer);
 
             } catch (IOException ex) {
                 System.out.println("Couldn't load player data for " + playerId.toString() + ".json");
             } catch (Exception ex) {
+                Bukkit.getLogger().info(ex.getMessage());
                 ex.printStackTrace();
             }
 
         } else {
             String defaultClassId = plugin.getDefaultClassId();
-            XRPGPlayer xrpgPlayer = new XRPGPlayer(playerId, plugin.getDefaultClassId(), plugin.getFileConfiguration(defaultClassId).getString("display.name"));
+            XRPGPlayer xrpgPlayer = new XRPGPlayer(playerId, defaultClassId, plugin.getFileConfiguration(defaultClassId).getString("display.name"));
             classLoader.load(defaultClassId, xrpgPlayer);
             plugin.addRPGPlayer(playerId, xrpgPlayer);
         }

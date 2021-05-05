@@ -64,18 +64,22 @@ public class ClassListener implements Listener {
         if (e.getLoginResult() == AsyncPlayerPreLoginEvent.Result.ALLOWED) {
             this.databaseManager.loadPlayerData(e.getUniqueId());
         }
-
+        for (UUID uuid : plugin.getRPGPlayers().keySet()) {
+            Bukkit.getLogger().info(uuid.toString());
+        }
     }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
         Player player = e.getPlayer();
         XRPGPlayer xrpgPlayer = null;
+        Bukkit.getLogger().info("Found: " + plugin.getRPGPlayers().containsKey(player.getUniqueId()));
         if (plugin.getRPGPlayers().containsKey(player.getUniqueId())) {
             Bukkit.getLogger().severe("Player found!");
             xrpgPlayer = plugin.getXRPGPlayer(player);
             xrpgPlayer.setPlayer(player);
         }
+
 
         if (xrpgPlayer != null && xrpgPlayer.getPlayer() != null) {
             player.sendMessage("You are now " + xrpgPlayer.getClassDisplayName());
