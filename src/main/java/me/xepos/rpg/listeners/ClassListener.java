@@ -161,11 +161,17 @@ public class ClassListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onEntityShootBow(EntityShootBowEvent e) {
         if (e.getEntity() instanceof Player) {
-            Player player = (Player) e.getEntity();
-            plugin.getXRPGPlayer(player).getEventHandler("SHOOT_BOW").invoke(e);
+            XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getEntity().getUniqueId());
+            if (!plugin.getFileConfiguration(xrpgPlayer.getClassId()).getBoolean("allow-bow", true)) {
+                xrpgPlayer.getPlayer().sendMessage(ChatColor.RED + "You're not lectured on archery!");
+                e.setConsumeItem(false);
+                e.setCancelled(true);
+                return;
+            }
+            xrpgPlayer.getEventHandler("SHOOT_BOW").invoke(e);
         }
     }
 
