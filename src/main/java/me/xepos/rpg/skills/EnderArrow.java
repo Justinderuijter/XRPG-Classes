@@ -2,6 +2,7 @@ package me.xepos.rpg.skills;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.datatypes.ProjectileData;
 import me.xepos.rpg.handlers.ShootBowEventHandler;
 import me.xepos.rpg.skills.base.XRPGBowSkill;
 import me.xepos.rpg.utils.Utils;
@@ -14,6 +15,8 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 public class EnderArrow extends XRPGBowSkill {
     public EnderArrow(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
+
+        xrpgPlayer.getEventHandler("SHOOT_BOW").addSkill(this);
     }
 
     @Override
@@ -30,8 +33,7 @@ public class EnderArrow extends XRPGBowSkill {
         Arrow arrow = (Arrow) e.getProjectile();
 
         arrow.setPickupStatus(AbstractArrow.PickupStatus.CREATIVE_ONLY);
-        arrow.setCustomName("Ender");
-        arrow.setCustomNameVisible(false);
+        getPlugin().projectiles.put(arrow.getUniqueId(), new ProjectileData(arrow, false, true, 30));
         setRemainingCooldown(getCooldown());
     }
 

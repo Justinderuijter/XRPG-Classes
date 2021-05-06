@@ -2,6 +2,7 @@ package me.xepos.rpg.skills;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.handlers.ShootBowEventHandler;
 import me.xepos.rpg.skills.base.XRPGSkill;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Arrow;
@@ -14,7 +15,7 @@ public class Focus extends XRPGSkill {
         super(xrpgPlayer, skillVariables, plugin);
 
         setRemainingCooldown(-1);
-        xrpgPlayer.getEventHandler("SHOOT_BOW").addSkill(this);
+        ((ShootBowEventHandler) xrpgPlayer.getEventHandler("SHOOT_BOW")).addPassiveSkill(this);
     }
 
     @Override
