@@ -31,7 +31,6 @@ public class ShootBowEventHandler extends EventHandler {
 
     @Override
     public void invoke(Event e) {
-        //TODO: always active passive skills e.g. focus
         for (XRPGSkill passiveSkill : passiveSkills) {
             passiveSkill.activate(e);
         }
