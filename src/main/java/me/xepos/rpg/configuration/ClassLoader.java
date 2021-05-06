@@ -71,41 +71,43 @@ public class ClassLoader {
     }
 
     public void load(String classId, XRPGPlayer xrpgPlayer) {
-        FileConfiguration classConfig = plugin.getFileConfiguration(classId);
-        if (classConfig == null) {
-            classConfig = plugin.getFileConfiguration(plugin.getDefaultClassId());
-        }
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            FileConfiguration classConfig = plugin.getFileConfiguration(classId);
+            if (classConfig == null) {
+                classConfig = plugin.getFileConfiguration(plugin.getDefaultClassId());
+            }
 
-        //Change class clears all handlers, after that we set skills
-        xrpgPlayer.setShieldAllowed(classConfig.getBoolean("allow-shield", true));
-        xrpgPlayer.resetClassData(classId, plugin.getFileConfiguration(classId).getString("display.name", "???"));
+            //Change class clears all handlers, after that we set skills
+            xrpgPlayer.setShieldAllowed(classConfig.getBoolean("allow-shield", true));
+            xrpgPlayer.resetClassData(classId, plugin.getFileConfiguration(classId).getString("display.name", "???"));
 
-        ConfigurationSection skillSection = classConfig.getConfigurationSection("skills");
-        if (skillSection == null) {
-            Bukkit.getLogger().info("Could not find Skills section in " + classId);
-        } else {
-            for (String skillId : skillSection.getKeys(false)) {
-                ConfigurationSection skillDataSection = skillSection.getConfigurationSection(skillId);
+            ConfigurationSection skillSection = classConfig.getConfigurationSection("skills");
+            if (skillSection == null) {
+                Bukkit.getLogger().info("Could not find Skills section in " + classId);
+            } else {
+                for (String skillId : skillSection.getKeys(false)) {
+                    ConfigurationSection skillDataSection = skillSection.getConfigurationSection(skillId);
 
-                if (skillDataSection != null) {
-                    try {
-                        Class<?> clazz = Class.forName("me.xepos.rpg.skills." + skillDataSection.getName());
-                        Constructor<?> constructor = clazz.getConstructor(XRPGPlayer.class, ConfigurationSection.class, XRPG.class);
+                    if (skillDataSection != null) {
+                        try {
+                            Class<?> clazz = Class.forName("me.xepos.rpg.skills." + skillDataSection.getName());
+                            Constructor<?> constructor = clazz.getConstructor(XRPGPlayer.class, ConfigurationSection.class, XRPG.class);
 
-                        //The instance of the skill automatically assigns itself to the XRPGPlayer
-                        constructor.newInstance(xrpgPlayer, skillDataSection, plugin);
+                            //The instance of the skill automatically assigns itself to the XRPGPlayer
+                            constructor.newInstance(xrpgPlayer, skillDataSection, plugin);
 
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Bukkit.getLogger().info("Something went wrong for " + skillDataSection.getString("name", skillDataSection.getName()));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Bukkit.getLogger().info("Something went wrong for " + skillDataSection.getString("name", skillDataSection.getName()));
+                        }
                     }
                 }
             }
-        }
 
-        for (String handler : xrpgPlayer.getHandlerList().keySet()) {
-            xrpgPlayer.getEventHandler(handler).initialize();
-        }
+            for (String handler : xrpgPlayer.getHandlerList().keySet()) {
+                xrpgPlayer.getEventHandler(handler).initialize();
+            }
+        });
     }
 
     public HashMap<String, FileConfiguration> initializeClasses() {
