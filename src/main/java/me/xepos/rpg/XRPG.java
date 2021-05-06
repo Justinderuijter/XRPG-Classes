@@ -87,6 +87,10 @@ public final class XRPG extends JavaPlugin {
         this.getCommand("changeclass").setExecutor(new ChangeClassCommand(this, inventoryGUI));
         System.out.println("RPG classes loaded!");
 
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            databaseManager.loadPlayerData(player.getUniqueId());
+        }
+
         int timer = this.getConfig().getInt("Garbage Collection.Timer", 120);
         if (timer > 0)
             new ClearHashMapTask(this, projectiles).runTaskTimerAsynchronously(this, timer * 20L, timer * 20L);
@@ -96,7 +100,10 @@ public final class XRPG extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
-        //TODO: Save all online players on shutdown
+        for (UUID uuid : RPGPlayers.keySet()) {
+            this.databaseManager.savePlayerData(RPGPlayers.get(uuid));
+        }
+
         this.databaseManager.disconnect();
     }
 
