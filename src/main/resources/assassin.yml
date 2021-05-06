@@ -30,9 +30,12 @@ skills:
     threshold: 25.0
   ShadowStep:
     name: "Shadow Step"
+    required-items:
+      - SWORD
     duration: 5.0
     cooldown: 20.0
   Smokebomb:
     name: "Smoke Bomb"
+    required-tag: "smokebomb"
     duration: 10.0
     cooldown: 40.0

@@ -1,11 +1,12 @@
 recipes:
   1:
-    item-name: "Skeletal Knight Spawn Egg"
-    item: "SKELETON_SPAWN_EGG"
+    item-name: "Smoke Bomb"
+    item: "SNOWBALL"
     shaped-recipe: false
     ingredients:
-      - "2: IRON_BLOCK"
-    tag: "shapeless"
+      - "1: SNOWBALL"
+      - "1: GUNPOWDER"
+    tag: "smokebomb"
   2:
     item-name: "Skeletal King's Bone"
     item: "BONE"

@@ -7,6 +7,9 @@ import me.xepos.rpg.dependencies.protection.ProtectionSet;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -99,5 +102,27 @@ public abstract class XRPGSkill {
 
     public ConfigurationSection getSkillVariables() {
         return skillVariables;
+    }
+
+    public boolean hasCastItem() {
+        String tag = skillVariables.getString("required-tag");
+        ItemStack item = xrpgPlayer.getPlayer().getInventory().getItemInMainHand();
+        if (tag != null) {
+            ItemMeta meta = item.getItemMeta();
+            if (meta == null) return false;
+
+            String itemTag = meta.getPersistentDataContainer().get(plugin.getTagKey(), PersistentDataType.STRING);
+
+            return itemTag != null && itemTag.equalsIgnoreCase(tag);
+
+        } else {
+            List<String> allowedItems = skillVariables.getStringList("required-items");
+            for (String itemName : allowedItems) {
+                if (item.getType().name().endsWith(itemName.toUpperCase())) {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }
