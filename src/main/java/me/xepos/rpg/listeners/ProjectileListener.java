@@ -31,6 +31,9 @@ public class ProjectileListener implements Listener {
         BaseProjectileData pData = plugin.projectiles.get(projectile.getUniqueId());
         plugin.projectiles.remove(e.getEntity().getUniqueId());
 
+        //Only triggers if potion effect is added to the data
+        pData.summonCloud();
+
         if (pData instanceof ProjectileData) {
             ProjectileData projectileData = (ProjectileData) pData;
 
@@ -94,8 +97,9 @@ public class ProjectileListener implements Listener {
 
             location.getWorld().createExplosion(location, explosiveData.getYield(), explosiveData.setsFire(), explosiveData.destroysBlocks(), explosiveData.getShooter());
 
-            //Only triggers if potion effect is added to the data
-            explosiveData.summonCloud();
+            if (explosiveData.getProjectile() instanceof Arrow) {
+                explosiveData.getProjectile().remove();
+            }
 
         }
 
