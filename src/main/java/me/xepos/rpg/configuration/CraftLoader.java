@@ -140,7 +140,10 @@ public class CraftLoader {
         for (String ingredient : ingredients) {
             String[] strings = ingredient.split(":");
             strings[0] = strings[0].trim().toUpperCase();
-            strings[1] = strings[1].trim().toUpperCase();
+
+            if (strings.length == 2) {
+                strings[1] = strings[1].trim().toUpperCase();
+            }
 
             if (StringUtils.isNumeric(strings[0])) {
                 Material material;
