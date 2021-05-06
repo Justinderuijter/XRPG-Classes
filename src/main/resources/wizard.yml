@@ -25,12 +25,14 @@ damage-multipliers:
 
 skills:
   Fireball:
+    name: "Fireball"
     required-tag: "firestaff"
     damage: 10.0
     fire-duration: 3.0
     max-stacks: 2
     cooldown: 3.0
   Meteor:
+    name: "Meteor"
     required-tag: "firestaff"
     range: 32
     explosion-yield: 2.0
@@ -38,6 +40,7 @@ skills:
     explosion-break-block: false
     cooldown: 15.0
   Shatter:
+    name: "Shatter"
     required-tag: "icewindstaff"
     damage: 4.0
     duration: 4.0
@@ -45,6 +48,7 @@ skills:
     dt-amount: 1.2
     cooldown: 10.0
   Zephyr:
+    name: "Zephyr"
     required-tag: "icewindstaff"
     duration: 3.0
     cooldown: 10
