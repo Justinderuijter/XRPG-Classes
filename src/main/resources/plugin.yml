@@ -7,9 +7,6 @@ softdepend:
   - Parties
   - WorldGuard
 commands:
-  smoke:
-    description: give a smoke bomb
-    usage: /<command>
   xrpgdebug:
     description: debug command
     usage: /<command> <number>
