@@ -27,6 +27,7 @@ public class ShootBowEventHandler extends EventHandler {
 
     @Override
     public void invoke(Event e) {
+        //TODO: always active passive skills e.g. focus
         if (getSkills().size() > 0) {
             getCurrentSkill().activate(e);
         }

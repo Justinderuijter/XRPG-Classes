@@ -65,7 +65,7 @@ public class ProjectileListener implements Listener {
             } else if (e.getHitBlock() != null) {
 
                 if (projectileData.summonsLightning()) {
-                    e.getHitBlock().getWorld().strikeLightning(e.getHitEntity().getLocation());
+                    e.getHitBlock().getWorld().strikeLightning(e.getHitBlock().getLocation());
                 }
             }
 
