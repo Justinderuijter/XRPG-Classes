@@ -2,6 +2,7 @@ package me.xepos.rpg.listeners;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.configuration.ClassLoader;
 import me.xepos.rpg.events.XRPGClassChangedEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -20,9 +21,11 @@ import org.bukkit.persistence.PersistentDataType;
 public class InventoryListener implements Listener {
 
     private final XRPG plugin;
+    private final ClassLoader classLoader;
 
-    public InventoryListener(XRPG plugin) {
+    public InventoryListener(XRPG plugin, ClassLoader classLoader) {
         this.plugin = plugin;
+        this.classLoader = classLoader;
     }
 
     @EventHandler
@@ -61,8 +64,7 @@ public class InventoryListener implements Listener {
 
                 if (!event.isCancelled()) {
                     Bukkit.broadcastMessage(xrpgPlayer.getPlayer() + "changed their class from " + xrpgPlayer.getClassDisplayName() + " to " + classDisplayName + "!");
-                    xrpgPlayer.changeClass(classId, classDisplayName);
-
+                    classLoader.load(classId, xrpgPlayer);
                 }
             }
 

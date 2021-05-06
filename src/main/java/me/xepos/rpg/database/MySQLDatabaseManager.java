@@ -121,7 +121,7 @@ public class MySQLDatabaseManager implements IDatabaseManager {
                 if (results.next()) {
                     String classId = getClassId(playerId);
                     plugin.getClassData().keySet().forEach(x -> Bukkit.getLogger().severe(x));
-                    XRPGPlayer xrpgPlayer = new XRPGPlayer(playerId, classId, plugin.getFileConfiguration(classId).getString("display.name"));
+                    XRPGPlayer xrpgPlayer = new XRPGPlayer(playerId, classId);
                     classLoader.load(classId, xrpgPlayer);
                     xrpgPlayer.setFreeChangeTickets(results.getInt("tickets"));
                     return xrpgPlayer;

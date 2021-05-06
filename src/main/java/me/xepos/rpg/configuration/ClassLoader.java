@@ -76,7 +76,9 @@ public class ClassLoader {
             classConfig = plugin.getFileConfiguration(plugin.getDefaultClassId());
         }
 
-        //classConfig.getKeys(true).forEach(x -> Bukkit.getLogger().info(x));
+        //Change class clears all handlers, after that we set skills
+        xrpgPlayer.setShieldAllowed(classConfig.getBoolean("allow-shield", true));
+        xrpgPlayer.resetClassData(classId, plugin.getFileConfiguration(classId).getString("display.name", "???"));
 
         ConfigurationSection skillSection = classConfig.getConfigurationSection("skills");
         if (skillSection == null) {
@@ -100,12 +102,10 @@ public class ClassLoader {
                 }
             }
         }
+
         for (String handler : xrpgPlayer.getHandlerList().keySet()) {
             xrpgPlayer.getEventHandler(handler).initialize();
         }
-
-        xrpgPlayer.setShieldAllowed(classConfig.getBoolean("allow-shield", true));
-        xrpgPlayer.changeClass(classId, plugin.getFileConfiguration(classId).getString("display.name", "???"));
     }
 
     public HashMap<String, FileConfiguration> initializeClasses() {

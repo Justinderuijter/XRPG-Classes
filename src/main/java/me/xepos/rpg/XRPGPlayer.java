@@ -27,19 +27,17 @@ public class XRPGPlayer {
     private transient long lastStunTime = 0;
 
     //Constructor for loading profiles
-    public XRPGPlayer(UUID playerId, String classId, String classDisplayName) {
+    public XRPGPlayer(UUID playerId, String classId) {
         this.player = null;
         this.playerId = playerId;
         this.classId = classId;
-        this.classDisplay = classDisplayName;
     }
 
 
-    public XRPGPlayer(Player player, String classId, String classDisplayName) {
+    public XRPGPlayer(Player player, String classId) {
         this.player = player;
         this.playerId = player.getUniqueId();
         this.classId = classId;
-        this.classDisplay = classDisplayName;
     }
 
     //For convenience
@@ -138,7 +136,7 @@ public class XRPGPlayer {
         return classDisplay;
     }
 
-    public void changeClass(String classId, String classDisplayName) {
+    public void resetClassData(String classId, String classDisplayName) {
         if (classId == null || classId.equals("")) return;
 
         this.classId = classId;
