@@ -5,6 +5,7 @@ import me.xepos.rpg.commands.SmokeBombCommand;
 import me.xepos.rpg.commands.XRPGDebug;
 import me.xepos.rpg.commands.XRPGReload;
 import me.xepos.rpg.configuration.ClassLoader;
+import me.xepos.rpg.configuration.CraftLoader;
 import me.xepos.rpg.database.DatabaseManagerFactory;
 import me.xepos.rpg.database.IDatabaseManager;
 import me.xepos.rpg.datatypes.BaseProjectileData;
@@ -19,6 +20,7 @@ import me.xepos.rpg.listeners.ProjectileListener;
 import me.xepos.rpg.tasks.ClearHashMapTask;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -33,6 +35,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class XRPG extends JavaPlugin {
 
     private Inventory inventoryGUI;
+    private NamespacedKey tagKey;
     private ClassLoader classLoader;
 
     //Ability targetting managers
@@ -61,6 +64,8 @@ public final class XRPG extends JavaPlugin {
         this.classLoader.checkClassFolder();
         this.classData = this.classLoader.initializeClasses();
 
+        this.tagKey = new NamespacedKey(this, "tag");
+
         //Load database
         this.databaseManager = DatabaseManagerFactory.getDatabaseManager(classLoader);
 
@@ -72,6 +77,7 @@ public final class XRPG extends JavaPlugin {
         if (!this.isEnabled())
             return;
 
+        new CraftLoader(this).initCustomRecipes();
 
         initClassChangeGUI();
         //registering listeners/commands
@@ -243,5 +249,9 @@ public final class XRPG extends JavaPlugin {
 
     public HashMap<String, FileConfiguration> getClassData() {
         return classData;
+    }
+
+    public NamespacedKey getTagKey() {
+        return tagKey;
     }
 }

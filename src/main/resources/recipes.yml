@@ -1,0 +1,20 @@
+recipes:
+  1:
+    item-name: "Skeletal Knight Spawn Egg"
+    item: "SKELETON_SPAWN_EGG"
+    shaped-recipe: false
+    ingredients:
+      - "2: IRON_BLOCK"
+    tag: "shapeless"
+  2:
+    item-name: "Skeletal King's Bone"
+    item: "BONE"
+    shaped-recipe: true
+    recipe-shape:
+      - "GGG"
+      - "GBG"
+      - "GGG"
+    ingredients:
+      - "G: GOLD_BLOCK"
+      - "B: BONE"
+    tag: "shaped"
