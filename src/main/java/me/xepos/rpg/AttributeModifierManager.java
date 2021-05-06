@@ -23,11 +23,11 @@ public class AttributeModifierManager {
 
     public void put(ModifierType modifierType, String identifier, AttributeModifier modifier, Attribute attribute) {
         if (modifierType == ModifierType.NEGATIVE) {
-            if (!positiveModifiers.containsKey(identifier))
-                positiveModifiers.put(identifier, new AttributeModifierData(modifier, attribute));
-        } else {
             if (!negativeModifiers.containsKey(identifier))
                 negativeModifiers.put(identifier, new AttributeModifierData(modifier, attribute));
+        } else {
+            if (!positiveModifiers.containsKey(identifier))
+                positiveModifiers.put(identifier, new AttributeModifierData(modifier, attribute));
         }
     }
 

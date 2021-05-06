@@ -10,6 +10,7 @@ import me.xepos.rpg.tasks.RavagerRageTask;
 import me.xepos.rpg.utils.Utils;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -43,6 +44,7 @@ public class Rage extends XRPGSkill {
         double attackSpeedMultiplier = skillVariables.getDouble("atk-spd-multiplier", 1.65) - 1;
         AttributeModifier mod = new AttributeModifier(UUID.fromString("1d7a09c9-b6e2-4dc7-ab6f-8831dffcb111"), "RAGE_ATK_SPD", attackSpeedMultiplier, AttributeModifier.Operation.MULTIPLY_SCALAR_1);
 
+        Bukkit.getLogger().info("name: " + mod.getName());
         AttributeModifierManager.getInstance().put(ModifierType.POSITIVE, mod.getName(), mod, Attribute.GENERIC_ATTACK_SPEED);
 
         setRemainingCooldown(-1);
@@ -61,21 +63,17 @@ public class Rage extends XRPGSkill {
         if (!isLocked) //Prevent infinite looping
             applyDamageRageEffect(e);
 
-        if (player.getInventory().getItemInMainHand().getType().toString().toLowerCase().contains("_axe")) {
-
-
-            //increase rage count
-            if (((LivingEntity) e.getEntity()).getHealth() <= e.getFinalDamage()) {
-                incrementRage((byte) getSkillVariables().getInt("bonus-rage-on-kill"));
-            }
-
-            incrementRage((byte) getSkillVariables().getInt("rage-on-hit"));
-            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("Current Rage: " + currentRage + " (+)", ChatColor.RED.asBungee()));
-            if (rageTask == null || rageTask.isCancelled())
-                rageTask = new RavagerRageTask(getXRPGPlayer(), this, (byte) 5).runTaskTimerAsynchronously(getPlugin(), 100L, 100L);
-
-
+        //increase rage count
+        if (((LivingEntity) e.getEntity()).getHealth() <= e.getFinalDamage()) {
+            incrementRage((byte) getSkillVariables().getInt("bonus-rage-on-kill"));
         }
+
+        incrementRage((byte) getSkillVariables().getInt("rage-on-hit"));
+        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("Current Rage: " + currentRage + " (+)", ChatColor.RED.asBungee()));
+        if (rageTask == null || rageTask.isCancelled())
+            rageTask = new RavagerRageTask(getXRPGPlayer(), this, (byte) 5).runTaskTimerAsynchronously(getPlugin(), 100L, 100L);
+
+
     }
 
     @Override
@@ -87,6 +85,7 @@ public class Rage extends XRPGSkill {
         Player player = (Player) e.getDamager();
         ConfigurationSection skillVariable = getSkillVariables();
         AttributeModifierData attackSpeedModifierData = AttributeModifierManager.getInstance().get(ModifierType.POSITIVE, "RAGE_ATK_SPD");
+
         switch (rageLevel) {
             case 0:
                 Utils.removeUniqueModifier(player, attackSpeedModifierData);

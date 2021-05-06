@@ -63,7 +63,7 @@ public class InventoryListener implements Listener {
                 Bukkit.getServer().getPluginManager().callEvent(event);
 
                 if (!event.isCancelled()) {
-                    Bukkit.broadcastMessage(xrpgPlayer.getPlayer() + "changed their class from " + xrpgPlayer.getClassDisplayName() + " to " + classDisplayName + "!");
+                    Bukkit.broadcastMessage(xrpgPlayer.getPlayer().getName() + " changed their class from " + xrpgPlayer.getClassDisplayName() + " to " + classDisplayName + "!");
                     classLoader.load(classId, xrpgPlayer);
                 }
             }

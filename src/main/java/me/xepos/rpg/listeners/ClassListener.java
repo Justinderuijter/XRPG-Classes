@@ -7,7 +7,6 @@ import me.xepos.rpg.database.tasks.savePlayerDataTask;
 import me.xepos.rpg.enums.DamageTakenSource;
 import me.xepos.rpg.handlers.ShootBowEventHandler;
 import me.xepos.rpg.utils.Utils;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
@@ -48,7 +47,6 @@ public class ClassListener implements Listener {
 
         if (e.getEntity() instanceof Player) {
             Player player = (Player) e.getEntity();
-            player.sendMessage("You have been hurt!");
             XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(player);
             if (xrpgPlayer.dmgTakenMultipliers.size() > 0) {
                 for (DamageTakenSource dtSource : xrpgPlayer.dmgTakenMultipliers.keySet()) {
@@ -65,18 +63,14 @@ public class ClassListener implements Listener {
         if (e.getLoginResult() == AsyncPlayerPreLoginEvent.Result.ALLOWED) {
             this.databaseManager.loadPlayerData(e.getUniqueId());
         }
-        for (UUID uuid : plugin.getRPGPlayers().keySet()) {
-            Bukkit.getLogger().info(uuid.toString());
-        }
     }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
         Player player = e.getPlayer();
         XRPGPlayer xrpgPlayer = null;
-        Bukkit.getLogger().info("Found: " + plugin.getRPGPlayers().containsKey(player.getUniqueId()));
+
         if (plugin.getRPGPlayers().containsKey(player.getUniqueId())) {
-            Bukkit.getLogger().severe("Player found!");
             xrpgPlayer = plugin.getXRPGPlayer(player);
             xrpgPlayer.setPlayer(player);
         }

@@ -6,12 +6,14 @@ import me.xepos.rpg.datatypes.ExplosiveProjectileData;
 import me.xepos.rpg.datatypes.ProjectileData;
 import me.xepos.rpg.dependencies.protection.ProtectionSet;
 import me.xepos.rpg.utils.Utils;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.util.Vector;
 
 public class ProjectileListener implements Listener {
@@ -29,6 +31,12 @@ public class ProjectileListener implements Listener {
         final Projectile projectile = e.getEntity();
 
         BaseProjectileData pData = plugin.projectiles.get(projectile.getUniqueId());
+
+        if (pData.getProjectile() instanceof Explosive && !(pData.getProjectile() instanceof SmallFireball)) {
+            //We use explosion prime event instead
+            return;
+        }
+
         plugin.projectiles.remove(e.getEntity().getUniqueId());
 
         //Only triggers if potion effect is added to the data
@@ -43,6 +51,10 @@ public class ProjectileListener implements Listener {
                 e.getHitEntity().setFireTicks(projectileData.getFireTicks());
                 if (projectileData.summonsLightning()) {
                     e.getHitEntity().getWorld().strikeLightning(e.getEntity().getLocation());
+                }
+
+                if (projectileData.shouldTeleport()) {
+                    projectileData.getShooter().teleport(e.getEntity(), PlayerTeleportEvent.TeleportCause.PLUGIN);
                 }
 
                 projectileBounceLogic(e, projectileData);
@@ -70,6 +82,10 @@ public class ProjectileListener implements Listener {
                 if (projectileData.summonsLightning()) {
                     e.getHitBlock().getWorld().strikeLightning(e.getHitBlock().getLocation());
                 }
+
+                if (projectileData.shouldTeleport()) {
+                    projectileData.getShooter().teleport(e.getHitBlock().getLocation().add(0, 1, 0), PlayerTeleportEvent.TeleportCause.PLUGIN);
+                }
             }
 
         } else if (pData instanceof ExplosiveProjectileData) {
@@ -95,6 +111,7 @@ public class ProjectileListener implements Listener {
                 explosiveData.getShooter().teleport(location);
             }
 
+            Bukkit.getLogger().info("Yield on explosion: " + explosiveData.getYield());
             location.getWorld().createExplosion(location, explosiveData.getYield(), explosiveData.setsFire(), explosiveData.destroysBlocks(), explosiveData.getShooter());
 
             if (explosiveData.getProjectile() instanceof Arrow) {
@@ -166,6 +183,7 @@ public class ProjectileListener implements Listener {
 
         Location location = explosiveData.getProjectile().getLocation();
         e.setCancelled(true);
+        Bukkit.getLogger().info("Yield on explosion prime: " + explosiveData.getYield());
         location.getWorld().createExplosion(location, explosiveData.getYield(), explosiveData.setsFire(), explosiveData.destroysBlocks(), explosiveData.getShooter());
 
         plugin.projectiles.remove(explosiveData.getProjectile().getUniqueId());
@@ -221,8 +239,9 @@ public class ProjectileListener implements Listener {
                 livingEntity.damage(data.getDamage(), data.getShooter());
                 LivingEntity newTarget = Utils.getRandomLivingEntity(livingEntity, 20.0, 4.0, data.getShooter(), true);
                 if (newTarget != null) {
+                    //Vector vector = newTarget.getLocation().toVector().subtract(livingEntity.getLocation().toVector());
                     Vector vector = newTarget.getLocation().toVector().subtract(livingEntity.getLocation().toVector());
-                    Projectile newProjectile = livingEntity.launchProjectile(data.getProjectile().getClass(), vector);
+                    Projectile newProjectile = livingEntity.launchProjectile(data.getProjectile().getClass(), vector.normalize());
                     newProjectile.setShooter(data.getProjectile().getShooter());
 
                     if (!plugin.projectiles.containsKey(newProjectile.getUniqueId())) {

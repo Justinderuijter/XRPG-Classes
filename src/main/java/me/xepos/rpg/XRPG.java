@@ -184,7 +184,7 @@ public final class XRPG extends JavaPlugin {
 
     private void initEventListeners() {
         getServer().getPluginManager().registerEvents(new ClassListener(this, databaseManager), this);
-        getServer().getPluginManager().registerEvents(new InventoryListener(this), this);
+        getServer().getPluginManager().registerEvents(new InventoryListener(this, classLoader), this);
         getServer().getPluginManager().registerEvents(new ProjectileListener(this), this);
         getServer().getPluginManager().registerEvents(new EntityListener(this), this);
     }

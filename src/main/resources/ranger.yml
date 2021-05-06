@@ -52,6 +52,7 @@ skills:
     amplifier: 1
     cooldown: 12
   EnderArrow:
+    name: "Ender Arrow"
     cooldown: 20.0
   SoulShot:
     name: "Soul Shot"

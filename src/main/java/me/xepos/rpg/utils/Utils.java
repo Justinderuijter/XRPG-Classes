@@ -252,9 +252,8 @@ public final class Utils {
     /**
      * Removes a modifier from a entity if they have it.
      *
-     * @param entity:    The entity the modifier will be removed from.
-     * @param attribute: The attribute from which the modifier will be removed.
-     * @param modifier:  AttributeModifier containing the data for the modification.
+     * @param entity:      The entity the modifier will be removed from.
+     * @param modifierData : Data contain the modifier and the attribute that is being modified
      * @return true if the modifier found and removed, if not this returns false.
      */
     @SuppressWarnings("all")

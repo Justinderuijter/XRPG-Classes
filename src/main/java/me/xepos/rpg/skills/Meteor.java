@@ -6,6 +6,7 @@ import me.xepos.rpg.datatypes.ExplosiveProjectileData;
 import me.xepos.rpg.skills.base.FireballStackData;
 import me.xepos.rpg.skills.base.XRPGSkill;
 import me.xepos.rpg.utils.Utils;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -62,13 +63,13 @@ public class Meteor extends XRPGSkill {
 
         //Meteor Skill logic
         Location loc = Utils.getTargetBlock(e.getPlayer(), range).getLocation();
-        e.getPlayer().sendMessage("X: " + loc.getX() + " Y: " + loc.getY() + " Z: " + loc.getZ()); //debug message
 
         int stacks = 0;
         if (fireballStackData != null) {
             stacks = fireballStackData.getFireBallStacks();
         }
-
+        Bukkit.getLogger().info("Stacks: " + stacks);
+        Bukkit.getLogger().info("Yield: " + explosionYield * (stacks + 1));
         loc.setY(loc.getY() + 15 - stacks * 2);
         org.bukkit.entity.Fireball fireball = loc.getWorld().spawn(loc, Fireball.class);
         fireball.setShooter(e.getPlayer());
