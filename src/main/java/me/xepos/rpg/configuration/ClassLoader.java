@@ -97,6 +97,7 @@ public class ClassLoader {
                 }
             }
         }
+        xrpgPlayer.setShieldAllowed(classConfig.getBoolean("allow-shield", true));
         xrpgPlayer.setClassId(classId);
     }
 

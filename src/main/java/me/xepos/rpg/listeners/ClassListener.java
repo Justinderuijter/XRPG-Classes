@@ -8,6 +8,7 @@ import me.xepos.rpg.enums.DamageTakenSource;
 import me.xepos.rpg.handlers.ShootBowEventHandler;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -106,11 +107,21 @@ public class ClassListener implements Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent e) {
-        XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(e.getPlayer());
-        //Utils.GetRPG(player).onUseItem(e);
-
+        Player player = e.getPlayer();
+        XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(player);
 
         if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+
+            ItemStack item = e.getItem();
+            //Cancel using shield if not allowed
+            if (item != null && item.getType() == Material.SHIELD && !xrpgPlayer.isShieldAllowed()) {
+                player.sendMessage(ChatColor.RED + "You can't use shields!");
+                player.sendMessage(ChatColor.RED + "Attempting to use it slowed you down!");
+                player.sendMessage(ChatColor.RED + "Yet you don't seem to be blocking anything at all...");
+                e.setCancelled(true);
+                return;
+            }
+
             if (e.getPlayer().isSneaking()) {
                 xrpgPlayer.getEventHandler("SNEAK_RIGHT_CLICK").invoke(e);
             } else {

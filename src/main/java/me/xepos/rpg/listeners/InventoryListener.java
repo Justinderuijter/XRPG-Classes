@@ -5,12 +5,15 @@ import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.events.XRPGClassChangedEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockDispenseArmorEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -23,9 +26,8 @@ public class InventoryListener implements Listener {
     }
 
     @EventHandler
-    public void onItemClick(InventoryClickEvent e)
-    {
-        if(e.getView().getTitle().equalsIgnoreCase("Pick A Class")) {
+    public void onItemClick(InventoryClickEvent e) {
+        if (e.getView().getTitle().equalsIgnoreCase("Pick A Class")) {
             if (e.getCurrentItem() == null)
                 return;
 
@@ -65,6 +67,11 @@ public class InventoryListener implements Listener {
             }
 
             e.setCancelled(true);
+        } else /*if(e.getInventory() instanceof PlayerInventory)*/ {
+            if (e.getSlot() == 40 && e.getCursor().getType() == Material.SHIELD) {
+                e.getWhoClicked().sendMessage("Can't use shield");
+                e.setCancelled(true);
+            }
         }
     }
 
@@ -72,6 +79,27 @@ public class InventoryListener implements Listener {
     public void onItemDrag(final InventoryDragEvent e) {
         if (e.getView().getTitle().equalsIgnoreCase("Pick A Class")) {
             e.setCancelled(true);
+        } else {
+            if (e.getInventorySlots().contains(40)) {
+                e.setCancelled(true);
+            }
+        }
+
+    }
+
+    @EventHandler
+    public void onItemSwap(final PlayerSwapHandItemsEvent e) {
+        if (!plugin.getXRPGPlayer(e.getPlayer()).isShieldAllowed() && e.getOffHandItem().getType() == Material.SHIELD) {
+            e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onBlockDispenseArmor(BlockDispenseArmorEvent e) {
+        if (e.getTargetEntity() instanceof Player && e.getItem().getType() == Material.SHIELD) {
+            if (!plugin.getXRPGPlayer(e.getTargetEntity().getUniqueId()).isShieldAllowed()) {
+                e.setCancelled(true);
+            }
         }
     }
 }
