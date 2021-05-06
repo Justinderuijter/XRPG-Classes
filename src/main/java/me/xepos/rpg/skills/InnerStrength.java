@@ -46,6 +46,7 @@ public class InnerStrength extends XRPGSkill {
 
     @Override
     public void activate(Event event) {
+        if (!hasCastItem()) return;
         if (event instanceof PlayerInteractEntityEvent) {
             PlayerInteractEntityEvent e = (PlayerInteractEntityEvent) event;
             if (e.getRightClicked() instanceof LivingEntity && !(e.getRightClicked() instanceof Villager)) {
@@ -55,7 +56,6 @@ public class InnerStrength extends XRPGSkill {
             }
         } else if (event instanceof PlayerInteractEvent) {
             PlayerInteractEvent e = (PlayerInteractEvent) event;
-
 
             if (e.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR) {
 

@@ -22,6 +22,7 @@ public class SoaringSlash extends XRPGSkill {
 
     @Override
     public void activate(Event event) {
+        if (!hasCastItem()) return;
         if (!(event instanceof PlayerInteractEvent)) return;
         PlayerInteractEvent e = (PlayerInteractEvent) event;
 

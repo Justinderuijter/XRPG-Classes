@@ -28,6 +28,8 @@ skills:
     max-followers: 3
   ShadowSneak:
     name: "Shadow Sneak"
+    required-items:
+      - HOE
     max-procs: 3
     interval: 1.0
     damage: 2.0
@@ -40,6 +42,8 @@ skills:
     cooldown: 20
   PurgatoryBat:
     name: "Purgatory Bat"
+    required-items:
+      - HOE
     range: 16.0
     max-procs: 5
     interval: 1.0

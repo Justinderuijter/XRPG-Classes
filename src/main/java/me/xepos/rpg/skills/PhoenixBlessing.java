@@ -29,6 +29,7 @@ public class PhoenixBlessing extends XRPGSkill {
 
     @Override
     public void activate(Event event) {
+        if (!hasCastItem()) return;
         if (!(event instanceof PlayerInteractEvent)) return;
         PlayerInteractEvent e = (PlayerInteractEvent) event;
         if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {

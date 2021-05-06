@@ -118,6 +118,10 @@ public abstract class XRPGSkill {
         } else {
             List<String> allowedItems = skillVariables.getStringList("required-items");
             for (String itemName : allowedItems) {
+                //So axe doesn't trigger pickaxe etc
+                if (itemName.equalsIgnoreCase("axe")) {
+                    itemName = "_" + itemName;
+                }
                 if (item.getType().name().endsWith(itemName.toUpperCase())) {
                     return true;
                 }

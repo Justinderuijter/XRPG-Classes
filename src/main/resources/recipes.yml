@@ -8,14 +8,62 @@ recipes:
       - "1: GUNPOWDER"
     tag: "smokebomb"
   2:
-    item-name: "Skeletal King's Bone"
-    item: "BONE"
+    item-name: "Fire Staff"
+    item: "BLAZE_ROD"
     shaped-recipe: true
     recipe-shape:
-      - "GGG"
-      - "GBG"
-      - "GGG"
+      - " F "
+      - " B "
+      - " B "
     ingredients:
-      - "G: GOLD_BLOCK"
-      - "B: BONE"
-    tag: "shaped"
+      - "F: FIRE_CHARGE"
+      - "B: BLAZE_ROD"
+    tag: "firestaff"
+  3:
+    item-name: "Staff of Frostwind"
+    item: "STICK"
+    shaped-recipe: true
+    recipe-shape:
+      - "SSS"
+      - "STS"
+      - "SSS"
+    ingredients:
+      - "S: SNOWBALL"
+      - "T: STICK"
+    tag: "icewindstaff"
+  4:
+    item-name: "Book of Flame"
+    item: "ENCHANTED_BOOK"
+    shaped-recipe: true
+    recipe-shape:
+      - " P "
+      - "PBP"
+      - " P "
+    ingredients:
+      - "P: BLAZE_POWDER"
+      - "B: BOOK"
+    tag: "flamebook"
+  5:
+    item-name: "Book of Darkness"
+    item: "ENCHANTED_BOOK"
+    shaped-recipe: true
+    recipe-shape:
+      - " O "
+      - "OBO"
+      - " O "
+    ingredients:
+      - "O: OBSIDIAN"
+      - "B: BOOK"
+    tag: "darkbook"
+  6:
+    item-name: "Book of Blood"
+    item: "ENCHANTED_BOOK"
+    shaped-recipe: true
+    recipe-shape:
+      - " R "
+      - "RBR"
+      - " R "
+    ingredients:
+      - "R: ROTTEN_FLESH"
+      - "B: BOOK"
+    tag: "bloodbook"

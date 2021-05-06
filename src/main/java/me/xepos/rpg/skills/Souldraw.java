@@ -22,6 +22,7 @@ public class Souldraw extends XRPGSkill {
 
     @Override
     public void activate(Event event) {
+        if (!hasCastItem()) return;
         if (!(event instanceof PlayerInteractEvent)) return;
         PlayerInteractEvent e = (PlayerInteractEvent) event;
         if (e.getItem() == null || e.getItem().getType() != Material.ENCHANTED_BOOK) return;

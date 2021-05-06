@@ -100,8 +100,12 @@ public class ClassLoader {
                 }
             }
         }
+        for (String handler : xrpgPlayer.getHandlerList().keySet()) {
+            xrpgPlayer.getEventHandler(handler).initialize();
+        }
+
         xrpgPlayer.setShieldAllowed(classConfig.getBoolean("allow-shield", true));
-        xrpgPlayer.setClassId(classId);
+        xrpgPlayer.changeClass(classId, plugin.getFileConfiguration(classId).getString("display.name", "???"));
     }
 
     public HashMap<String, FileConfiguration> initializeClasses() {

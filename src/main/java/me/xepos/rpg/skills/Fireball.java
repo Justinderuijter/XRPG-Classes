@@ -9,7 +9,6 @@ import me.xepos.rpg.utils.Utils;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.SmallFireball;
@@ -28,9 +27,9 @@ public class Fireball extends XRPGSkill {
 
     @Override
     public void activate(Event event) {
+        if (!hasCastItem()) return;
         if (!(event instanceof PlayerInteractEvent)) return;
         PlayerInteractEvent e = (PlayerInteractEvent) event;
-        if (e.getItem() == null || e.getItem().getType() != Material.BLAZE_ROD) return;
 
         doFireball(e);
     }

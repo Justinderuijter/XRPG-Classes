@@ -15,6 +15,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 public class WindBarrier extends XRPGSkill {
     public WindBarrier(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
+
+        xrpgPlayer.getEventHandler("DAMAGE_TAKEN").addSkill(this);
     }
 
     @SuppressWarnings("ConstantConditions")

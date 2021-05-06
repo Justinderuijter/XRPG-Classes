@@ -32,6 +32,12 @@ public class EventHandler {
         }
     }
 
+    public void initialize() {
+        for (XRPGSkill skill : skills) {
+            skill.initialize();
+        }
+    }
+
     public boolean containsSkill(XRPGSkill skill) {
         return skills.stream().anyMatch(skill.getClass()::isInstance);
     }
