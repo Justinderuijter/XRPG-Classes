@@ -20,6 +20,8 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.UUID;
 
@@ -147,10 +149,14 @@ public class ClassListener implements Listener {
 
     @EventHandler
     public void onProjectileLaunch(ProjectileLaunchEvent e) {
-//        if (e.getEntity().getShooter() instanceof Player) {
-//            Player player = (Player) e.getEntity().getShooter();
-//            Utils.GetRPG(player).onProjectileLaunch(e);
-//        }
+        if (e.getEntity().getShooter() instanceof Player) {
+            Player player = (Player) e.getEntity().getShooter();
+            PlayerInventory inventory = player.getInventory();
+            if (inventory.getItemInMainHand().getItemMeta() != null && inventory.getItemInMainHand().getItemMeta().getPersistentDataContainer().has(plugin.getTagKey(), PersistentDataType.STRING)
+                    || (inventory.getItemInOffHand().getItemMeta() != null && inventory.getItemInOffHand().getItemMeta().getPersistentDataContainer().has(plugin.getTagKey(), PersistentDataType.STRING))) {
+                e.setCancelled(true);
+            }
+        }
     }
 
     @EventHandler
