@@ -72,6 +72,9 @@ public class ClassLoader {
 
     public void load(String classId, XRPGPlayer xrpgPlayer) {
         FileConfiguration classConfig = plugin.getFileConfiguration(classId);
+        if (classConfig == null) {
+            classConfig = plugin.getFileConfiguration(plugin.getDefaultClassId());
+        }
 
         //classConfig.getKeys(true).forEach(x -> Bukkit.getLogger().info(x));
 
