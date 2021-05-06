@@ -119,7 +119,7 @@ public class ClassLoader {
                 String fileName = file.getName().replace(".yml", "");
 
                 //First enabled class tagged with default is the default class
-                if (plugin.getDefaultClassId() == null && isDefault) {
+                if (plugin.getDefaultClassId() == null || isDefault) {
                     plugin.setDefaultClassId(fileName);
                 }
 
