@@ -16,8 +16,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public class XRPGPlayer {
     private transient UUID playerId;
     private transient Player player;
+    private transient String classDisplay;
+    private long lastClassChangeTime;
     private String classId;
-    private String classDisplay;
     private int freeChangeTickets = 2;
 
     //Status Effects
@@ -31,6 +32,7 @@ public class XRPGPlayer {
         this.player = null;
         this.playerId = playerId;
         this.classId = classId;
+        this.lastClassChangeTime = 0;
     }
 
 
@@ -38,6 +40,7 @@ public class XRPGPlayer {
         this.player = player;
         this.playerId = player.getUniqueId();
         this.classId = classId;
+        this.lastClassChangeTime = 0;
     }
 
     //For convenience
@@ -65,9 +68,6 @@ public class XRPGPlayer {
         put("CONSUME_ITEM", new EventHandler());
     }};
 
-    public void setPlayerClass(String classId) {
-        this.classId = classId;
-    }
 
     public int getFreeChangeTickets() {
         return freeChangeTickets;

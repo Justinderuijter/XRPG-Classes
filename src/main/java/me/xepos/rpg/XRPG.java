@@ -101,7 +101,9 @@ public final class XRPG extends JavaPlugin {
     public void onDisable() {
         // Plugin shutdown logic
         for (UUID uuid : RPGPlayers.keySet()) {
-            this.databaseManager.savePlayerData(RPGPlayers.get(uuid));
+            XRPGPlayer xrpgPlayer = RPGPlayers.get(uuid);
+            Utils.removeAllModifiers(xrpgPlayer.getPlayer());
+            this.databaseManager.savePlayerData(xrpgPlayer);
         }
 
         this.databaseManager.disconnect();

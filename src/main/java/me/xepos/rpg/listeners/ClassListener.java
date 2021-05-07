@@ -24,8 +24,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.util.UUID;
-
 
 public class ClassListener implements Listener {
     private final XRPG plugin;
@@ -81,7 +79,6 @@ public class ClassListener implements Listener {
 
         if (xrpgPlayer != null && xrpgPlayer.getPlayer() != null) {
             player.sendMessage("You are now " + xrpgPlayer.getClassDisplayName());
-            Utils.onJoinEffect(player);
         } else {
             player.kickPlayer("Something went wrong while loading XRPG data.");
         }
@@ -89,10 +86,11 @@ public class ClassListener implements Listener {
 
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent e) {
-        UUID playerId = e.getPlayer().getUniqueId();
-        XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(playerId);
+        Player player = e.getPlayer();
+        Utils.removeAllModifiers(player);
+        XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(player);
         new savePlayerDataTask(databaseManager, xrpgPlayer).runTaskAsynchronously(plugin);
-        plugin.removeXRPGPlayer(playerId);
+        plugin.removeXRPGPlayer(player);
     }
 
 

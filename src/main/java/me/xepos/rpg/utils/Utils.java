@@ -312,7 +312,7 @@ public final class Utils {
         return StringUtils.capitalize(input.toLowerCase());
     }
 
-    public static void onJoinEffect(Player player) {
+    public static void removeAllModifiers(Player player) {
         AttributeModifierManager manager = AttributeModifierManager.getInstance();
         for (String identifier : manager.getModifiers(ModifierType.POSITIVE).keySet()) {
             removeUniqueModifier(player, manager.get(ModifierType.POSITIVE, identifier));
