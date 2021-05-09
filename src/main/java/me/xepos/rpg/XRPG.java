@@ -17,6 +17,7 @@ import me.xepos.rpg.listeners.EntityListener;
 import me.xepos.rpg.listeners.InventoryListener;
 import me.xepos.rpg.listeners.ProjectileListener;
 import me.xepos.rpg.tasks.ClearHashMapTask;
+import me.xepos.rpg.tasks.ManaTask;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
@@ -94,6 +95,11 @@ public final class XRPG extends JavaPlugin {
         int timer = this.getConfig().getInt("Garbage Collection.Timer", 120);
         if (timer > 0)
             new ClearHashMapTask(this, projectiles).runTaskTimerAsynchronously(this, timer * 20L, timer * 20L);
+
+        if (useMana()) {
+            long delay = (long) (this.getConfig().getDouble("mana.recovery-amount", 5.0) * 20);
+            new ManaTask(RPGPlayers, this.getConfig().getInt("mana.recovery-amount")).runTaskTimerAsynchronously(this, delay, delay);
+        }
     }
 
 
@@ -191,5 +197,9 @@ public final class XRPG extends JavaPlugin {
 
     public NamespacedKey getTagKey() {
         return tagKey;
+    }
+
+    public boolean useMana() {
+        return this.getConfig().getBoolean("mana.enabled", false);
     }
 }

@@ -23,6 +23,11 @@ Protection Managers:
   - "Factions"
 # - "WorldGuard"
 
+Mana:
+  enabled: false
+  recovery-delay: 5
+  recovery-amount: 5
+
 Garbage Collection:
   # Time that should pass between garbage collection.
   # Set to 0 to disable garbage collection.
