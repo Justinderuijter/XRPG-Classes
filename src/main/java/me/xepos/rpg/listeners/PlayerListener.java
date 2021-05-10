@@ -25,11 +25,11 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.persistence.PersistentDataType;
 
 
-public class ClassListener implements Listener {
+public class PlayerListener implements Listener {
     private final XRPG plugin;
     private final IDatabaseManager databaseManager;
 
-    public ClassListener(XRPG plugin, IDatabaseManager databaseManager) {
+    public PlayerListener(XRPG plugin, IDatabaseManager databaseManager) {
         this.plugin = plugin;
         this.databaseManager = databaseManager;
     }

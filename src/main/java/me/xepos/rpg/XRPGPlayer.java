@@ -17,7 +17,8 @@ public class XRPGPlayer {
     private transient UUID playerId;
     private transient Player player;
     private transient String classDisplay;
-    private int manaValue;
+    private int currentMana;
+    private int maximumMana;
     private long lastClassChangeTime;
     private String classId;
     private int freeChangeTickets = 2;
@@ -156,20 +157,32 @@ public class XRPGPlayer {
         this.canUseShield = canUseShield;
     }
 
-    public int getManaValue() {
-        return manaValue;
+    public int getCurrentMana() {
+        return currentMana;
     }
 
-    public void setManaValue(int manaValue) {
-        this.manaValue = manaValue;
+    public void setCurrentMana(int currentMana) {
+        this.currentMana = currentMana;
     }
 
     public void addMana(int value) {
-        this.manaValue += value;
+        this.currentMana += value;
     }
 
     public void removeMana(int value) {
-        this.manaValue -= value;
+        this.currentMana -= value;
+    }
+
+    public int getMaximumMana() {
+        return maximumMana;
+    }
+
+    public void setMaximumMana(int maximumMana) {
+        this.maximumMana = maximumMana;
+    }
+
+    public long getLastClassChangeTime() {
+        return lastClassChangeTime;
     }
 
     //////////////////////////////////
