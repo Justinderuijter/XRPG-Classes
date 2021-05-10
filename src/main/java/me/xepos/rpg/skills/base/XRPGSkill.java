@@ -59,20 +59,20 @@ public abstract class XRPGSkill {
         return remainingCooldown <= System.currentTimeMillis();
     }
 
-    public XRPG getPlugin() {
+    protected XRPG getPlugin() {
         return this.plugin;
     }
 
-    public ProtectionSet getProtectionSet() {
+    protected ProtectionSet getProtectionSet() {
         return protectionSet;
     }
 
-    public IPartyManager getPartyManager() {
+    protected IPartyManager getPartyManager() {
         return partyManager;
     }
 
     @SuppressWarnings("all")
-    public List<Player> getNearbyAlliedPlayers(Player caster, double x, double y, double z) {
+    protected List<Player> getNearbyAlliedPlayers(Player caster, double x, double y, double z) {
         return (List<Player>) new ArrayList(caster.getWorld().getNearbyEntities(caster.getLocation(), x, y, z, p -> p instanceof Player && p != caster && partyManager.isPlayerAllied(caster, (Player) p)));
     }
 
@@ -108,7 +108,7 @@ public abstract class XRPGSkill {
         return skillVariables;
     }
 
-    public boolean hasCastItem() {
+    protected boolean hasCastItem() {
         String tag = skillVariables.getString("required-tag");
         ItemStack item = xrpgPlayer.getPlayer().getInventory().getItemInMainHand();
         if (tag != null) {

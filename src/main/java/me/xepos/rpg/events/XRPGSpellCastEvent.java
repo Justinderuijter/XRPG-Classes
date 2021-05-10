@@ -2,6 +2,7 @@ package me.xepos.rpg.events;
 
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.enums.SpellType;
+import me.xepos.rpg.skills.base.XRPGSkill;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
@@ -13,10 +14,10 @@ public class XRPGSpellCastEvent extends Event implements Cancellable {
     private boolean isCancelled;
 
     private final XRPGPlayer player;
-    private final String spellName;
+    private final XRPGSkill spellName;
     private final SpellType[] spellTypes;
 
-    public XRPGSpellCastEvent(XRPGPlayer player, String spellName, SpellType[] spellTypes) {
+    public XRPGSpellCastEvent(XRPGPlayer player, XRPGSkill spellName, SpellType[] spellTypes) {
         this.player = player;
         this.spellName = spellName;
         this.spellTypes = spellTypes;
@@ -55,7 +56,7 @@ public class XRPGSpellCastEvent extends Event implements Cancellable {
      *
      * @return the localized name of the cast spell
      */
-    public String getSpellName() {
+    public XRPGSkill getSkill() {
         return spellName;
     }
 
