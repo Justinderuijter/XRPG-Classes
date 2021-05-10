@@ -3,7 +3,7 @@ package me.xepos.rpg.listeners;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.database.IDatabaseManager;
-import me.xepos.rpg.database.tasks.savePlayerDataTask;
+import me.xepos.rpg.database.tasks.SavePlayerDataTask;
 import me.xepos.rpg.enums.DamageTakenSource;
 import me.xepos.rpg.handlers.ShootBowEventHandler;
 import me.xepos.rpg.utils.Utils;
@@ -89,7 +89,7 @@ public class PlayerListener implements Listener {
         Player player = e.getPlayer();
         Utils.removeAllModifiers(player);
         XRPGPlayer xrpgPlayer = plugin.getXRPGPlayer(player);
-        new savePlayerDataTask(databaseManager, xrpgPlayer).runTaskAsynchronously(plugin);
+        new SavePlayerDataTask(databaseManager, xrpgPlayer).runTaskAsynchronously(plugin);
         plugin.removeXRPGPlayer(player);
     }
 
