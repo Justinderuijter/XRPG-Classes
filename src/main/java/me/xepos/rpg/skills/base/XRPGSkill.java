@@ -80,10 +80,6 @@ public abstract class XRPGSkill {
         return xrpgPlayer;
     }
 
-    public void setXRPGPlayer(XRPGPlayer xrpgPlayer) {
-        this.xrpgPlayer = xrpgPlayer;
-    }
-
     public double getCooldown() {
         return skillVariables.getDouble("cooldown", -1);
     }
@@ -98,6 +94,14 @@ public abstract class XRPGSkill {
 
     public String getName() {
         return skillVariables.getString("name", this.getClass().getSimpleName());
+    }
+
+    public int getRequiredMana() {
+        if (plugin.useMana()) {
+            return skillVariables.getInt("mana", 0);
+        }
+
+        return 0;
     }
 
     public ConfigurationSection getSkillVariables() {
