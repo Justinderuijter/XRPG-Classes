@@ -166,7 +166,20 @@ public class XRPGPlayer {
     }
 
     public void addMana(int value) {
-        this.currentMana += value;
+        if (this.currentMana >= maximumMana) return;
+
+        if (this.currentMana + value > maximumMana) {
+            currentMana = maximumMana;
+        } else {
+            this.currentMana += value;
+        }
+    }
+
+    public void addMana(int value, boolean force) {
+        if (force)
+            this.currentMana += value;
+        else
+            this.addMana(value);
     }
 
     public void removeMana(int value) {
