@@ -1,15 +1,16 @@
 package me.xepos.rpg;
 
-import me.xepos.rpg.datatypes.ClassData;
-import me.xepos.rpg.datatypes.PlayerData;
-import me.xepos.rpg.handlers.ActiveEventHandler;
-import me.xepos.rpg.handlers.BowEventHandler;
-import me.xepos.rpg.handlers.PassiveEventHandler;
+import me.xepos.rpg.enums.DamageTakenSource;
+import me.xepos.rpg.handlers.EventHandler;
+import me.xepos.rpg.handlers.ShootBowEventHandler;
 import me.xepos.rpg.skills.base.IFollowerContainer;
 import me.xepos.rpg.skills.base.XRPGSkill;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class XRPGPlayer {
@@ -21,94 +22,53 @@ public class XRPGPlayer {
     private long lastClassChangeTime;
     private String classId;
     private int freeChangeTickets = 2;
-    private boolean spellCastModeEnabled = false;
-    private List<String> spellKeybinds = new ArrayList<>();
-    private String activeBowSkillId = null;
 
     //Status Effects
-    public transient ConcurrentHashMap<String, Double> dmgTakenMultipliers = new ConcurrentHashMap<>();
-    private transient double damageTakenMultiplier = 1.0;
+    public transient ConcurrentHashMap<DamageTakenSource, Double> dmgTakenMultipliers = new ConcurrentHashMap<>();
     private transient boolean canUseShield = true;
     private transient boolean isStunned = false;
     private transient long lastStunTime = 0;
 
-    public XRPGPlayer(UUID playerId, PlayerData playerData){
-        this.player = null;
-        this.playerId = playerId;
-        this.classId = playerData.getClassId();
-        this.lastClassChangeTime = playerData.getLastClassChange();
-        this.freeChangeTickets = playerData.getFreeChangeTickets();
-        this.spellKeybinds.clear();
-        //Need to check for null as this will be new for new players
-        if (playerData.getClassData(classId) != null)
-            this.spellKeybinds.addAll(playerData.getClassData(playerData.getClassId()).getKeyBindOrder());
-
-        if (handlerList.isEmpty())
-            initializePassiveHandlers();
-
-        if (activeHandler == null)
-            activeHandler= new ActiveEventHandler(this);
-    }
-
     //Constructor for loading profiles
-    @Deprecated
     public XRPGPlayer(UUID playerId, String classId) {
         this.player = null;
         this.playerId = playerId;
         this.classId = classId;
         this.lastClassChangeTime = 0;
-
-        if (handlerList.isEmpty())
-            initializePassiveHandlers();
-
-        if (activeHandler == null)
-            activeHandler= new ActiveEventHandler(this);
     }
 
-    @Deprecated
+
     public XRPGPlayer(Player player, String classId) {
         this.player = player;
         this.playerId = player.getUniqueId();
         this.classId = classId;
         this.lastClassChangeTime = 0;
-
-        if (handlerList.isEmpty())
-            initializePassiveHandlers();
-
-        if (activeHandler == null)
-            activeHandler= new ActiveEventHandler(this);
-    }
-
-    private void initializePassiveHandlers(){
-        handlerList.put("RIGHT_CLICK", new PassiveEventHandler());
-        handlerList.put("LEFT_CLICK", new PassiveEventHandler());
-        handlerList.put("SNEAK_RIGHT_CLICK", new PassiveEventHandler());
-        handlerList.put("SNEAK_LEFT_CLICK", new PassiveEventHandler());
-
-        //Damage Handlers
-        handlerList.put("DAMAGE_DEALT", new PassiveEventHandler());
-        handlerList.put("DAMAGE_TAKEN", new PassiveEventHandler());
-        handlerList.put("DAMAGE_TAKEN_ENVIRONMENTAL", new PassiveEventHandler());
-
-        //Bow Handlers
-        handlerList.put("SHOOT_BOW", new BowEventHandler(this));
-
-        //Movement Handlers
-        handlerList.put("SPRINT", new PassiveEventHandler());
-        handlerList.put("JUMP", new PassiveEventHandler());
-        handlerList.put("SNEAK", new PassiveEventHandler());
-
-        //Other Handlers
-        handlerList.put("SWAP_HELD_ITEM", new PassiveEventHandler());
-        handlerList.put("HEALTH_REGEN", new PassiveEventHandler());
-        handlerList.put("CONSUME_ITEM", new PassiveEventHandler());
     }
 
     //For convenience
     private transient List<IFollowerContainer> followerSkills = new ArrayList<>();
 
-    private transient ActiveEventHandler activeHandler;
-    private final transient HashMap<String, PassiveEventHandler> handlerList = new HashMap<>();
+    private final transient HashMap<String, EventHandler> handlerList = new HashMap<String, EventHandler>() {{
+        //Interact Handlers
+        put("RIGHT_CLICK", new EventHandler());
+        put("LEFT_CLICK", new EventHandler());
+        put("SNEAK_RIGHT_CLICK", new EventHandler());
+        put("SNEAK_LEFT_CLICK", new EventHandler());
+
+        //Interact Handlers (Entity)
+        put("RIGHT_CLICK_ENTITY", new EventHandler());
+        put("SNEAK_RIGHT_CLICK_ENTITY", new EventHandler());
+
+        //Damage Handlers
+        put("DAMAGE_TAKEN", new EventHandler());
+        put("DAMAGE_DEALT", new EventHandler());
+
+        //Bow Handlers
+        put("SHOOT_BOW", new ShootBowEventHandler());
+
+        //Other Handlers
+        put("CONSUME_ITEM", new EventHandler());
+    }};
 
 
     public int getFreeChangeTickets() {
@@ -184,12 +144,7 @@ public class XRPGPlayer {
         this.classId = classId;
         this.classDisplay = classDisplayName;
 
-        //Clearing keybinds
-        spellKeybinds.clear();
-
-        //Clearing skills
-        activeHandler.getSkills().clear();
-        for (PassiveEventHandler handler : handlerList.values()) {
+        for (EventHandler handler : handlerList.values()) {
             handler.clear();
         }
     }
@@ -239,44 +194,8 @@ public class XRPGPlayer {
         this.maximumMana = maximumMana;
     }
 
-    public double getDamageTakenMultiplier(){
-        return damageTakenMultiplier;
-    }
-
-    public void recalculateDamageTakenMultiplier(){
-        double base = 1.0;
-        for (String id:dmgTakenMultipliers.keySet()) {
-            base *= dmgTakenMultipliers.get(id);
-        }
-        this.damageTakenMultiplier = base;
-    }
-
     public long getLastClassChangeTime() {
         return lastClassChangeTime;
-    }
-
-    public void setLastClassChangeTime(long lastClassChangeTime) {
-        this.lastClassChangeTime = lastClassChangeTime;
-    }
-
-    public boolean isSpellCastModeEnabled() {
-        return spellCastModeEnabled;
-    }
-
-    public void setSpellCastModeEnabled(boolean spellCastModeEnabled) {
-        this.spellCastModeEnabled = spellCastModeEnabled;
-    }
-
-    public String getSkillForSlot(int slotId){
-        return spellKeybinds.get(slotId);
-    }
-
-    public String getActiveBowSkillId() {
-        return activeBowSkillId;
-    }
-
-    public void setActiveBowSkillId(String activeBowSkillId) {
-        this.activeBowSkillId = activeBowSkillId;
     }
 
     //////////////////////////////////
@@ -285,48 +204,15 @@ public class XRPGPlayer {
     //                              //
     //////////////////////////////////
 
-    public PassiveEventHandler getPassiveEventHandler(String handlerName) {
+    public EventHandler getEventHandler(String handlerName) {
         return handlerList.get(handlerName.toUpperCase());
     }
 
-    public HashMap<String, PassiveEventHandler> getPassiveHandlerList() {
+    public HashMap<String, EventHandler> getHandlerList() {
         return handlerList;
     }
 
-    public void addPassiveEventHandler(String handlerName, PassiveEventHandler handler) {
+    public void addEventHandler(String handlerName, EventHandler handler) {
         this.handlerList.put(handlerName.toUpperCase(), handler);
-    }
-
-    public ActiveEventHandler getActiveHandler(){
-        return activeHandler;
-    }
-
-    //////////////////////////////////
-    //                              //
-    //             Data             //
-    //                              //
-    //////////////////////////////////
-
-    public PlayerData extractData(){
-        Set<String> skills = new HashSet<>();
-        for (PassiveEventHandler handler:handlerList.values()) {
-            skills.addAll(handler.getSkills().keySet());
-        }
-        skills.addAll(activeHandler.getSkills().keySet());
-
-        Set<String> keybindOrder = new HashSet<>(spellKeybinds);
-
-        PlayerData playerData = new PlayerData(this.classId, this.freeChangeTickets, this.lastClassChangeTime);
-        playerData.addClassData(this.classId, new ClassData(this.getPlayer().getHealth(), skills, keybindOrder));
-
-        return playerData;
-    }
-
-    public List<String> getSpellKeybinds() {
-        return spellKeybinds;
-    }
-
-    public void setSpellKeybinds(List<String> spellKeybinds) {
-        this.spellKeybinds = spellKeybinds;
     }
 }

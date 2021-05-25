@@ -8,18 +8,16 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ManaTask extends BukkitRunnable {
     private final ConcurrentHashMap<UUID, XRPGPlayer> players;
-    private final int mana;
 
     public ManaTask(ConcurrentHashMap<UUID, XRPGPlayer> players, int mana) {
         this.players = players;
-        this.mana = mana;
     }
 
 
     @Override
     public void run() {
         for (UUID uuid : players.keySet()) {
-            players.get(uuid).addMana(mana);
+            players.get(uuid).addMana(5);
         }
     }
 }

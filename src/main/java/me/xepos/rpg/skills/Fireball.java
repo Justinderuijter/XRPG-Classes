@@ -4,7 +4,6 @@ import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.ProjectileData;
 import me.xepos.rpg.skills.base.FireballStackData;
-import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.skills.base.XRPGSkill;
 import me.xepos.rpg.utils.Utils;
 import net.md_5.bungee.api.ChatMessageType;
@@ -15,22 +14,22 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.SmallFireball;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemHeldEvent;
 
-public class Fireball extends XRPGActiveSkill {
+public class Fireball extends XRPGSkill {
     private final FireballStackData fireballStackData;
 
     public Fireball(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 
         fireballStackData = new FireballStackData(xrpgPlayer, skillVariables, plugin);
-        xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName() ,this);
+        xrpgPlayer.getEventHandler("RIGHT_CLICK").addSkill(this);
     }
 
     @Override
     public void activate(Event event) {
-        if (!(event instanceof PlayerItemHeldEvent)) return;
-        PlayerItemHeldEvent e = (PlayerItemHeldEvent) event;
+        if (!hasCastItem()) return;
+        if (!(event instanceof PlayerInteractEvent)) return;
+        PlayerInteractEvent e = (PlayerInteractEvent) event;
 
         doFireball(e);
     }
@@ -40,7 +39,7 @@ public class Fireball extends XRPGActiveSkill {
 
     }
 
-    private void doFireball(PlayerItemHeldEvent e) {
+    private void doFireball(PlayerInteractEvent e) {
         //Cancel if skill is still on cooldown and send a message.
         if (!isSkillReady()) {
             e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
@@ -54,9 +53,7 @@ public class Fireball extends XRPGActiveSkill {
 
         if (!getPlugin().projectiles.containsKey(fireball.getUniqueId())) {
             //For some reason damage is halved so doubling it to get proper value
-            ProjectileData data = new ProjectileData(fireball, getDamage() * 2,20);
-
-            getPlugin().projectiles.put(fireball.getUniqueId(), data);
+            getPlugin().projectiles.put(fireball.getUniqueId(), new ProjectileData(fireball, getDamage() * 2, false, false, 10));
         }
 
         this.incrementFireBallStacks(this.fireballStackData.getMaxFireballStacks());

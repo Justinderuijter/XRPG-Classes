@@ -3,26 +3,26 @@ package me.xepos.rpg.skills;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.ProjectileData;
-import me.xepos.rpg.skills.base.XRPGActiveSkill;
+import me.xepos.rpg.skills.base.XRPGSkill;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.SmallFireball;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemHeldEvent;
 
-public class FlameSlash extends XRPGActiveSkill {
+public class FlameSlash extends XRPGSkill {
     public FlameSlash(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 
-        xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName() ,this);
+        xrpgPlayer.getEventHandler("RIGHT_CLICK").addSkill(this);
     }
 
     @Override
     public void activate(Event event) {
-        if (!(event instanceof PlayerItemHeldEvent)) return;
-        PlayerItemHeldEvent e = (PlayerItemHeldEvent) event;
+        if (!hasCastItem()) return;
+        if (!(event instanceof PlayerInteractEvent)) return;
+        PlayerInteractEvent e = (PlayerInteractEvent) event;
 
         doFlameSlash(e);
     }
@@ -32,7 +32,7 @@ public class FlameSlash extends XRPGActiveSkill {
 
     }
 
-    private void doFlameSlash(PlayerItemHeldEvent e) {
+    private void doFlameSlash(PlayerInteractEvent e) {
 
         if (!isSkillReady()) {
             e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
@@ -42,9 +42,8 @@ public class FlameSlash extends XRPGActiveSkill {
         Fireball fireball = e.getPlayer().launchProjectile(SmallFireball.class);
 
         if (!getPlugin().projectiles.containsKey(fireball.getUniqueId())) {
-            ProjectileData projectileData = new ProjectileData(fireball, getDamage(), 10);
+            ProjectileData projectileData = new ProjectileData(fireball, getDamage(), false, false, 10);
             projectileData.setShouldBounce(true);
-
             getPlugin().projectiles.put(fireball.getUniqueId(), projectileData);
         }
 

@@ -2,9 +2,9 @@ package me.xepos.rpg.skills;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.enums.DamageTakenSource;
 import me.xepos.rpg.events.XRPGDamageTakenAddedEvent;
 import me.xepos.rpg.skills.base.FireballStackData;
-import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.skills.base.XRPGSkill;
 import me.xepos.rpg.tasks.RemoveDTModifierTask;
 import me.xepos.rpg.utils.Utils;
@@ -17,40 +17,41 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Shatter extends XRPGActiveSkill {
+public class Shatter extends XRPGSkill {
     private FireballStackData fireballStackData;
 
     public Shatter(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, FireballStackData fireballStackData) {
         super(xrpgPlayer, skillVariables, plugin);
 
         this.fireballStackData = fireballStackData;
-        xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName() ,this);
+        xrpgPlayer.getEventHandler("LEFT_CLICK").addSkill(this);
     }
 
     public Shatter(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 
-        xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName() ,this);
+        xrpgPlayer.getEventHandler("LEFT_CLICK").addSkill(this);
     }
 
     @Override
     public void activate(Event event) {
-        if (!(event instanceof PlayerItemHeldEvent)) return;
-        PlayerItemHeldEvent e = (PlayerItemHeldEvent) event;
+        if (!hasCastItem()) return;
+        if (!(event instanceof PlayerInteractEvent)) return;
+        PlayerInteractEvent e = (PlayerInteractEvent) event;
+        if (e.getItem() == null || e.getItem().getType() != Material.STICK) return;
 
         doShatter(e);
     }
 
     @Override
     public void initialize() {
-        for (XRPGSkill skill : getXRPGPlayer().getPassiveEventHandler("RIGHT_CLICK").getSkills().values()) {
+        for (XRPGSkill skill : getXRPGPlayer().getEventHandler("RIGHT_CLICK").getSkills()) {
             if (skill instanceof Fireball) {
                 this.fireballStackData = ((Fireball) skill).getFireballStackData();
                 return;
@@ -58,7 +59,7 @@ public class Shatter extends XRPGActiveSkill {
         }
     }
 
-    private void doShatter(PlayerItemHeldEvent e) {
+    private void doShatter(PlayerInteractEvent e) {
         if (!isSkillReady()) {
             e.getPlayer().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
             return;
@@ -79,8 +80,9 @@ public class Shatter extends XRPGActiveSkill {
         setRemainingCooldown(getCooldown() - fireBallStacks);
     }
 
-    public void shatterLogic(PlayerItemHeldEvent e, LivingEntity livingEntity) {
+    public void shatterLogic(PlayerInteractEvent e, LivingEntity livingEntity) {
 
+        DamageTakenSource damageTakenSource = DamageTakenSource.SHATTER;
         final double duration = getSkillVariables().getDouble("duration", 4);
         PotionEffect potionEffect = new PotionEffect(PotionEffectType.SLOW, (int) (duration * 20), 1, false, false, false);
 
@@ -94,14 +96,14 @@ public class Shatter extends XRPGActiveSkill {
                 //Add potion effect and fire event
                 targetPlayer.addPotionEffect(potionEffect);
                 targetPlayer.damage(getDamage(), e.getPlayer());
-                XRPGDamageTakenAddedEvent event = new XRPGDamageTakenAddedEvent(e.getPlayer(), targetPlayer, this, shatterDTAmount);
+                XRPGDamageTakenAddedEvent event = new XRPGDamageTakenAddedEvent(e.getPlayer(), targetPlayer, damageTakenSource, shatterDTAmount);
                 Bukkit.getServer().getPluginManager().callEvent(event);
 
                 //Apply DTModifier if the event isn't cancelled
                 if (!event.isCancelled()) {
                     XRPGPlayer xrpgTarget = getPlugin().getXRPGPlayer(targetPlayer);
-                    Utils.addDTModifier(xrpgTarget, getSkillName(), shatterDTAmount);
-                    new RemoveDTModifierTask(e.getPlayer(), xrpgTarget, this).runTaskLater(getPlugin(), (long) shatterDTDuration * 20L);
+                    Utils.addDTModifier(xrpgTarget, damageTakenSource, shatterDTAmount);
+                    new RemoveDTModifierTask(e.getPlayer(), xrpgTarget, damageTakenSource).runTaskLater(getPlugin(), (long) shatterDTDuration * 20L);
                 }
             }
         } else {

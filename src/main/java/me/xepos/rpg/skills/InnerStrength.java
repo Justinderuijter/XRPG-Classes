@@ -2,7 +2,6 @@ package me.xepos.rpg.skills;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.skills.base.XRPGSkill;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Material;
@@ -13,7 +12,6 @@ import org.bukkit.entity.Villager;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -21,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class InnerStrength extends XRPGActiveSkill {
+public class InnerStrength extends XRPGSkill {
     private LotusStrike lotusStrike;
     private final double potionDuration = getSkillVariables().getDouble("duration", 6.0);
 
@@ -37,30 +35,41 @@ public class InnerStrength extends XRPGActiveSkill {
 
         this.lotusStrike = lotusStrike;
 
-        xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName(), this);
+        xrpgPlayer.getEventHandler("RIGHT_CLICK").addSkill(this);
     }
 
     public InnerStrength(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 
-        xrpgPlayer.getPassiveEventHandler("RIGHT_CLICK").addSkill(this.getClass().getSimpleName(), this);
+        xrpgPlayer.getEventHandler("RIGHT_CLICK").addSkill(this);
     }
 
     @Override
     public void activate(Event event) {
-        if (event instanceof PlayerItemHeldEvent) {
-            PlayerItemHeldEvent e = (PlayerItemHeldEvent) event;
-            if (lotusStrike == null){
-                useInnerStrength(e.getPlayer());
-            }else if (lotusStrike.canUseLotus(e.getPlayer())) {
-                useInnerStrength(e.getPlayer());
+        if (!hasCastItem()) return;
+        if (event instanceof PlayerInteractEntityEvent) {
+            PlayerInteractEntityEvent e = (PlayerInteractEntityEvent) event;
+            if (e.getRightClicked() instanceof LivingEntity && !(e.getRightClicked() instanceof Villager)) {
+                if (lotusStrike.canUseLotus(e.getPlayer())) {
+                    useInnerStrength(e.getPlayer());
+                }
             }
+        } else if (event instanceof PlayerInteractEvent) {
+            PlayerInteractEvent e = (PlayerInteractEvent) event;
+
+            if (e.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR) {
+
+                if (lotusStrike.canUseLotus(e.getPlayer())) {
+                    useInnerStrength(e.getPlayer());
+                }
+            }
+
         }
     }
 
     @Override
     public void initialize() {
-        for (XRPGSkill skill : getXRPGPlayer().getPassiveEventHandler("DAMAGE_DEALT").getSkills().values()) {
+        for (XRPGSkill skill : getXRPGPlayer().getEventHandler("DAMAGE_DEALT").getSkills()) {
             if (skill instanceof LotusStrike) {
                 this.lotusStrike = (LotusStrike) skill;
                 return;
@@ -81,8 +90,7 @@ public class InnerStrength extends XRPGActiveSkill {
 
         player.addPotionEffect(defEffects.get(rand.nextInt(defEffects.size())));
 
-        if (lotusStrike != null)
-            lotusStrike.incrementHitCount();
+        lotusStrike.incrementHitCount();
     }
 
 }

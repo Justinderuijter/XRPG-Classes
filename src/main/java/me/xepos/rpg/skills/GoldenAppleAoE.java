@@ -2,8 +2,6 @@ package me.xepos.rpg.skills;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.skills.base.XRPGActiveSkill;
-import me.xepos.rpg.skills.base.XRPGPassiveSkill;
 import me.xepos.rpg.skills.base.XRPGSkill;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.configuration.ConfigurationSection;
@@ -15,20 +13,20 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GoldenAppleAoE extends XRPGPassiveSkill {
+public class GoldenAppleAoE extends XRPGSkill {
     private EnchantedGoldenAppleAoE GAppleAoE;
 
     public GoldenAppleAoE(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin, EnchantedGoldenAppleAoE GAppleAoE) {
         super(xrpgPlayer, skillVariables, plugin);
 
         this.GAppleAoE = GAppleAoE;
-        xrpgPlayer.getPassiveEventHandler("CONSUME_ITEM").addSkill(this.getClass().getSimpleName() ,this);
+        xrpgPlayer.getEventHandler("CONSUME_ITEM").addSkill(this);
     }
 
     public GoldenAppleAoE(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 
-        xrpgPlayer.getPassiveEventHandler("CONSUME_ITEM").addSkill(this.getClass().getSimpleName() ,this);
+        xrpgPlayer.getEventHandler("CONSUME_ITEM").addSkill(this);
     }
 
     @Override
@@ -66,7 +64,7 @@ public class GoldenAppleAoE extends XRPGPassiveSkill {
 
     @Override
     public void initialize() {
-        for (XRPGSkill skill : getXRPGPlayer().getPassiveEventHandler("CONSUME_ITEM").getSkills().values()) {
+        for (XRPGSkill skill : getXRPGPlayer().getEventHandler("CONSUME_ITEM").getSkills()) {
             if (skill instanceof EnchantedGoldenAppleAoE) {
                 this.GAppleAoE = (EnchantedGoldenAppleAoE) skill;
                 return;

@@ -10,7 +10,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 
-public class FireballStackData extends XRPGPassiveSkill {
+public class FireballStackData extends XRPGSkill {
     private byte fireBallStacks = 0;
     private final byte maxFireballStacks = (byte) getSkillVariables().getInt("max-stacks", 2);
     private long lastStackGained = System.currentTimeMillis();
@@ -20,8 +20,8 @@ public class FireballStackData extends XRPGPassiveSkill {
         super(xrpgPlayer, skillVariables, plugin);
 
         setRemainingCooldown(-1);
-        xrpgPlayer.getPassiveEventHandler("RIGHT_CLICK").addSkill(this.getClass().getSimpleName() ,this);
-        xrpgPlayer.getPassiveEventHandler("SNEAK_RIGHT_CLICK").addSkill(this.getClass().getSimpleName() ,this);
+        xrpgPlayer.getEventHandler("RIGHT_CLICK").addSkill(this);
+        xrpgPlayer.getEventHandler("SNEAK_RIGHT_CLICK").addSkill(this);
     }
 
     @Override

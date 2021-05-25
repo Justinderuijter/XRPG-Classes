@@ -4,44 +4,52 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.potion.PotionEffect;
 
 public class ExplosiveProjectileData extends BaseProjectileData {
-    private float yield;
-    private boolean destroysBlocks = false;
-    private boolean setsFire = false;
+    private final float yield;
+    private final boolean destroysBlocks;
+    private final boolean setsFire;
 
-    public ExplosiveProjectileData(Projectile projectile, float yield, int secondsToLive){
-        super(projectile, secondsToLive);
+    public ExplosiveProjectileData(Projectile projectile, float yield, boolean destroyBlocks, boolean setFire, boolean summonLightning, boolean teleportShooter, int secondsToLive, PotionEffect potionEffect) {
+        super(projectile, summonLightning, teleportShooter, secondsToLive, potionEffect);
 
         this.yield = yield;
+        this.destroysBlocks = destroyBlocks;
+        this.setsFire = setFire;
     }
 
-    public ExplosiveProjectileData(Projectile projectile, float yield, int secondsToLive, PotionEffect potionEffect){
-        super(projectile, secondsToLive, potionEffect);
+    public ExplosiveProjectileData(Projectile projectile, float yield, boolean destroyBlocks, boolean setFire, int secondsToLive, PotionEffect potionEffect) {
+        super(projectile, false, false, secondsToLive, potionEffect);
 
         this.yield = yield;
+        this.destroysBlocks = destroyBlocks;
+        this.setsFire = setFire;
     }
 
-    public void setYield(float yield) {
+    public ExplosiveProjectileData(Projectile projectile, float yield, boolean destroyBlocks, boolean setFire, boolean summonLightning, boolean teleportShooter, int secondsToLive) {
+        super(projectile, summonLightning, teleportShooter, secondsToLive);
+
         this.yield = yield;
+        this.destroysBlocks = destroyBlocks;
+        this.setsFire = setFire;
+    }
+
+    public ExplosiveProjectileData(Projectile projectile, float yield, boolean destroyBlocks, boolean setFire, int secondsToLive) {
+        super(projectile, false, false, secondsToLive);
+
+        this.yield = yield;
+        this.destroysBlocks = destroyBlocks;
+        this.setsFire = setFire;
+    }
+
+
+    public float getYield() {
+        return yield;
     }
 
     public boolean destroysBlocks() {
         return destroysBlocks;
     }
 
-    public void destroysBlocks(boolean destroysBlocks) {
-        this.destroysBlocks = destroysBlocks;
-    }
-
     public boolean setsFire() {
         return setsFire;
     }
-
-    public void setsFire(boolean setsFire) {
-        this.setsFire = setsFire;
-    }
-
-    public float getYield() {
-        return yield;
-    }
-
 }

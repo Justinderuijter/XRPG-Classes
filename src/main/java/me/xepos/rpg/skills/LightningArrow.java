@@ -14,7 +14,7 @@ public class LightningArrow extends XRPGBowSkill {
     public LightningArrow(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 
-        xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName() ,this);
+        xrpgPlayer.getEventHandler("SHOOT_BOW").addSkill(this);
     }
 
     @Override
@@ -29,10 +29,7 @@ public class LightningArrow extends XRPGBowSkill {
         }
         Arrow arrow = (Arrow) e.getProjectile();
 
-        ProjectileData data = new ProjectileData(arrow, 20);
-        data.setSummonsLightning(true);
-
-        getPlugin().projectiles.put(arrow.getUniqueId(), data);
+        getPlugin().projectiles.put(arrow.getUniqueId(), new ProjectileData(arrow, true, false, 20));
 
         setRemainingCooldown(getCooldown());
     }

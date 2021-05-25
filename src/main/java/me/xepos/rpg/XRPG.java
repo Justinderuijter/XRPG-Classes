@@ -1,8 +1,10 @@
 package me.xepos.rpg;
 
-import me.xepos.rpg.commands.*;
+import me.xepos.rpg.commands.ChangeClassCommand;
+import me.xepos.rpg.commands.XRPGDebug;
+import me.xepos.rpg.commands.XRPGReload;
 import me.xepos.rpg.configuration.ClassLoader;
-import me.xepos.rpg.configuration.SkillLoader;
+import me.xepos.rpg.configuration.CraftLoader;
 import me.xepos.rpg.database.DatabaseManagerFactory;
 import me.xepos.rpg.database.IDatabaseManager;
 import me.xepos.rpg.datatypes.BaseProjectileData;
@@ -18,20 +20,14 @@ import me.xepos.rpg.tasks.ClearHashMapTask;
 import me.xepos.rpg.tasks.ManaTask;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -39,6 +35,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class XRPG extends JavaPlugin {
 
     private Inventory inventoryGUI;
+    private NamespacedKey tagKey;
     private ClassLoader classLoader;
 
     //Ability targetting managers
@@ -52,34 +49,22 @@ public final class XRPG extends JavaPlugin {
     private String defaultClassId = null;
     private static HashMap<String, FileConfiguration> classData;
 
-    //Skills
-    private static HashMap<String, FileConfiguration> skillData;
-
     //Players
     private static final ConcurrentHashMap<UUID, XRPGPlayer> RPGPlayers = new ConcurrentHashMap<>();
 
     //Custom projectiles
     public final ConcurrentHashMap<UUID, BaseProjectileData> projectiles = new ConcurrentHashMap<>();
 
-    //Keys
-    private static final HashMap<String, NamespacedKey> keyRegistry = new HashMap<>();
-
     @Override // Plugin startup logic
     public void onEnable() {
         //Load classes
         this.saveDefaultConfig();
 
-        this.skillData = new SkillLoader(this).initializeSkills();
         this.classLoader = new ClassLoader(this);
         this.classLoader.checkClassFolder();
         this.classData = this.classLoader.initializeClasses();
 
-        final String[] keyNames = new String[]{"tag", "separator", "classId", "skillId", "spellbook"};
-
-        for (String name:keyNames) {
-            this.keyRegistry.put(name, new NamespacedKey(this, name));
-        }
-
+        this.tagKey = new NamespacedKey(this, "tag");
 
         //Load database
         this.databaseManager = DatabaseManagerFactory.getDatabaseManager(classLoader);
@@ -92,8 +77,7 @@ public final class XRPG extends JavaPlugin {
         if (!this.isEnabled())
             return;
 
-        //CraftLoader disabled as it won't be used (for now)
-        //new CraftLoader(this).initCustomRecipes();
+        new CraftLoader(this).initCustomRecipes();
 
         initClassChangeGUI();
         //registering listeners/commands
@@ -102,8 +86,6 @@ public final class XRPG extends JavaPlugin {
         this.getCommand("xrpgdebug").setExecutor(new XRPGDebug(this, classData));
         this.getCommand("xrpgreload").setExecutor(new XRPGReload());
         this.getCommand("changeclass").setExecutor(new ChangeClassCommand(this, inventoryGUI));
-        this.getCommand("spellmode").setExecutor(new ToggleSpellCommand(this));
-        this.getCommand("spellbook").setExecutor(new SpellbookCommand(this));
         System.out.println("RPG classes loaded!");
 
         for (Player player : Bukkit.getOnlinePlayers()) {
@@ -146,7 +128,7 @@ public final class XRPG extends JavaPlugin {
 
     private void initEventListeners() {
         getServer().getPluginManager().registerEvents(new PlayerListener(this, databaseManager), this);
-        getServer().getPluginManager().registerEvents(new InventoryListener(this, classLoader, databaseManager), this);
+        getServer().getPluginManager().registerEvents(new InventoryListener(this, classLoader), this);
         getServer().getPluginManager().registerEvents(new ProjectileListener(this), this);
         getServer().getPluginManager().registerEvents(new EntityListener(this), this);
     }
@@ -205,29 +187,6 @@ public final class XRPG extends JavaPlugin {
         }
     }
 
-    public ItemStack getSpellbookItem(){
-        final String name = getConfig().getString("items.spellbook.name", "Spellbook");
-        final List<String> lore = getConfig().getStringList("items.spellbook.lore");
-
-/*
-        ItemStack spellbook = Utils.buildItemStack(Material.ENCHANTED_BOOK, name, lore);
-        if (spellbook.getItemMeta() != null){
-            spellbook.getItemMeta().getPersistentDataContainer().set(getKey("spellbook"), PersistentDataType.BYTE, (byte)1);
-        }
-*/
-        ItemStack item = new ItemStack(Material.ENCHANTED_BOOK);
-        ItemMeta meta = item.getItemMeta();
-        if (meta != null) {
-            meta.setDisplayName(name);
-            meta.setLore(lore);
-            meta.getPersistentDataContainer().set(getKey("spellbook"), PersistentDataType.BYTE, (byte)1);
-            meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-            item.setItemMeta(meta);
-        }
-
-        return item;
-    }
-
     public FileConfiguration getFileConfiguration(String classId) {
         return classData.get(classId);
     }
@@ -236,19 +195,11 @@ public final class XRPG extends JavaPlugin {
         return classData;
     }
 
-    public NamespacedKey getKey(String keyName){
-        return keyRegistry.get(keyName);
+    public NamespacedKey getTagKey() {
+        return tagKey;
     }
 
     public boolean useMana() {
         return this.getConfig().getBoolean("mana.enabled", false);
-    }
-
-    public FileConfiguration getSkillData(String skillId){
-        return skillData.get(skillId);
-    }
-
-    public Set<String> getAllSkills(){
-        return skillData.keySet();
     }
 }

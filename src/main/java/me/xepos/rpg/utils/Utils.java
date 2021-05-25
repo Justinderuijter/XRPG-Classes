@@ -3,9 +3,13 @@ package me.xepos.rpg.utils;
 import me.xepos.rpg.AttributeModifierManager;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.AttributeModifierData;
+import me.xepos.rpg.enums.DamageTakenSource;
 import me.xepos.rpg.enums.ModifierType;
 import org.apache.commons.lang.StringUtils;
-import org.bukkit.*;
+import org.bukkit.ChatColor;
+import org.bukkit.FluidCollisionMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.block.Block;
@@ -176,6 +180,10 @@ public final class Utils {
             entity.setHealth(0);
     }
 
+    public static Long setSkillCooldown(int cooldownInSeconds) {
+        return System.currentTimeMillis() + (cooldownInSeconds * 1000L);
+    }
+
     public static boolean isSkillReady(Long lastUsage) {
         return lastUsage <= System.currentTimeMillis();
     }
@@ -216,11 +224,6 @@ public final class Utils {
      */
     @SuppressWarnings("all")
     public static boolean addUniqueModifier(LivingEntity entity, AttributeModifierData modifierData) {
-        if (modifierData == null || modifierData.getAttributeModifier() == null || modifierData.getAttribute() == null){
-            Bukkit.getLogger().warning("Error loading modifier");
-            return false;
-        }
-
         if (!entity.getAttribute(modifierData.getAttribute()).getModifiers().contains(modifierData.getAttributeModifier())) {
             entity.getAttribute(modifierData.getAttribute()).addModifier(modifierData.getAttributeModifier());
             return true;
@@ -255,10 +258,6 @@ public final class Utils {
      */
     @SuppressWarnings("all")
     public static boolean removeUniqueModifier(LivingEntity entity, AttributeModifierData modifierData) {
-        if (modifierData == null || modifierData.getAttributeModifier() == null || modifierData.getAttribute() == null){
-            return false;
-        }
-
         if (entity.getAttribute(modifierData.getAttribute()).getModifiers().contains(modifierData.getAttributeModifier())) {
             entity.getAttribute(modifierData.getAttribute()).removeModifier(modifierData.getAttributeModifier());
             return true;
@@ -323,15 +322,15 @@ public final class Utils {
         }
     }
 
-    public static void addDTModifier(XRPGPlayer xrpgPlayer, String sourceName, double amount) {
-        if (xrpgPlayer.dmgTakenMultipliers.containsKey(sourceName))
-            xrpgPlayer.dmgTakenMultipliers.put(sourceName, amount);
+    public static void addDTModifier(XRPGPlayer xrpgPlayer, DamageTakenSource source, double amount) {
+        if (xrpgPlayer.dmgTakenMultipliers.containsKey(source))
+            xrpgPlayer.dmgTakenMultipliers.put(source, amount);
     }
 
     @SuppressWarnings("all")
-    public static void removeDTModifier(XRPGPlayer xrpgPlayer, String sourceName) {
-        if (xrpgPlayer.dmgTakenMultipliers.containsKey(sourceName))
-            xrpgPlayer.dmgTakenMultipliers.remove(sourceName);
+    public static void removeDTModifier(XRPGPlayer xrpgPlayer, DamageTakenSource source) {
+        if (xrpgPlayer.dmgTakenMultipliers.containsKey(source))
+            xrpgPlayer.dmgTakenMultipliers.remove(source);
     }
 
     public static RayTraceResult rayTrace(LivingEntity caster, double range, FluidCollisionMode collisionMode) {
@@ -363,7 +362,5 @@ public final class Utils {
         }
         return item;
     }
-
-
 
 }

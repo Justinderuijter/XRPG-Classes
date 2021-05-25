@@ -3,6 +3,7 @@ package me.xepos.rpg.skills;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.ProjectileData;
+import me.xepos.rpg.handlers.ShootBowEventHandler;
 import me.xepos.rpg.skills.base.XRPGBowSkill;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.configuration.ConfigurationSection;
@@ -15,7 +16,7 @@ public class EnderArrow extends XRPGBowSkill {
     public EnderArrow(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 
-        xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName() ,this);
+        xrpgPlayer.getEventHandler("SHOOT_BOW").addSkill(this);
     }
 
     @Override
@@ -23,6 +24,7 @@ public class EnderArrow extends XRPGBowSkill {
         if (!(event instanceof EntityShootBowEvent)) return;
         EntityShootBowEvent e = (EntityShootBowEvent) event;
         if (!(e.getProjectile() instanceof Arrow)) return;
+        if (((ShootBowEventHandler) getXRPGPlayer().getEventHandler("SHOOT_BOW")).getCurrentSkill() != this) return;
 
         if (!isSkillReady()) {
             e.getEntity().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
@@ -31,10 +33,7 @@ public class EnderArrow extends XRPGBowSkill {
         Arrow arrow = (Arrow) e.getProjectile();
 
         arrow.setPickupStatus(AbstractArrow.PickupStatus.CREATIVE_ONLY);
-        ProjectileData data = new ProjectileData(arrow, 30);
-        data.shouldTeleport(true);
-
-        getPlugin().projectiles.put(arrow.getUniqueId(), data);
+        getPlugin().projectiles.put(arrow.getUniqueId(), new ProjectileData(arrow, false, true, 30));
         setRemainingCooldown(getCooldown());
     }
 
