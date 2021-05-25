@@ -2,7 +2,7 @@ package me.xepos.rpg.skills;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.skills.base.XRPGSkill;
+import me.xepos.rpg.skills.base.XRPGActiveSkill;
 import me.xepos.rpg.tasks.PurgatoryBatTask;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.FluidCollisionMode;
@@ -13,21 +13,21 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.util.RayTraceResult;
 
-public class PurgatoryBat extends XRPGSkill {
+public class PurgatoryBat extends XRPGActiveSkill {
 
     public PurgatoryBat(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 
-        xrpgPlayer.getEventHandler("RIGHT_CLICK").addSkill(this);
+        xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName() ,this);
     }
 
     @Override
     public void activate(Event event) {
-        if (!hasCastItem()) return;
-        if (!(event instanceof PlayerInteractEvent)) return;
-        PlayerInteractEvent e = (PlayerInteractEvent) event;
+        if (!(event instanceof PlayerItemHeldEvent)) return;
+        PlayerItemHeldEvent e = (PlayerItemHeldEvent) event;
 
         doPurgatoryBat(e.getPlayer());
     }
@@ -37,7 +37,6 @@ public class PurgatoryBat extends XRPGSkill {
 
     }
 
-    @SuppressWarnings("all")
     private void doPurgatoryBat(Player player) {
         if (!isSkillReady()) {
             player.sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
@@ -63,7 +62,7 @@ public class PurgatoryBat extends XRPGSkill {
             bat.setCustomName("Purgatory bat");
             bat.setCustomNameVisible(false);
 
-            new PurgatoryBatTask(bat, player, getDamage(), maxCount, false, dtAmount, getPlugin(), (long) duration * 20L)
+            new PurgatoryBatTask(bat, player, getDamage(), maxCount, this, dtAmount, getPlugin(), (long) duration * 20L)
                     .runTaskTimer(getPlugin(), 10, (long) interval * 20L);
 
             setRemainingCooldown(getCooldown());

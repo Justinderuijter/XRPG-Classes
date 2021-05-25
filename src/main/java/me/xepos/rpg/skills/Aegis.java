@@ -2,9 +2,8 @@ package me.xepos.rpg.skills;
 
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
-import me.xepos.rpg.enums.DamageTakenSource;
 import me.xepos.rpg.events.XRPGDamageTakenAddedEvent;
-import me.xepos.rpg.skills.base.XRPGSkill;
+import me.xepos.rpg.skills.base.XRPGPassiveSkill;
 import me.xepos.rpg.tasks.RemoveDTModifierTask;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.Bukkit;
@@ -13,24 +12,24 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
-import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Aegis extends XRPGSkill {
+public class Aegis extends XRPGPassiveSkill {
 
     public Aegis(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 
-        xrpgPlayer.getEventHandler("RIGHT_CLICK").addSkill(this);
+        xrpgPlayer.getPassiveEventHandler("DAMAGE_TAKEN").addSkill(this.getClass().getSimpleName() ,this);
     }
 
     @Override
     public void activate(Event event) {
-        if (!(event instanceof PlayerInteractEvent)) return;
+        if (!(event instanceof EntityDamageByEntityEvent)) return;
 
-        doAegis((PlayerInteractEvent) event);
+        doAegis((EntityDamageByEntityEvent) event);
     }
 
     @Override
@@ -39,11 +38,11 @@ public class Aegis extends XRPGSkill {
     }
 
     @SuppressWarnings("unchecked")
-    private void doAegis(PlayerInteractEvent e) {
-        Player player = e.getPlayer();
+    private void doAegis(EntityDamageByEntityEvent e) {
+        Player player = (Player) e.getEntity();
         if (player.getInventory().getItemInOffHand().getType() == Material.SHIELD) {
-            if (!isSkillReady()) {
-                player.sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
+
+            if(!isSkillReady()){
                 return;
             }
 
@@ -55,14 +54,14 @@ public class Aegis extends XRPGSkill {
             List<Player> nearbyPlayers = new ArrayList(player.getWorld().getNearbyEntities(player.getLocation(), xRange, yRange, zRange, p -> p instanceof Player && getPartyManager().isPlayerAllied(player, (Player) p)));
             for (Player target : nearbyPlayers) {
                 //Applying the DTModifier if event is cancelled
-                XRPGDamageTakenAddedEvent event = new XRPGDamageTakenAddedEvent(player, target, DamageTakenSource.AEGIS, getDamageMultiplier());
+                XRPGDamageTakenAddedEvent event = new XRPGDamageTakenAddedEvent(player, target, this, getDamageMultiplier());
                 Bukkit.getServer().getPluginManager().callEvent(event);
                 if (!event.isCancelled()) {
                     XRPGPlayer xrpgTarget = getPlugin().getXRPGPlayer(target);
-                    Utils.addDTModifier(xrpgTarget, DamageTakenSource.AEGIS, getDamageMultiplier());
+                    Utils.addDTModifier(xrpgTarget, getName(), getDamageMultiplier());
                     target.sendMessage(player.getDisplayName() + " Granted you " + getSkillName() + "!");
 
-                    new RemoveDTModifierTask(player, xrpgTarget, DamageTakenSource.AEGIS).runTaskLater(getPlugin(), (long) duration * 20);
+                    new RemoveDTModifierTask(player, xrpgTarget, this).runTaskLaterAsynchronously(getPlugin(), (long) duration * 20);
                 }
             }
             if (nearbyPlayers.size() > 0) {

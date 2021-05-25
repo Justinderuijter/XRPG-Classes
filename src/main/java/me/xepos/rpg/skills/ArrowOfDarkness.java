@@ -3,7 +3,6 @@ package me.xepos.rpg.skills;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
 import me.xepos.rpg.datatypes.ProjectileData;
-import me.xepos.rpg.handlers.ShootBowEventHandler;
 import me.xepos.rpg.skills.base.XRPGBowSkill;
 import me.xepos.rpg.utils.Utils;
 import org.bukkit.configuration.ConfigurationSection;
@@ -18,7 +17,7 @@ public class ArrowOfDarkness extends XRPGBowSkill {
     public ArrowOfDarkness(XRPGPlayer xrpgPlayer, ConfigurationSection skillVariables, XRPG plugin) {
         super(xrpgPlayer, skillVariables, plugin);
 
-        xrpgPlayer.getEventHandler("SHOOT_BOW").addSkill(this);
+        xrpgPlayer.getActiveHandler().addSkill(this.getClass().getSimpleName() ,this);
     }
 
     @Override
@@ -26,7 +25,6 @@ public class ArrowOfDarkness extends XRPGBowSkill {
         if (!(event instanceof EntityShootBowEvent)) return;
         EntityShootBowEvent e = (EntityShootBowEvent) event;
         if (!(e.getProjectile() instanceof Arrow)) return;
-        if (((ShootBowEventHandler) getXRPGPlayer().getEventHandler("SHOOT_BOW")).getCurrentSkill() != this) return;
 
         if (!isSkillReady()) {
             e.getEntity().sendMessage(Utils.getCooldownMessage(getSkillName(), getRemainingCooldown()));
@@ -36,10 +34,12 @@ public class ArrowOfDarkness extends XRPGBowSkill {
 
         arrow.setPickupStatus(AbstractArrow.PickupStatus.CREATIVE_ONLY);
 
-        final int duration = (int) (getSkillVariables().getDouble("duration", 20.0) * 20);
+        final int duration = (int) (getSkillVariables().getDouble("duration", 10.0) * 20);
         final int amplifier = getSkillVariables().getInt("amplifier", 1);
 
-        getPlugin().projectiles.put(arrow.getUniqueId(), new ProjectileData(arrow, false, false, 20, new PotionEffect(PotionEffectType.HARM, duration, amplifier, false, false, true)));
+        ProjectileData data = new ProjectileData(arrow, 20, new PotionEffect(PotionEffectType.HARM, duration, amplifier, false, false, true));
+
+        getPlugin().projectiles.put(arrow.getUniqueId(), data);
 
         setRemainingCooldown(getCooldown());
     }

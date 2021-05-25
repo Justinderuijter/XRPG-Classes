@@ -1,10 +1,16 @@
 package me.xepos.rpg.configuration;
 
+import me.xepos.rpg.AttributeModifierManager;
 import me.xepos.rpg.XRPG;
 import me.xepos.rpg.XRPGPlayer;
+import me.xepos.rpg.datatypes.ClassData;
+import me.xepos.rpg.datatypes.PlayerData;
+import me.xepos.rpg.enums.ModifierType;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -19,14 +25,12 @@ import java.lang.reflect.Constructor;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class ClassLoader {
     private final XRPG plugin;
-    private static final File rpgFolder = Bukkit.getServer().getPluginManager().getPlugin("RPG").getDataFolder();
-    private static final File classFolder = new File(rpgFolder, "Classes");
+    private static final File rpgFolder = Bukkit.getServer().getPluginManager().getPlugin("ClassesOfDragonfall").getDataFolder();
+    private static final File classFolder = new File(rpgFolder, "classes");
 
     public ClassLoader(XRPG plugin) {
         this.plugin = plugin;
@@ -43,19 +47,26 @@ public class ClassLoader {
         try {
             if (isDirEmpty(classFolder)) {
                 ArrayList<String> files = new ArrayList<String>() {{
-                    add("assassin");
-                    add("bard");
-                    add("brawler");
-                    add("guardian");
-                    add("necromancer");
-                    add("ranger");
-                    add("ravager");
-                    add("sorcerer");
-                    add("wizard");
+                    add("sentinel.yml");
+                    add("explorer.yml");
+                    add("scholar.yml");
+                    add("scout.yml");
+                    add("trickster.yml");
+                    add("debugClass1.yml");
+                    add("debugClass2.yml");
+                    //add("assassin");
+                    //add("bard");
+                    //add("brawler");
+                    //add("guardian");
+                    //add("necromancer");
+                    //add("ranger");
+                    //add("ravager");
+                    //add("sorcerer");
+                    //add("wizard");
                 }};
                 for (String fileName : files) {
-                    Bukkit.getLogger().info(fileName + ".yml");
-                    saveResource(fileName + ".yml", false);
+                    Bukkit.getLogger().info(fileName);
+                    saveResource(fileName, false);
                 }
             }
         } catch (IOException exception) {
@@ -70,44 +81,72 @@ public class ClassLoader {
         }
     }
 
-    public void load(String classId, XRPGPlayer xrpgPlayer) {
+    public void loadClass(PlayerData data, XRPGPlayer xrpgPlayer) {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            final String classId = data.getClassId();
             FileConfiguration classConfig = plugin.getFileConfiguration(classId);
             if (classConfig == null) {
                 classConfig = plugin.getFileConfiguration(plugin.getDefaultClassId());
+                if (classConfig == null) return; //Default returned null too
             }
 
             //Change class clears all handlers, after that we set skills
             xrpgPlayer.setShieldAllowed(classConfig.getBoolean("allow-shield", true));
+
             xrpgPlayer.resetClassData(classId, plugin.getFileConfiguration(classId).getString("display.name", "???"));
 
-            ConfigurationSection skillSection = classConfig.getConfigurationSection("skills");
-            if (skillSection == null) {
-                Bukkit.getLogger().info("Could not find Skills section in " + classId);
-            } else {
-                for (String skillId : skillSection.getKeys(false)) {
-                    ConfigurationSection skillDataSection = skillSection.getConfigurationSection(skillId);
+            List<String> skills = classConfig.getStringList("skills");
 
-                    if (skillDataSection != null) {
-                        try {
-                            Class<?> clazz = Class.forName("me.xepos.rpg.skills." + skillDataSection.getName());
-                            Constructor<?> constructor = clazz.getConstructor(XRPGPlayer.class, ConfigurationSection.class, XRPG.class);
+            Set<String> addedSkills = new HashSet<>();
+            for (String skillId:skills) {
+                if (addSkill(skillId, xrpgPlayer)){
+                    addedSkills.add(skillId);
+                }
 
-                            //The instance of the skill automatically assigns itself to the XRPGPlayer
-                            constructor.newInstance(xrpgPlayer, skillDataSection, plugin);
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            Bukkit.getLogger().info("Something went wrong for " + skillDataSection.getString("name", skillDataSection.getName()));
-                        }
-                    }
+            }
+            final ClassData classData = data.getClassData(classId);
+            if (classData != null){
+                for (String skillId:data.getClassData(classId).getSkills()) {
+                    if (addedSkills.contains(skillId)) continue;
+                    addSkill(skillId, xrpgPlayer);
                 }
             }
 
-            for (String handler : xrpgPlayer.getHandlerList().keySet()) {
-                xrpgPlayer.getEventHandler(handler).initialize();
+            for (String handler : xrpgPlayer.getPassiveHandlerList().keySet()) {
+                xrpgPlayer.getPassiveEventHandler(handler).initialize();
             }
         });
+    }
+
+    private boolean addSkill(String skillId, XRPGPlayer xrpgPlayer){
+        try {
+            Class<?> clazz = Class.forName("me.xepos.rpg.skills." + skillId);
+            Constructor<?> constructor = clazz.getConstructor(XRPGPlayer.class, ConfigurationSection.class, XRPG.class);
+
+            //The instance of the skill automatically assigns itself to the XRPGPlayer
+            constructor.newInstance(xrpgPlayer, plugin.getSkillData(skillId), plugin);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            Bukkit.getLogger().warning("Something went wrong for " + skillId);
+            return false;
+        }
+    }
+
+    public void loadPlayerSkills(ClassData data, XRPGPlayer xrpgPlayer){
+        for (String skillId:data.getSkills()) {
+            try {
+                Class<?> clazz = Class.forName("me.xepos.rpg.skills." + skillId);
+                Constructor<?> constructor = clazz.getConstructor(XRPGPlayer.class, ConfigurationSection.class, XRPG.class);
+
+                //The instance of the skill automatically assigns itself to the XRPGPlayer
+                constructor.newInstance(xrpgPlayer, plugin.getSkillData(skillId), plugin);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                Bukkit.getLogger().warning("Something went wrong for " + skillId);
+            }
+        }
     }
 
     public HashMap<String, FileConfiguration> initializeClasses() {
@@ -129,12 +168,68 @@ public class ClassLoader {
                     plugin.setDefaultClassId(fileName);
                 }
 
+                registerAttributes(fileConfiguration, fileName);
+
                 configurationHashMap.put(fileName, fileConfiguration);
             }
             Bukkit.getLogger().info("Loaded " + file.getName());
         }
         return configurationHashMap;
     }
+
+    private void registerAttributes(FileConfiguration fileConfiguration, String fileName){
+
+        ConfigurationSection attributeSection = fileConfiguration.getConfigurationSection("attributes");
+        if (attributeSection != null) {
+            AttributeModifierManager attributeModifierManager = AttributeModifierManager.getInstance();
+            for (String key : attributeSection.getKeys(false)) {
+                loadAttributeModifier(attributeSection, key, fileName, attributeModifierManager);
+            }
+        }
+    }
+
+    private void loadAttributeModifier(ConfigurationSection attributeSection, String key, String fileName, AttributeModifierManager manager){
+        String keyType = key.substring(0, key.indexOf('-')).toUpperCase();
+
+        Attribute attribute = null;
+        switch (keyType){
+            case "HEALTH":
+                attribute = Attribute.GENERIC_MAX_HEALTH;
+                break;
+            case "ARMOR":
+                attribute = Attribute.GENERIC_ARMOR;
+                break;
+            case "TOUGHNESS":
+                attribute = Attribute.GENERIC_ARMOR_TOUGHNESS;
+                break;
+            case "MOVESPEED":
+                attribute = Attribute.GENERIC_MOVEMENT_SPEED;
+                break;
+            case "ATTACKSPEED":
+                attribute = Attribute.GENERIC_ATTACK_SPEED;
+                break;
+            default:
+                break;
+        }
+
+        if (attribute != null) {
+            if (key.endsWith("flat-bonus")) {
+                String name = fileName.toUpperCase() + "_" + keyType + "_FLAT";
+                double amount = attributeSection.getDouble(key);
+
+                if (!manager.getModifiers(ModifierType.POSITIVE).containsKey(name))
+                    manager.put(ModifierType.POSITIVE, name, new AttributeModifier(UUID.randomUUID(), name, amount, AttributeModifier.Operation.ADD_NUMBER), attribute);
+
+            } else if (key.endsWith("multiplier")) {
+                String name = fileName.toUpperCase() + "_" + keyType + "_SCALING";
+                double amount = attributeSection.getDouble(key) - 1;
+
+                if (!manager.getModifiers(ModifierType.POSITIVE).containsKey(name))
+                    manager.put(ModifierType.POSITIVE, name, new AttributeModifier(UUID.randomUUID(), name, amount, AttributeModifier.Operation.MULTIPLY_SCALAR_1), attribute);
+            }
+        }
+    }
+
 
     @SuppressWarnings("ConstantConditions")
     public List<ItemStack> initializeMenu() {
